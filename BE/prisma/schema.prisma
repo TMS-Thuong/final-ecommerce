@@ -1,0 +1,409 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  Pending
+  Processing
+  Shipping
+  Delivered
+  Cancelled
+  Failed
+  Completed
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+enum DiscountType {
+  percentage
+  fixed_amount
+}
+
+model User {
+  id          BigInt   @id @default(autoincrement()) @map("UserID")
+  email       String   @unique
+  password    String?
+  googleId    String?  @unique @map("GoogleID")
+  firstName   String?  @map("FirstName")
+  lastName    String?  @map("LastName")
+  phoneNumber String?  @unique @map("PhoneNumber")
+  isActive    Boolean  @default(true) @map("IsActive")
+  createdAt   DateTime @default(now()) @map("CreatedAt")
+  updatedAt   DateTime @default(now()) @map("UpdatedAt")
+
+  addresses Address[]
+  carts     Cart[]
+  orders    Order[]
+  reviews   Review[]
+  favorites Favorite?
+
+  @@map("Users")
+}
+
+model Address {
+  id                BigInt   @id @default(autoincrement()) @map("AddressID")
+  userId            BigInt   @map("UserID")
+  recipientName     String   @map("RecipientName")
+  phoneNumber       String   @map("PhoneNumber")
+  province          String
+  district          String?
+  ward              String?
+  streetAddress     String   @map("StreetAddress")
+  isDefaultShipping Boolean  @default(false) @map("IsDefaultShipping")
+  isDefaultBilling  Boolean  @default(false) @map("IsDefaultBilling")
+  createdAt         DateTime @default(now()) @map("CreatedAt")
+  updatedAt         DateTime @default(now()) @map("UpdatedAt")
+
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+
+  @@map("Addresses")
+}
+
+model Category {
+  id               Int     @id @default(autoincrement()) @map("CategoryID")
+  name             String  @map("Name")
+  description      String? @map("Description")
+  parentCategoryId Int?    @map("ParentCategoryID")
+  displayOrder     Int     @default(0) @map("DisplayOrder")
+  isActive         Boolean @default(true) @map("IsActive")
+
+  products       Product[]
+  parentCategory Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  subCategories  Category[] @relation("CategoryHierarchy")
+
+  @@map("Categories")
+}
+
+model Brand {
+  id          Int     @id @default(autoincrement()) @map("BrandID")
+  name        String  @unique @map("Name")
+  logoPath    String? @map("LogoPath")
+  description String? @map("Description")
+  isActive    Boolean @default(true) @map("IsActive")
+
+  products Product[]
+
+  @@map("Brands")
+}
+
+model Product {
+  id            Int      @id @default(autoincrement()) @map("ProductID")
+  sku           String   @unique @map("SKU")
+  name          String   @map("Name")
+  slug          String   @unique @map("Slug")
+  description   String?  @map("Description")
+  categoryId    Int      @map("CategoryID")
+  brandId       Int      @map("BrandID")
+  basePrice     Decimal  @map("BasePrice") @db.Decimal(18, 2)
+  salePrice     Decimal? @map("SalePrice") @db.Decimal(18, 2)
+  stockQuantity Int      @default(0) @map("StockQuantity")
+  averageRating Decimal  @default(0) @map("AverageRating") @db.Decimal(3, 2)
+  ratingCount   Int      @default(0) @map("RatingCount")
+  viewCount     Int      @default(0) @map("ViewCount")
+  soldCount     Int      @default(0) @map("SoldCount")
+  isActive      Boolean  @default(true) @map("IsActive")
+  isFeatured    Boolean  @default(false) @map("IsFeatured")
+  createdAt     DateTime @default(now()) @map("CreatedAt")
+  updatedAt     DateTime @default(now()) @map("UpdatedAt")
+
+  category        Category                @relation(fields: [categoryId], references: [id])
+  brand           Brand                   @relation(fields: [brandId], references: [id])
+  images          ProductImage[]
+  attributeValues ProductAttributeValue[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  reviews         Review[]
+  favoriteItems   FavoriteItem[]
+
+  @@map("Products")
+}
+
+model ProductImage {
+  id           Int     @id @default(autoincrement()) @map("ImageID")
+  productId    Int     @map("ProductID")
+  imageUrl     String  @map("ImageURL")
+  isThumbnail  Boolean @default(false) @map("IsThumbnail")
+  displayOrder Int     @default(0) @map("DisplayOrder")
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("ProductImages")
+}
+
+model Attribute {
+  id                 Int     @id @default(autoincrement()) @map("AttributeID")
+  name               String  @unique @map("Name")
+  code               String  @unique @map("Code")
+  isVariantAttribute Boolean @default(false) @map("IsVariantAttribute")
+
+  attributeValues AttributeValue[]
+
+  @@map("Attributes")
+}
+
+model AttributeValue {
+  id          BigInt @id @default(autoincrement()) @map("ValueID")
+  attributeId Int    @map("AttributeID")
+  value       String @map("Value")
+
+  attribute              Attribute               @relation(fields: [attributeId], references: [id])
+  productAttributeValues ProductAttributeValue[]
+
+  @@map("AttributeValues")
+}
+
+model ProductAttributeValue {
+  id          BigInt @id @default(autoincrement()) @map("ProductAttributeValueID")
+  productId   Int    @map("ProductID")
+  attributeId Int    @map("AttributeID")
+  valueId     BigInt @map("ValueID")
+
+  product        Product        @relation(fields: [productId], references: [id])
+  attributeValue AttributeValue @relation(fields: [valueId], references: [id])
+
+  @@map("ProductAttributeValues")
+}
+
+model Cart {
+  id        String   @id @default(uuid()) @map("CartID")
+  userId    BigInt?  @map("UserID")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @default(now()) @map("UpdatedAt")
+
+  user  User?      @relation(fields: [userId], references: [id])
+  items CartItem[]
+
+  @@map("Carts")
+}
+
+model CartItem {
+  id        BigInt   @id @default(autoincrement()) @map("CartItemID")
+  cartId    String   @map("CartID")
+  productId Int      @map("ProductID")
+  quantity  Int      @default(1) @map("Quantity")
+  addedAt   DateTime @default(now()) @map("AddedAt")
+  options   Json?    @map("Options")
+
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("CartItems")
+}
+
+model Order {
+  id             BigInt        @id @default(autoincrement()) @map("OrderID")
+  orderCode      String        @unique @map("OrderCode")
+  userId         BigInt?       @map("UserID")
+  addressId      BigInt?       @map("AddressID")
+  paymentId      BigInt        @map("PaymentID")
+  shippingId     BigInt?       @map("ShippingID")
+  subtotal       Decimal       @map("Subtotal") @db.Decimal(18, 2)
+  shippingFee    Decimal       @default(0) @map("ShippingFee") @db.Decimal(18, 2)
+  discountAmount Decimal       @default(0) @map("DiscountAmount") @db.Decimal(18, 2)
+  couponCode     String?       @map("CouponCode")
+  totalAmount    Decimal       @map("TotalAmount") @db.Decimal(18, 2)
+  status         OrderStatus   @default(Pending) @map("Status")
+  customerNotes  String?       @map("CustomerNotes")
+  trackingId     String?       @map("TrackingID")
+  paymentStatus  PaymentStatus @default(Pending) @map("PaymentStatus")
+  createdAt      DateTime      @default(now()) @map("CreatedAt")
+  updatedAt      DateTime      @default(now()) @map("UpdatedAt")
+
+  user           User?                @relation(fields: [userId], references: [id])
+  address        Address?             @relation(fields: [addressId], references: [id])
+  paymentMethod  PaymentMethod        @relation(fields: [paymentId], references: [id])
+  shippingMethod ShippingMethod?      @relation(fields: [shippingId], references: [id])
+  items          OrderItem[]
+  statusHistory  OrderStatusHistory[]
+  reviews        Review[]
+
+  @@map("Orders")
+}
+
+model OrderItem {
+  id             BigInt   @id @default(autoincrement()) @map("OrderItemID")
+  orderId        BigInt   @map("OrderID")
+  productId      Int      @map("ProductID")
+  productName    String   @map("ProductName")
+  quantity       Int      @map("Quantity")
+  price          Decimal  @map("Price") @db.Decimal(18, 2)
+  subtotal       Decimal  @map("Subtotal") @db.Decimal(18, 2)
+  discountAmount Decimal  @default(0) @map("DiscountAmount") @db.Decimal(18, 2)
+  status         String   @default("Pending") @map("Status")
+  createdAt      DateTime @default(now()) @map("CreatedAt")
+  updatedAt      DateTime @default(now()) @map("UpdatedAt")
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("OrderItems")
+}
+
+model PaymentMethod {
+  id          BigInt  @id @default(autoincrement()) @map("PaymentID")
+  name        String  @map("Name")
+  code        String  @unique @map("Code")
+  description String? @map("Description")
+
+  orders Order[]
+
+  @@map("PaymentMethods")
+}
+
+model ShippingMethod {
+  id          BigInt  @id @default(autoincrement()) @map("ShippingID")
+  name        String  @map("Name")
+  description String? @map("Description")
+
+  orders Order[]
+
+  @@map("ShippingMethods")
+}
+
+model Coupon {
+  id              BigInt       @id @default(autoincrement()) @map("CouponID")
+  code            String       @unique @map("Code")
+  description     String       @map("Description")
+  discountType    DiscountType @map("DiscountType")
+  discountValue   Decimal      @map("DiscountValue") @db.Decimal(18, 2)
+  maxUsage        Int?         @map("MaxUsage")
+  usageCount      Int          @default(0) @map("UsageCount")
+  maxUsagePerUser Int?         @map("MaxUsagePerUser")
+  minOrderValue   Decimal?     @map("MinOrderValue") @db.Decimal(18, 2)
+  startDate       DateTime?    @map("StartDate")
+  endDate         DateTime?    @map("EndDate")
+  isActive        Boolean      @default(true) @map("IsActive")
+  createdAt       DateTime     @default(now()) @map("CreatedAt")
+  updatedAt       DateTime     @default(now()) @map("UpdatedAt")
+
+  @@map("Coupons")
+}
+
+model OrderStatusHistory {
+  id               BigInt      @id @default(autoincrement()) @map("HistoryID")
+  orderId          BigInt      @map("OrderID")
+  status           OrderStatus @map("Status")
+  changedByAdminId BigInt?     @map("ChangedByAdminID")
+  changedAt        DateTime    @default(now()) @map("ChangedAt")
+
+  order Order  @relation(fields: [orderId], references: [id])
+  admin Admin? @relation(fields: [changedByAdminId], references: [id])
+
+  @@map("OrderStatusHistory")
+}
+
+model Favorite {
+  id        BigInt   @id @default(autoincrement()) @map("FavoriteID")
+  userId    BigInt   @unique @map("UserID")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+
+  user  User           @relation(fields: [userId], references: [id])
+  items FavoriteItem[]
+
+  @@map("Favorites")
+}
+
+model FavoriteItem {
+  id         BigInt   @id @default(autoincrement()) @map("FavoriteItemID")
+  favoriteId BigInt   @map("FavoriteID")
+  productId  Int      @map("ProductID")
+  addedAt    DateTime @default(now()) @map("AddedAt")
+
+  favorite Favorite @relation(fields: [favoriteId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@unique([favoriteId, productId])
+  @@map("FavoriteItems")
+}
+
+model Review {
+  id        BigInt   @id @default(autoincrement()) @map("ReviewID")
+  productId Int      @map("ProductID")
+  userId    BigInt   @map("UserID")
+  orderId   BigInt   @map("OrderID")
+  rating    Int      @map("Rating")
+  title     String?  @map("Title")
+  comment   String   @map("Comment")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @default(now()) @map("UpdatedAt")
+
+  product Product       @relation(fields: [productId], references: [id])
+  user    User          @relation(fields: [userId], references: [id])
+  order   Order         @relation(fields: [orderId], references: [id])
+  images  ReviewImage[]
+
+  @@unique([productId, userId, orderId])
+  @@map("Reviews")
+}
+
+model ReviewImage {
+  id       BigInt @id @default(autoincrement()) @map("ReviewImageID")
+  reviewId BigInt @map("ReviewID")
+  imageUrl String @map("ImageURL")
+
+  review Review @relation(fields: [reviewId], references: [id])
+
+  @@map("ReviewImages")
+}
+
+model Admin {
+  id        BigInt   @id @default(autoincrement()) @map("AdminID")
+  username  String   @unique @map("Username")
+  email     String   @unique @map("Email")
+  password  String   @map("Password")
+  fullName  String?  @map("FullName")
+  roleId    BigInt   @map("RoleID")
+  isActive  Boolean  @default(true) @map("IsActive")
+  createdAt DateTime @default(now()) @map("CreatedAt")
+  updatedAt DateTime @default(now()) @map("UpdatedAt")
+
+  role               Role                 @relation(fields: [roleId], references: [id])
+  orderStatusHistory OrderStatusHistory[]
+
+  @@map("Admin")
+}
+
+model Role {
+  id          BigInt  @id @default(autoincrement()) @map("RoleID")
+  name        String  @unique @map("Name")
+  description String? @map("Description")
+
+  rolePermissions RolePermission[]
+  admins          Admin[]
+
+  @@map("Roles")
+}
+
+model Permission {
+  id   BigInt @id @default(autoincrement()) @map("PermissionID")
+  code String @unique @map("Code")
+  name String @map("Name")
+
+  rolePermissions RolePermission[]
+
+  @@map("Permissions")
+}
+
+model RolePermission {
+  id           BigInt @id @default(autoincrement()) @map("RolePermissionID")
+  roleId       BigInt @map("RoleID")
+  permissionId BigInt @map("PermissionID")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+  @@map("RolePermissions")
+}
