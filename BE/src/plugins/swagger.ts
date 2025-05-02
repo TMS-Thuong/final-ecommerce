@@ -27,11 +27,8 @@ export async function swagger(fastify: FastifyInstance) {
       },
       security: [{ BearerAuth: [] }],
       tags: [
-        { name: 'Auth', description: 'Authentication and Authorization' },
-        { name: 'User', description: 'User Profile ' },
-        { name: 'Posts', description: 'Blog Post' },
-        { name: 'Comments', description: 'Comment Blog' },
-        { name: 'Categories', description: 'Category ' },
+        { name: 'Admin', description: '' },
+        { name: 'User', description: ' ' },
       ],
     },
   });
