@@ -1,3 +1,4 @@
+
 <template>
   <button type="button"
     class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
@@ -32,16 +33,10 @@ onMounted(() => {
   document.head.appendChild(script);
 
   script.onload = () => {
-    console.log('Google API script loaded');
-
     gapi.load('auth2', () => {
       gapi.auth2.init({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      }).then(() => {
-        console.log('Google API initialized');
-      }).catch((err: any) => {
-        console.error('Error initializing Google API:', err);
-      });
+      })
     });
   };
 });
