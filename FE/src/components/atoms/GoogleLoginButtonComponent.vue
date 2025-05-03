@@ -1,0 +1,78 @@
+<template>
+  <button type="button"
+    class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+    @click="onGoogleSignIn">
+    <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+      viewBox="0 0 18 19">
+      <path fill-rule="evenodd"
+        d="M8.842 18.083a8.8 8.8 0 0 1-8.65-8.948 8.841 8.841 0 0 1 8.8-8.652h.153a8.464 8.464 0 0 1 5.7 2.257l-2.193 2.038A5.27 5.27 0 0 0 9.09 3.4a5.882 5.882 0 0 0-.2 11.76h.124a5.091 5.091 0 0 0 5.248-4.057L14.3 11H9V8h8.34c.066.543.095 1.09.088 1.636-.086 5.053-3.463 8.449-8.4 8.449l-.186-.002Z"
+        clip-rule="evenodd" />
+    </svg>
+    Google
+  </button>
+</template>
+
+<script setup lang="ts">
+import { nextTick, onMounted } from 'vue';
+import { gapi } from 'gapi-script';
+import instanceAxios from '@/helpers/configAxios';
+import router from '@/router';
+import { RouterName } from '@/enums/router';
+
+declare global {
+  interface Window {
+    initGoogleSignIn: () => void;
+  }
+}
+
+onMounted(() => {
+  const script = document.createElement('script');
+  script.src = 'https://apis.google.com/js/platform.js?onload=initGoogleSignIn';
+  script.async = true;
+  document.head.appendChild(script);
+
+  script.onload = () => {
+    gapi.load('auth2', () => {
+      gapi.auth2.init({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      })
+    });
+  };
+});
+
+const onGoogleSignIn = () => {
+  if (!gapi.auth2) {
+    console.error('Google API chưa được khởi tạo.');
+    return;
+  }
+
+  const GoogleAuth = gapi.auth2.getAuthInstance();
+  if (!GoogleAuth) {
+    console.error('Không thể lấy đối tượng GoogleAuth.');
+    return;
+  }
+
+  GoogleAuth.signIn().then((googleUser: any) => {
+    const idToken = googleUser.getAuthResponse().id_token;
+    onGoogleLogin(idToken);
+  }).catch((error) => {
+    console.error("Lỗi khi đăng nhập Google:", error);
+  });
+};
+
+const onGoogleLogin = async (idToken: string) => {
+  try {
+    const response = await instanceAxios.post('/api/user/auth/google-signin', { idToken });
+
+    if (response.data && response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+      await nextTick();
+      router.push({ name: RouterName.Home });
+    } else {
+      console.error('Không có accessToken trong phản hồi từ server');
+    }
+  } catch (error) {
+    console.error('Lỗi đăng nhập Google:', error);
+  }
+};
+</script>
