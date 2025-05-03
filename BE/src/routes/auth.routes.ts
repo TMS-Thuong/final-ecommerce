@@ -19,7 +19,7 @@ export async function authUserRoutes(fastify: FastifyInstance) {
     handler: AuthController.googleSignInController,
   });
 
-  fastify.post('/auth/login', {
+  fastify.post('/user/auth/login', {
     schema: loginSchema,
     handler: AuthController.login,
   });

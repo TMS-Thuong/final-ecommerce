@@ -12,9 +12,22 @@
       </li>
     </ul>
 
-    <button type="button"
+    <button :disabled="disabled"
       class="w-full border border-white text-white hover:bg-[#674833] py-2 rounded-md transition-colors">
-      Đăng nhập
+      {{ text }}
     </button>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  text: {
+    type: String,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
+    required: true,
+  },
+});
+</script>

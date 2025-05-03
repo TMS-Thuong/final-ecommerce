@@ -1,6 +1,6 @@
 <template>
-  <div class="relative">
-    <label class="block text-sm font-medium text-gray-700">{{ label }}</label>
+  <div class="relative text-base">
+    <label class="block text-base font-medium text-gray-700">{{ label }}</label>
     <div class="relative flex items-center">
       <input
         :type="showPassword ? 'text' : 'password'"
@@ -23,37 +23,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { EyeIcon } from '@heroicons/vue/20/solid';
+import { ref } from 'vue'
+import { EyeIcon } from '@heroicons/vue/20/solid'
 
 defineProps({
   id: {
     type: String,
-    required: true
+    required: true,
   },
   label: {
     type: String,
-    default: 'Mật khẩu'
+    default: 'Mật khẩu',
   },
   placeholder: {
     type: String,
-    default: 'Mật khẩu'
+    default: 'Mật khẩu',
   },
   modelValue: {
     type: String,
-    required: true
+    required: true,
   },
   error: {
     type: String,
-    default: ''
-  }
-});
+    default: '',
+  },
+})
 
-defineEmits(['update:modelValue']);
+defineEmits(['update:modelValue'])
 
-const showPassword = ref(false);
+const showPassword = ref(false)
 
 const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
+  showPassword.value = !showPassword.value
+}
 </script>

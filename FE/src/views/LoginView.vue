@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <RegistrationForm />
+    <LoginForm />
   </div>
 </template>
 
 <script setup lang="ts">
-import RegistrationForm from '@/components/organisms/RegistrationFormComponent.vue'
+import LoginForm from '@/components/organisms/LoginFormComponent.vue'
 </script>

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <label class="block text-sm mb-1">
-      {{ label }} <span class="text-red-500">*</span>
-    </label>
+    <label class="block text-sm mb-1"> {{ label }} <span class="text-red-500">*</span> </label>
     <div class="flex space-x-4 mt-1">
       <div v-for="option in options" :key="option.value" class="flex items-center">
         <input
@@ -28,7 +26,7 @@ defineProps({
   options: Array,
   name: String,
   modelValue: Number,
-});
+})
 
-defineEmits(['update:modelValue']);
+defineEmits(['update:modelValue'])
 </script>
