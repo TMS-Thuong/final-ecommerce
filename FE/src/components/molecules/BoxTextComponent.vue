@@ -7,14 +7,27 @@
       <li>Sản phẩm đa dạng</li>
       <li>Đổi trả dễ dàng</li>
       <li>Tích điểm đổi quà</li>
-      <li>
-        Nhiều mã coupon dành cho thành viên thường xuyên
-      </li>
+      <li>Nhiều mã coupon dành cho thành viên thường xuyên</li>
     </ul>
 
-    <button type="button"
-      class="w-full border border-white text-white hover:bg-[#674833] py-2 rounded-md transition-colors">
-      Đăng nhập
+    <button
+      :disabled="disabled"
+      class="w-full border border-white text-white hover:bg-[#674833] py-2 rounded-md transition-colors"
+    >
+      {{ text }}
     </button>
   </div>
 </template>
+
+<script setup lang="ts">
+defineProps({
+  text: {
+    type: String,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
+    required: true,
+  },
+})
+</script>

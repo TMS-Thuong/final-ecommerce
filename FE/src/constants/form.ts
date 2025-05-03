@@ -2,12 +2,13 @@ export const ERROR_MESSAGES = {
   required: 'Trường này là bắt buộc',
   invalidEmail: 'Email không hợp lệ',
   passwordTooShort: 'Mật khẩu phải có ít nhất 6 ký tự',
+  passwordTooLong: 'Mật khóa phải khó hơn 16 ký tự',
   passwordNoLowercase: 'Mật khẩu phải có ít nhất một chữ cái thường',
   passwordNoUppercase: 'Mật khẩu phải có ít nhất một chữ cái hoa',
   passwordNoSpecialChar: 'Mật khẩu phải có ít nhất một ký tự đặc biệt',
   invalidDate: 'Ngày sinh không hợp lệ',
   dateInFuture: 'Ngày sinh không được lớn hơn ngày hiện tại',
-};
+}
 
 export const FORM_FIELDS = {
   lastName: 'Họ',
@@ -16,13 +17,13 @@ export const FORM_FIELDS = {
   password: 'Mật khẩu',
   birthDate: 'Ngày sinh',
   gender: 'Giới tính',
-};
+}
 
 export const GENDER_OPTIONS = [
   { label: 'Nam', value: 0 },
   { label: 'Nữ', value: 1 },
   { label: 'Khác', value: 2 },
-];
+]
 
 export const DEFAULT_FORM_DATA = {
   lastName: '',
@@ -31,4 +32,9 @@ export const DEFAULT_FORM_DATA = {
   password: '',
   birthDate: '',
   gender: 0,
-};
+}
+
+export const EMPTY_FORM_DATA = {
+  password: '',
+  confirmPassword: '',
+}
