@@ -107,3 +107,36 @@ export const googleSignInSchema: FastifySchema = {
     500: errorResponseSchema,
   },
 };
+
+export const loginSchema: FastifySchema = {
+  summary: 'Đăng nhập',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      email: { type: 'string', format: 'email' },
+      password: { type: 'string' },
+    },
+    required: ['email', 'password'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number' },
+        message: { type: 'string' },
+        data: {
+          type: 'object',
+          properties: {
+            accessToken: { type: 'string' },
+            refreshToken: { type: 'string' },
+            user: { type: 'object' },
+          },
+        },
+      },
+    },
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
