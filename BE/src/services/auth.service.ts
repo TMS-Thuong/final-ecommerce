@@ -247,6 +247,61 @@ class AuthService {
       throw error;
     }
   }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const decoded = jwt.verify(refreshToken, this.jwtSecret) as JwtPayload & { userId: number };
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user || !user.isActive) {
+        return { success: false, message: 'Người dùng không hợp lệ hoặc chưa kích hoạt' };
+      }
+
+      const newAccessToken = jwt.sign({ userId: user.id, email: user.email }, this.jwtSecret, { expiresIn: '2h' });
+
+      return { success: true, accessToken: newAccessToken };
+    } catch (error) {
+      logger.error('Lỗi xác thực refresh token:', error);
+      return { success: false, message: 'Refresh token không hợp lệ hoặc đã hết hạn' };
+    }
+  }
+
+  async createResetPasswordToken(email: string): Promise<string> {
+    return jwt.sign({ email }, JWT_SECRET, { expiresIn: '30m' });
+  }
+
+  async generateToken(payload: JwtPayload) {
+    return jwt.sign(payload, this.jwtSecret, { expiresIn: '2h' });
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { email: string };
+      const { email } = decoded;
+
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new Error('Người dùng không tồn tại');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      await this.prisma.user.update({
+        where: { email },
+        data: { password: hashedPassword },
+      });
+
+      return true;
+    } catch {
+      throw new Error('Token không hợp lệ hoặc đã hết hạn');
+    }
+  }
 }
 
 export default new AuthService();

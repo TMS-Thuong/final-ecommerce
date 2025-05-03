@@ -7,4 +7,4 @@ export type FormData = {
   gender: 0 | 1 | 2
 }
 
-export type LoginFormData = Pick<FormData, 'email' | 'password'>;
+export type LoginFormData = Pick<FormData, 'email' | 'password'>

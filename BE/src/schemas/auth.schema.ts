@@ -140,3 +140,87 @@ export const loginSchema: FastifySchema = {
     500: errorResponseSchema,
   },
 };
+
+export const refreshTokenSchema: FastifySchema = {
+  summary: 'Làm mới token',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      refreshToken: { type: 'string' },
+    },
+    required: ['refreshToken'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number' },
+        message: { type: 'string' },
+        data: {
+          type: 'object',
+          properties: {
+            accessToken: { type: 'string' },
+            refreshToken: { type: 'string' },
+          },
+        },
+      },
+    },
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
+export const forgotPasswordSchema: FastifySchema = {
+  summary: 'Quên mật khẩu',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      email: { type: 'string', format: 'email' },
+    },
+    required: ['email'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+    },
+    400: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
+export const resetPasswordSchema: FastifySchema = {
+  summary: 'Đặt lại mật khẩu',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      token: { type: 'string' },
+      newPassword: { type: 'string', minLength: 8, maxLength: 16 },
+      confirmPassword: { type: 'string', minLength: 8, maxLength: 16 },
+    },
+    required: ['token', 'newPassword'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+        },
+      },
+    },
+    400: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};

@@ -19,11 +19,12 @@ export const formSchema = z.object({
 
   password: z
     .string()
-    .min(6, { message: ERROR_MESSAGES.passwordTooShort })
-    .nonempty({ message: ERROR_MESSAGES.required })
+    .min(8, { message: ERROR_MESSAGES.passwordTooShort })
+    .max(16, { message: ERROR_MESSAGES.passwordTooLong })
     .regex(/[a-z]/, { message: ERROR_MESSAGES.passwordNoLowercase })
     .regex(/[A-Z]/, { message: ERROR_MESSAGES.passwordNoUppercase })
-    .regex(/[\W_]/, { message: ERROR_MESSAGES.passwordNoSpecialChar }),
+    .regex(/[\W_]/, { message: ERROR_MESSAGES.passwordNoSpecialChar })
+    .nonempty({ message: ERROR_MESSAGES.required }),
 
   birthDate: z
     .string()

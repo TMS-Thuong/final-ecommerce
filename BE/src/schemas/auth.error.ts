@@ -6,6 +6,7 @@ export const AuthErrorMessages = {
   PASSWORD_MIN_LENGTH: 'Mật khẩu phải có ít nhất 8 ký tự',
   PASSWORD_MAX_LENGTH: 'Mật khẩu không được vượt quá 16 ký tự',
   PASSWORD_PATTERN: 'Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường và một ký tự đặc biệt',
+  PASSWORDS_DO_NOT_MATCH: 'Mật khẩu nhập lại không khớp vơi mật khẩu mới',
 
   FIRST_NAME_REQUIRED: 'Tên không được để trống',
   LAST_NAME_REQUIRED: 'Họ không được để trống',

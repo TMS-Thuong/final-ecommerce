@@ -7,9 +7,7 @@
       <li>Sản phẩm đa dạng</li>
       <li>Đổi trả dễ dàng</li>
       <li>Tích điểm đổi quà</li>
-      <li>
-        Nhiều mã coupon dành cho thành viên thường xuyên
-      </li>
+      <li>Nhiều mã coupon dành cho thành viên thường xuyên</li>
     </ul>
 
     <button :disabled="disabled"
@@ -19,7 +17,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 defineProps({
   text: {
     type: String,
@@ -29,5 +27,5 @@ defineProps({
     type: Boolean,
     required: true,
   },
-});
+})
 </script>

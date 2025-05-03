@@ -11,7 +11,7 @@
           v-model="formData.lastName"
           placeholder="Họ"
           :error="errors.lastName"
-          @input="clearError('lastName')"
+          @input="onClearError('lastName')"
         />
         <InputText
           id="firstName"
@@ -19,7 +19,7 @@
           v-model="formData.firstName"
           placeholder="Tên"
           :error="errors.firstName"
-          @input="clearError('lastName')"
+          @input="onClearError('lastName')"
         />
         <InputText
           id="email"
@@ -28,7 +28,7 @@
           placeholder="Email"
           type="email"
           :error="errors.email"
-          @input="clearError('lastName')"
+          @input="onClearError('lastName')"
         />
         <PasswordInput id="password" v-model="formData.password" :error="errors.password" />
         <InputText
@@ -38,7 +38,7 @@
           placeholder="Ngày sinh"
           type="date"
           :error="errors.birthDate"
-          @input="clearError('lastName')"
+          @input="onClearError('lastName')"
         />
         <RadioButtonGroup
           label="Giới tính"
@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
-       <BoxText :text="'Đăng Nhập'" @click="onLogin" />
+      <BoxText :text="'Đăng Nhập'" :disabled="isLoading" @click="onLogin" />
       <div class="flex justify-center">
         <img src="@/assets/image1.png" alt="Description of image" class="w-100 h-80 object-cover" />
       </div>
@@ -83,8 +83,8 @@ import instanceAxios from '@/helpers/configAxios'
 import { formSchema } from '@/validations/formRegister'
 import { DEFAULT_FORM_DATA, GENDER_OPTIONS } from '@/constants/form'
 import { ApiEndpoint } from '@/api/api'
-import router from '@/router';
-import { RouterName } from '@/enums/router';
+import router from '@/router'
+import { RouterName } from '@/enums/router'
 
 const formData = ref(DEFAULT_FORM_DATA)
 const genderOptions = GENDER_OPTIONS
@@ -92,7 +92,7 @@ const errors = ref<{ [key: string]: string }>({})
 const isLoading = ref(false)
 const responseMessage = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
-const clearError = (field: string) => {
+const onClearError = (field: string) => {
   delete errors.value[field]
 }
 
@@ -130,6 +130,6 @@ const onRegister = async () => {
   }
 }
 const onLogin = () => {
-  router.push({ name: RouterName.Login });
-};
+  router.push({ name: RouterName.Login })
+}
 </script>

@@ -2,6 +2,7 @@ export const ERROR_MESSAGES = {
   required: 'Trường này là bắt buộc',
   invalidEmail: 'Email không hợp lệ',
   passwordTooShort: 'Mật khẩu phải có ít nhất 6 ký tự',
+  passwordTooLong: 'Mật khóa phải khó hơn 16 ký tự',
   passwordNoLowercase: 'Mật khẩu phải có ít nhất một chữ cái thường',
   passwordNoUppercase: 'Mật khẩu phải có ít nhất một chữ cái hoa',
   passwordNoSpecialChar: 'Mật khẩu phải có ít nhất một ký tự đặc biệt',
@@ -33,3 +34,7 @@ export const DEFAULT_FORM_DATA = {
   gender: 0,
 }
 
+export const EMPTY_FORM_DATA = {
+  password: '',
+  confirmPassword: '',
+}
