@@ -50,7 +50,9 @@
       "@decorator/*": [
         "src/decorator/*"
       ]
-    }
+    },
+    "resolveJsonModule": true,
+    "strict": true
   },
   "include": [
     "src/**/*"

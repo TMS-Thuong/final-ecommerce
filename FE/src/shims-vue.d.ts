@@ -8,3 +8,10 @@ declare module '*.vue' {
   export default component
 }
 
+declare module '@heroicons/vue/outline' {
+  import { DefineComponent } from 'vue';
+
+  export const EyeIcon: DefineComponent;
+  export const EyeOffIcon: DefineComponent;
+}
+

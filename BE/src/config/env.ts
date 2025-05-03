@@ -10,3 +10,4 @@ export const DATABASE_URL = process.env.DATABASE_URL || '';
 export const SMTP_SERVER = process.env.SMTP_SERVER || 'smtp.gmail.com';
 export const SMTP_USERNAME = process.env.GMAIL_USERNAME || '';
 export const SMTP_PASSWORD = process.env.GMAIL_PASSWORD || '';
+export const CLIENT_URL = process.env.GOOGLE_CLIENT_ID || '';
