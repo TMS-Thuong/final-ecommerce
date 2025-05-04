@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { ERROR_MESSAGES } from '@/constants/form'
 
-export const registerSchema = z.object({
+export const formSchema = z.object({
   lastName: z
     .string()
     .min(1, { message: ERROR_MESSAGES.firtNameTooShort })
@@ -41,4 +41,14 @@ export const registerSchema = z.object({
       }
     })
 
+})
+
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .email({ message: ERROR_MESSAGES.invalidEmail })
+    .nonempty({ message: ERROR_MESSAGES.required }),
+  password: z
+    .string()
+    .nonempty({ message: ERROR_MESSAGES.required }),
 })

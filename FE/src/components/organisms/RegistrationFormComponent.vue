@@ -49,7 +49,7 @@ import BoxText from '@/components/molecules/BoxTextComponent.vue'
 import SocialLoginButton from '@/components/atoms/GoogleLoginButtonComponent.vue'
 import { z } from 'zod'
 import instanceAxios from '@/helpers/configAxios'
-import { registerSchema } from '../../validations/form'
+import { formSchema } from '@/validations/form'
 import { DEFAULT_FORM_DATA, GENDER_OPTIONS } from '@/constants/form'
 import { ApiEndpoint } from '@/api/api'
 import router from '@/router'
@@ -71,7 +71,7 @@ const onRegister = async () => {
   responseMessage.value = null
   errorMessage.value = null
   try {
-    await registerSchema.parseAsync(formData.value)
+    await formSchema.parseAsync(formData.value)
     const response = await instanceAxios.post(ApiEndpoint.auth.register, formData.value)
     if (response.data && response.data.success && response.data.data.message) {
       responseMessage.value = response.data.data.message
