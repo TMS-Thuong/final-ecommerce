@@ -1,17 +1,16 @@
 import axios from 'axios'
-import { ApiEndpoint } from '@/api/api' // Chắc chắn rằng bạn đã định nghĩa ApiEndpoint này
+import { ApiEndpoint } from '@/api/api'
 import router from '@/router'
 import { RouterName } from '@/enums/router'
 
 const instanceAxios = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // Cấu hình lại baseURL cho API của bạn
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
 })
 
-// Thêm interceptor request để gửi token vào header
 instanceAxios.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('accessToken')
@@ -24,7 +23,7 @@ instanceAxios.interceptors.request.use(
 )
 
 instanceAxios.interceptors.response.use(
-  (response) => response, 
+  (response) => response,
   async (error) => {
     const originalRequest = error.config
     if (error.response.status === 401 && !originalRequest._retry) {
@@ -50,7 +49,7 @@ instanceAxios.interceptors.response.use(
       } catch (err) {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
-        router.push({ name: RouterName.Login }) 
+        router.push({ name: RouterName.Login })
         return Promise.reject(err)
       }
     }

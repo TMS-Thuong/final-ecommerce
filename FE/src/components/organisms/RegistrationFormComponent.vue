@@ -49,7 +49,7 @@ import BoxText from '@/components/molecules/BoxTextComponent.vue'
 import SocialLoginButton from '@/components/atoms/GoogleLoginButtonComponent.vue'
 import { z } from 'zod'
 import instanceAxios from '@/helpers/configAxios'
-import { formSchema } from '@/validations/form'
+import { registerSchema } from '@/validations/form'
 import { DEFAULT_FORM_DATA, GENDER_OPTIONS } from '@/constants/form'
 import { ApiEndpoint } from '@/api/api'
 import router from '@/router'
@@ -70,8 +70,10 @@ const onRegister = async () => {
   isLoading.value = true
   responseMessage.value = null
   errorMessage.value = null
+  errors.value = {}
+
   try {
-    await formSchema.parseAsync(formData.value)
+    await registerSchema.parseAsync(formData.value)
     const response = await instanceAxios.post(ApiEndpoint.auth.register, formData.value)
     if (response.data && response.data.success && response.data.data.message) {
       responseMessage.value = response.data.data.message
@@ -85,8 +87,13 @@ const onRegister = async () => {
       errors.value = newErrors
     } else {
       const axiosError = err as { response?: { data?: { message?: string } } }
-      errorMessage.value =
-        axiosError.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!'
+      const msg = axiosError.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!'
+      errorMessage.value = msg
+      setTimeout(() => {
+        if (errorMessage.value === msg) {
+          errorMessage.value = null
+        }
+      }, 3000)
     }
   } finally {
     isLoading.value = false

@@ -5,6 +5,8 @@ export const ApiEndpoint = {
     register: `${USE_URL}/register`,
     googleSignIn: `${USE_URL}/google-signin`,
     loginByEmail: `${USE_URL}/login`,
+    forgotPW: `${AUTH_URL}/forgot-password`,
+    resetPW: `${AUTH_URL}/reset-password`,
     refreshToken: `${AUTH_URL}/refresh-token`,
   },
 }
