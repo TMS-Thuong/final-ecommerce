@@ -42,3 +42,13 @@ export const registerSchema = z.object({
     })
 
 })
+
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .email({ message: ERROR_MESSAGES.invalidEmail })
+    .nonempty({ message: ERROR_MESSAGES.required }),
+  password: z
+    .string()
+    .nonempty({ message: ERROR_MESSAGES.required }),
+})

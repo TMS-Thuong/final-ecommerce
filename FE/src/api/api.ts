@@ -1,6 +1,10 @@
 const USE_URL = 'api/user/auth'
+const AUTH_URL = 'api/auth'
 export const ApiEndpoint = {
   auth: {
-    register: `${USE_URL}/register`
+    register: `${USE_URL}/register`,
+    googleSignIn: `${USE_URL}/google-signin`,
+    loginByEmail: `${USE_URL}/login`,
+    refreshToken: `${AUTH_URL}/refresh-token`,
   },
 }

@@ -49,7 +49,7 @@ import BoxText from '@/components/molecules/BoxTextComponent.vue'
 import SocialLoginButton from '@/components/atoms/GoogleLoginButtonComponent.vue'
 import { z } from 'zod'
 import instanceAxios from '@/helpers/configAxios'
-import { registerSchema } from '../../validations/form'
+import { registerSchema } from '@/validations/form'
 import { DEFAULT_FORM_DATA, GENDER_OPTIONS } from '@/constants/form'
 import { ApiEndpoint } from '@/api/api'
 import router from '@/router'
@@ -70,6 +70,8 @@ const onRegister = async () => {
   isLoading.value = true
   responseMessage.value = null
   errorMessage.value = null
+  errors.value = {}
+
   try {
     await registerSchema.parseAsync(formData.value)
     const response = await instanceAxios.post(ApiEndpoint.auth.register, formData.value)
@@ -87,11 +89,17 @@ const onRegister = async () => {
       const axiosError = err as { response?: { data?: { message?: string } } }
       errorMessage.value =
         axiosError.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!'
+      setTimeout(() => {
+        if (errorMessage.value === msg) {
+          errorMessage.value = null
+        }
+      }, 3000)
     }
   } finally {
     isLoading.value = false
   }
 }
+
 const onLogin = () => {
   router.push({ name: RouterName.Login })
 }
