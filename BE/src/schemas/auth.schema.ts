@@ -1,0 +1,109 @@
+import { FastifySchema } from 'fastify';
+
+const errorResponseSchema = {
+  type: 'object',
+  properties: {
+    statusCode: { type: 'number' },
+    error: { type: 'string' },
+    message: { type: 'string' },
+  },
+};
+
+export const registerUserSchema: FastifySchema = {
+  summary: 'Đăng ký người dùng',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      email: { type: 'string' },
+      password: { type: 'string' },
+      firstName: { type: 'string' },
+      lastName: { type: 'string' },
+      birthDate: { type: 'string', format: 'date' },
+      gender: { type: 'number' },
+    },
+    required: ['email', 'password'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number' },
+        message: { type: 'string' },
+        data: { type: 'object' },
+      },
+    },
+    400: errorResponseSchema,
+    409: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
+export const verifyEmailSchema: FastifySchema = {
+  summary: 'Xác minh email',
+  tags: ['Auth'],
+  querystring: {
+    type: 'object',
+    properties: {
+      token: { type: 'string' },
+    },
+    required: ['token'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        data: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+        },
+      },
+    },
+    400: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
+export const googleSignInSchema: FastifySchema = {
+  summary: 'Đăng nhập bằng Google',
+  tags: ['Auth'],
+  body: {
+    type: 'object',
+    properties: {
+      idToken: { type: 'string' },
+    },
+    required: ['idToken'],
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+        accessToken: { type: 'string' },
+        user: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'number' },
+                email: { type: 'string' },
+                firstName: { type: 'string' },
+                lastName: { type: 'string' },
+                avatarUrl: { type: 'string' },
+                isActive: { type: 'boolean' },
+              },
+            },
+          },
+          additionalProperties: true,
+        },
+      },
+    },
+    400: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
