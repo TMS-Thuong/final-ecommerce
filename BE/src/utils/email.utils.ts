@@ -22,9 +22,9 @@ export const getResetPasswordEmail = (firstName: string, token: string) => {
     subject: 'Yêu cầu đặt lại mật khẩu',
     text: `Xin chào ${firstName},
 
-        Bạn đã yêu cầu đặt lại mật khẩu. Nhấp vào liên kết dưới đây để tạo mật khẩu mới:
+        Bạn đã yêu cầu đặt lại mật khẩu.  để tạo mật khẩu mới:
 
-        "http://localhost:3000/api/auth/reset-password?token=${token}"
+        "http://localhost:5173/account/reset-password?token=${token}"
 
         Liên kết này sẽ hết hạn trong 30 phút.
 

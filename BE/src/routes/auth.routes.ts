@@ -1,8 +1,10 @@
 import {
+  forgotPasswordSchema,
   googleSignInSchema,
   loginSchema,
   refreshTokenSchema,
   registerUserSchema,
+  resetPasswordSchema,
   verifyEmailSchema,
 } from '@schemas/auth.schema';
 import { FastifyInstance } from 'fastify';
@@ -33,5 +35,14 @@ export async function authUserRoutes(fastify: FastifyInstance) {
   fastify.post('/auth/refresh-token', {
     schema: refreshTokenSchema,
     handler: AuthController.refreshToken,
+  });
+  fastify.post('/auth/forgot-password', {
+    schema: forgotPasswordSchema,
+    handler: AuthController.forgotPassword,
+  });
+
+  fastify.post('/auth/reset-password', {
+    schema: resetPasswordSchema,
+    handler: AuthController.resetPassword,
   });
 }

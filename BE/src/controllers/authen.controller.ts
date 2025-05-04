@@ -1,16 +1,18 @@
 import { JWT_SECRET, logger } from '@config/index';
 import { binding } from '@decorator/binding';
 import {
+  forgotPasswordZodSchema,
   googleLoginSchema,
   loginZodSchema,
   refreshTokenZodSchema,
   registerUserZobSchema,
+  resetPasswordZodSchema,
   verifyEmailZobSchema,
 } from '@schemas/auth.zod';
 import authService from '@services/auth.service';
 import AuthService from '@services/auth.service';
 import EmailService from '@services/email.service';
-import { getVerificationEmail } from '@utils/email.utils';
+import { getResetPasswordEmail, getVerificationEmail } from '@utils/email.utils';
 import dayjs from 'dayjs';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
@@ -199,12 +201,70 @@ class AuthController {
         return reply.unauthorized(refreshResult.message || 'Unauthorized access');
       }
 
-      return reply.ok({
-        accessToken: refreshResult.accessToken,
-      });
+      return reply.ok({ accessToken: refreshResult.accessToken });
     } catch (error) {
       request.log.error('Lỗi refresh token:', error);
       return reply.internalError();
+    }
+  }
+
+  @binding
+  async forgotPassword(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const validationResult = forgotPasswordZodSchema.safeParse(request.body);
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors[0]?.message || 'Email không hợp lệ';
+        return reply.badRequest(errorMessage);
+      }
+
+      const { email } = validationResult.data;
+      const user = await AuthService.checkEmail(email);
+      if (!user) {
+        return reply.send({ message: 'Email đặt lại mật khẩu đã được gửi.' });
+      }
+      if (user.googleId && user.password === '') {
+        return reply.send({
+          message: 'Tài khoản này được đăng nhập qua Google. Bạn không thể sử dụng tính năng đặt lại mật khẩu.',
+        });
+      }
+      const resetToken = await AuthService.createResetPasswordToken(email);
+      const emailContent = getResetPasswordEmail(user.firstName ?? '', resetToken);
+      const emailResult = await EmailService.sendEmail(email, emailContent.subject, emailContent.text);
+
+      if (!emailResult.success) {
+        return reply.internalError('Gửi email thất bại');
+      }
+
+      return reply.send({ message: 'Email đặt lại mật khẩu đã được gửi.' });
+    } catch (error) {
+      console.error('Lỗi khi xử lý yêu cầu quên mật khẩu:', error);
+      return reply.internalError(error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định');
+    }
+  }
+
+  @binding
+  async resetPassword(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const validationResult = resetPasswordZodSchema.safeParse(request.body);
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors[0]?.message || 'Dữ liệu không hợp lệ';
+        return reply.badRequest(errorMessage);
+      }
+
+      const { token, newPassword } = validationResult.data;
+      await AuthService.resetPassword(token, newPassword);
+
+      return reply.ok({
+        message: 'Mật khẩu đã được cập nhật thành công!',
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        reply.badRequest(error.message);
+      } else {
+        reply.internalError();
+      }
     }
   }
 }
