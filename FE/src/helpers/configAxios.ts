@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiEndpoint } from '@/api/api' 
+import { ApiEndpoint } from '@/api/api'
 import router from '@/router'
 import { RouterName } from '@/enums/router'
 

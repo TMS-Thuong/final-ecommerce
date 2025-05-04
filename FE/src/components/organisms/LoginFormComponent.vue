@@ -113,12 +113,12 @@ const onLogin = async () => {
   }
 }
 
-
 const onRegister = () => {
   router.push({ name: RouterName.Register })
 }
 
 const onForgotPassword = () => {
+  router.push({ name: RouterName.ForgotPW })
 }
 
 onBeforeUnmount(() => {

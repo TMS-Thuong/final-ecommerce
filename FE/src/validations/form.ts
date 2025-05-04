@@ -52,3 +52,28 @@ export const loginSchema = z.object({
     .string()
     .nonempty({ message: ERROR_MESSAGES.required }),
 })
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .nonempty({ message: ERROR_MESSAGES.required })
+    .email({ message: ERROR_MESSAGES.invalidEmail }),
+})
+
+export const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .regex(/[a-z]/, { message: ERROR_MESSAGES.passwordNoLowercase })
+    .regex(/[A-Z]/, { message: ERROR_MESSAGES.passwordNoUppercase })
+    .regex(/[\W_]/, { message: ERROR_MESSAGES.passwordNoSpecialChar })
+    .min(8, { message: ERROR_MESSAGES.passwordTooShort })
+    .max(16, { message: ERROR_MESSAGES.passwordTooLong })
+    .nonempty({ message: ERROR_MESSAGES.required }),
+
+  confirmPassword: z
+    .string()
+    .nonempty({ message: ERROR_MESSAGES.required }),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: ERROR_MESSAGES.passwordNotMath,
+})

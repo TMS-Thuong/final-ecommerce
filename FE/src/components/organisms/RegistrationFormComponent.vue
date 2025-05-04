@@ -87,8 +87,8 @@ const onRegister = async () => {
       errors.value = newErrors
     } else {
       const axiosError = err as { response?: { data?: { message?: string } } }
-      errorMessage.value =
-        axiosError.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!'
+      const msg = axiosError.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại!'
+      errorMessage.value = msg
       setTimeout(() => {
         if (errorMessage.value === msg) {
           errorMessage.value = null
@@ -99,7 +99,6 @@ const onRegister = async () => {
     isLoading.value = false
   }
 }
-
 const onLogin = () => {
   router.push({ name: RouterName.Login })
 }
