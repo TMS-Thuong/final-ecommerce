@@ -15,3 +15,8 @@ declare module '@heroicons/vue/outline' {
   export const EyeOffIcon: DefineComponent;
 }
 
+declare global {
+  interface Window {
+    initGoogleSignIn: () => void;
+  }
+}
