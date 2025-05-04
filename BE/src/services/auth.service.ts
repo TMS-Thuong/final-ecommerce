@@ -268,6 +268,40 @@ class AuthService {
       return { success: false, message: 'Refresh token không hợp lệ hoặc đã hết hạn' };
     }
   }
+
+  async createResetPasswordToken(email: string): Promise<string> {
+    return jwt.sign({ email }, JWT_SECRET, { expiresIn: '30m' });
+  }
+
+  async generateToken(payload: JwtPayload) {
+    return jwt.sign(payload, this.jwtSecret, { expiresIn: '2h' });
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { email: string };
+      const { email } = decoded;
+
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new Error('Người dùng không tồn tại');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      await this.prisma.user.update({
+        where: { email },
+        data: { password: hashedPassword },
+      });
+
+      return true;
+    } catch {
+      throw new Error('Token không hợp lệ hoặc đã hết hạn');
+    }
+  }
 }
 
 export default new AuthService();
