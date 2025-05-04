@@ -36,5 +36,17 @@ export const verifyEmailZobSchema = z.object({
   token: z.string().min(1, AuthErrorMessages.TOKEN_REQUIRED),
 });
 
+export const loginZodSchema = z.object({
+  email: z.string().min(1, AuthErrorMessages.EMAIL_REQUIRED).email(AuthErrorMessages.EMAIL_INVALID),
+  password: z.string().min(1, AuthErrorMessages.PASSWORD_REQUIRED),
+});
+
+export const refreshTokenZodSchema = z.object({
+  refreshToken: z.string().min(1, AuthErrorMessages.REFRESH_TOKEN_REQUIRED),
+});
+
 export type RegisterUserInput = z.infer<typeof registerUserZobSchema>;
 export type VerifyEmailInput = z.infer<typeof verifyEmailZobSchema>;
+export type LoginInput = z.infer<typeof loginZodSchema>;
+export type RefreshTokenInput = z.infer<typeof refreshTokenZodSchema>;
+export type GoogleLoginInput = z.infer<typeof googleLoginSchema>;
