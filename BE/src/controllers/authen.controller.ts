@@ -1,6 +1,12 @@
 import { JWT_SECRET, logger } from '@config/index';
 import { binding } from '@decorator/binding';
-import { googleLoginSchema, registerUserZobSchema, verifyEmailZobSchema } from '@schemas/auth.zod';
+import {
+  googleLoginSchema,
+  loginZodSchema,
+  refreshTokenZodSchema,
+  registerUserZobSchema,
+  verifyEmailZobSchema,
+} from '@schemas/auth.zod';
 import authService from '@services/auth.service';
 import AuthService from '@services/auth.service';
 import EmailService from '@services/email.service';
@@ -139,6 +145,66 @@ class AuthController {
       const errorMessage = error instanceof Error ? error.stack : error;
       logger.error('Lỗi đăng nhập bằng Google, stack:', errorMessage);
       return reply.internalError('Lỗi đăng nhập Google');
+    }
+  }
+
+  @binding
+  async loginUserWithEmail(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const validationResult = loginZodSchema.safeParse(request.body);
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors[0]?.message || 'Dữ liệu đăng nhập không hợp lệ';
+        return reply.badRequest(errorMessage);
+      }
+
+      const { email, password } = validationResult.data;
+      const { accessToken, refreshToken } = await AuthService.login({ email, password });
+
+      return reply.ok({
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === 'Email không tồn tại') {
+          return reply.notFound(error.message);
+        }
+        if (error.message === 'Tài khoản chưa được kích hoạt') {
+          return reply.badRequest(error.message);
+        }
+        if (error.message === 'Mật khẩu không chính xác') {
+          return reply.unauthorized(error.message);
+        }
+      }
+      logger.error('Lỗi controller login', error);
+      return reply.internalError();
+    }
+  }
+
+  @binding
+  async refreshToken(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const validationResult = refreshTokenZodSchema.safeParse(request.body);
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors[0]?.message || 'Refresh token không hợp lệ';
+        return reply.badRequest(errorMessage);
+      }
+
+      const { refreshToken } = validationResult.data;
+      const refreshResult = await AuthService.refreshAccessToken(refreshToken);
+
+      if (!refreshResult.success) {
+        return reply.unauthorized(refreshResult.message || 'Unauthorized access');
+      }
+
+      return reply.ok({
+        accessToken: refreshResult.accessToken,
+      });
+    } catch (error) {
+      request.log.error('Lỗi refresh token:', error);
+      return reply.internalError();
     }
   }
 }

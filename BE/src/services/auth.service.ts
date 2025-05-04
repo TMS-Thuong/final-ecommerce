@@ -16,6 +16,10 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
+export interface LoginData {
+  email: string;
+  password: string;
+}
 
 type UserData = {
   email: string;
@@ -208,6 +212,61 @@ class AuthService {
         isActive: newUser.isActive,
       },
     };
+  }
+
+  async login({ email, password }: LoginData) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new Error('Email không tồn tại');
+      }
+
+      if (!user.isActive) {
+        throw new Error('Tài khoản chưa được kích hoạt');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password ?? '');
+      if (!isPasswordValid) {
+        throw new Error('Mật khẩu không chính xác');
+      }
+
+      const accessToken = jwt.sign({ userId: user.id, email: user.email }, this.jwtSecret, {
+        expiresIn: '2h',
+      });
+
+      const refreshToken = jwt.sign({ userId: user.id, email: user.email }, this.jwtSecret, {
+        expiresIn: '7d',
+      });
+
+      return { accessToken, refreshToken };
+    } catch (error) {
+      logger.error('Login service error:', error);
+      throw error;
+    }
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const decoded = jwt.verify(refreshToken, this.jwtSecret) as JwtPayload & { userId: number };
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user || !user.isActive) {
+        return { success: false, message: 'Người dùng không hợp lệ hoặc chưa kích hoạt' };
+      }
+
+      const newAccessToken = jwt.sign({ userId: user.id, email: user.email }, this.jwtSecret, { expiresIn: '2h' });
+
+      return { success: true, accessToken: newAccessToken };
+    } catch (error) {
+      logger.error('Lỗi xác thực refresh token:', error);
+      return { success: false, message: 'Refresh token không hợp lệ hoặc đã hết hạn' };
+    }
   }
 }
 
