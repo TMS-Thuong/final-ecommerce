@@ -7,15 +7,24 @@ CREATE TYPE "PaymentStatus" AS ENUM ('Pending', 'Paid', 'Failed', 'Refunded');
 -- CreateEnum
 CREATE TYPE "DiscountType" AS ENUM ('percentage', 'fixed_amount');
 
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'OTHER');
+
 -- CreateTable
 CREATE TABLE "Users" (
-    "UserID" BIGSERIAL NOT NULL,
-    "email" TEXT NOT NULL,
+    "UserID" SERIAL NOT NULL,
+    "email" TEXT,
     "password" TEXT,
     "GoogleID" TEXT,
-    "FullName" TEXT,
+    "FirstName" TEXT,
+    "LastName" TEXT,
+    "avatarUrl" TEXT,
+    "gender" "Gender" NOT NULL DEFAULT 'OTHER',
+    "birthDate" TIMESTAMP(3) NOT NULL,
     "PhoneNumber" TEXT,
-    "IsActive" BOOLEAN NOT NULL DEFAULT true,
+    "IsActive" BOOLEAN NOT NULL DEFAULT false,
+    "verificationToken" TEXT,
+    "verificationTokenExpires" TIMESTAMP(3),
     "CreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "UpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -24,13 +33,13 @@ CREATE TABLE "Users" (
 
 -- CreateTable
 CREATE TABLE "Addresses" (
-    "AddressID" BIGSERIAL NOT NULL,
-    "UserID" BIGINT NOT NULL,
+    "AddressID" SERIAL NOT NULL,
+    "UserID" INTEGER NOT NULL,
     "RecipientName" TEXT NOT NULL,
     "PhoneNumber" TEXT NOT NULL,
     "province" TEXT NOT NULL,
-    "district" TEXT NOT NULL,
-    "ward" TEXT NOT NULL,
+    "district" TEXT,
+    "ward" TEXT,
     "StreetAddress" TEXT NOT NULL,
     "IsDefaultShipping" BOOLEAN NOT NULL DEFAULT false,
     "IsDefaultBilling" BOOLEAN NOT NULL DEFAULT false,
@@ -110,7 +119,7 @@ CREATE TABLE "Attributes" (
 
 -- CreateTable
 CREATE TABLE "AttributeValues" (
-    "ValueID" BIGSERIAL NOT NULL,
+    "ValueID" SERIAL NOT NULL,
     "AttributeID" INTEGER NOT NULL,
     "Value" TEXT NOT NULL,
 
@@ -119,10 +128,10 @@ CREATE TABLE "AttributeValues" (
 
 -- CreateTable
 CREATE TABLE "ProductAttributeValues" (
-    "ProductAttributeValueID" BIGSERIAL NOT NULL,
+    "ProductAttributeValueID" SERIAL NOT NULL,
     "ProductID" INTEGER NOT NULL,
     "AttributeID" INTEGER NOT NULL,
-    "ValueID" BIGINT NOT NULL,
+    "ValueID" INTEGER NOT NULL,
 
     CONSTRAINT "ProductAttributeValues_pkey" PRIMARY KEY ("ProductAttributeValueID")
 );
@@ -130,7 +139,7 @@ CREATE TABLE "ProductAttributeValues" (
 -- CreateTable
 CREATE TABLE "Carts" (
     "CartID" TEXT NOT NULL,
-    "UserID" BIGINT,
+    "UserID" INTEGER,
     "CreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "UpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -139,7 +148,7 @@ CREATE TABLE "Carts" (
 
 -- CreateTable
 CREATE TABLE "CartItems" (
-    "CartItemID" BIGSERIAL NOT NULL,
+    "CartItemID" SERIAL NOT NULL,
     "CartID" TEXT NOT NULL,
     "ProductID" INTEGER NOT NULL,
     "Quantity" INTEGER NOT NULL DEFAULT 1,
@@ -151,12 +160,12 @@ CREATE TABLE "CartItems" (
 
 -- CreateTable
 CREATE TABLE "Orders" (
-    "OrderID" BIGSERIAL NOT NULL,
+    "OrderID" SERIAL NOT NULL,
     "OrderCode" TEXT NOT NULL,
-    "UserID" BIGINT,
-    "AddressID" BIGINT,
-    "PaymentID" BIGINT NOT NULL,
-    "ShippingID" BIGINT,
+    "UserID" INTEGER,
+    "AddressID" INTEGER,
+    "PaymentID" INTEGER NOT NULL,
+    "ShippingID" INTEGER,
     "Subtotal" DECIMAL(18,2) NOT NULL,
     "ShippingFee" DECIMAL(18,2) NOT NULL DEFAULT 0,
     "DiscountAmount" DECIMAL(18,2) NOT NULL DEFAULT 0,
@@ -174,8 +183,8 @@ CREATE TABLE "Orders" (
 
 -- CreateTable
 CREATE TABLE "OrderItems" (
-    "OrderItemID" BIGSERIAL NOT NULL,
-    "OrderID" BIGINT NOT NULL,
+    "OrderItemID" SERIAL NOT NULL,
+    "OrderID" INTEGER NOT NULL,
     "ProductID" INTEGER NOT NULL,
     "ProductName" TEXT NOT NULL,
     "Quantity" INTEGER NOT NULL,
@@ -191,7 +200,7 @@ CREATE TABLE "OrderItems" (
 
 -- CreateTable
 CREATE TABLE "PaymentMethods" (
-    "PaymentID" BIGSERIAL NOT NULL,
+    "PaymentID" SERIAL NOT NULL,
     "Name" TEXT NOT NULL,
     "Code" TEXT NOT NULL,
     "Description" TEXT,
@@ -201,7 +210,7 @@ CREATE TABLE "PaymentMethods" (
 
 -- CreateTable
 CREATE TABLE "ShippingMethods" (
-    "ShippingID" BIGSERIAL NOT NULL,
+    "ShippingID" SERIAL NOT NULL,
     "Name" TEXT NOT NULL,
     "Description" TEXT,
 
@@ -210,7 +219,7 @@ CREATE TABLE "ShippingMethods" (
 
 -- CreateTable
 CREATE TABLE "Coupons" (
-    "CouponID" BIGSERIAL NOT NULL,
+    "CouponID" SERIAL NOT NULL,
     "Code" TEXT NOT NULL,
     "Description" TEXT NOT NULL,
     "DiscountType" "DiscountType" NOT NULL,
@@ -230,10 +239,10 @@ CREATE TABLE "Coupons" (
 
 -- CreateTable
 CREATE TABLE "OrderStatusHistory" (
-    "HistoryID" BIGSERIAL NOT NULL,
-    "OrderID" BIGINT NOT NULL,
+    "HistoryID" SERIAL NOT NULL,
+    "OrderID" INTEGER NOT NULL,
     "Status" "OrderStatus" NOT NULL,
-    "ChangedByAdminID" BIGINT,
+    "ChangedByAdminID" INTEGER,
     "ChangedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "OrderStatusHistory_pkey" PRIMARY KEY ("HistoryID")
@@ -241,8 +250,8 @@ CREATE TABLE "OrderStatusHistory" (
 
 -- CreateTable
 CREATE TABLE "Favorites" (
-    "FavoriteID" BIGSERIAL NOT NULL,
-    "UserID" BIGINT NOT NULL,
+    "FavoriteID" SERIAL NOT NULL,
+    "UserID" INTEGER NOT NULL,
     "CreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Favorites_pkey" PRIMARY KEY ("FavoriteID")
@@ -250,8 +259,8 @@ CREATE TABLE "Favorites" (
 
 -- CreateTable
 CREATE TABLE "FavoriteItems" (
-    "FavoriteItemID" BIGSERIAL NOT NULL,
-    "FavoriteID" BIGINT NOT NULL,
+    "FavoriteItemID" SERIAL NOT NULL,
+    "FavoriteID" INTEGER NOT NULL,
     "ProductID" INTEGER NOT NULL,
     "AddedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -260,10 +269,10 @@ CREATE TABLE "FavoriteItems" (
 
 -- CreateTable
 CREATE TABLE "Reviews" (
-    "ReviewID" BIGSERIAL NOT NULL,
+    "ReviewID" SERIAL NOT NULL,
     "ProductID" INTEGER NOT NULL,
-    "UserID" BIGINT NOT NULL,
-    "OrderID" BIGINT NOT NULL,
+    "UserID" INTEGER NOT NULL,
+    "OrderID" INTEGER NOT NULL,
     "Rating" INTEGER NOT NULL,
     "Title" TEXT,
     "Comment" TEXT NOT NULL,
@@ -275,8 +284,8 @@ CREATE TABLE "Reviews" (
 
 -- CreateTable
 CREATE TABLE "ReviewImages" (
-    "ReviewImageID" BIGSERIAL NOT NULL,
-    "ReviewID" BIGINT NOT NULL,
+    "ReviewImageID" SERIAL NOT NULL,
+    "ReviewID" INTEGER NOT NULL,
     "ImageURL" TEXT NOT NULL,
 
     CONSTRAINT "ReviewImages_pkey" PRIMARY KEY ("ReviewImageID")
@@ -284,12 +293,12 @@ CREATE TABLE "ReviewImages" (
 
 -- CreateTable
 CREATE TABLE "Admin" (
-    "AdminID" BIGSERIAL NOT NULL,
+    "AdminID" SERIAL NOT NULL,
     "Username" TEXT NOT NULL,
     "Email" TEXT NOT NULL,
     "Password" TEXT NOT NULL,
     "FullName" TEXT,
-    "RoleID" BIGINT NOT NULL,
+    "RoleID" INTEGER NOT NULL,
     "IsActive" BOOLEAN NOT NULL DEFAULT true,
     "CreatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "UpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -299,12 +308,29 @@ CREATE TABLE "Admin" (
 
 -- CreateTable
 CREATE TABLE "Roles" (
-    "RoleID" BIGSERIAL NOT NULL,
+    "RoleID" SERIAL NOT NULL,
     "Name" TEXT NOT NULL,
-    "Permissions" JSONB NOT NULL,
     "Description" TEXT,
 
     CONSTRAINT "Roles_pkey" PRIMARY KEY ("RoleID")
+);
+
+-- CreateTable
+CREATE TABLE "Permissions" (
+    "PermissionID" SERIAL NOT NULL,
+    "Code" TEXT NOT NULL,
+    "Name" TEXT NOT NULL,
+
+    CONSTRAINT "Permissions_pkey" PRIMARY KEY ("PermissionID")
+);
+
+-- CreateTable
+CREATE TABLE "RolePermissions" (
+    "RolePermissionID" SERIAL NOT NULL,
+    "RoleID" INTEGER NOT NULL,
+    "PermissionID" INTEGER NOT NULL,
+
+    CONSTRAINT "RolePermissions_pkey" PRIMARY KEY ("RolePermissionID")
 );
 
 -- CreateIndex
@@ -357,6 +383,12 @@ CREATE UNIQUE INDEX "Admin_Email_key" ON "Admin"("Email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Roles_Name_key" ON "Roles"("Name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Permissions_Code_key" ON "Permissions"("Code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "RolePermissions_RoleID_PermissionID_key" ON "RolePermissions"("RoleID", "PermissionID");
 
 -- AddForeignKey
 ALTER TABLE "Addresses" ADD CONSTRAINT "Addresses_UserID_fkey" FOREIGN KEY ("UserID") REFERENCES "Users"("UserID") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -438,3 +470,9 @@ ALTER TABLE "ReviewImages" ADD CONSTRAINT "ReviewImages_ReviewID_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "Admin" ADD CONSTRAINT "Admin_RoleID_fkey" FOREIGN KEY ("RoleID") REFERENCES "Roles"("RoleID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RolePermissions" ADD CONSTRAINT "RolePermissions_RoleID_fkey" FOREIGN KEY ("RoleID") REFERENCES "Roles"("RoleID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RolePermissions" ADD CONSTRAINT "RolePermissions_PermissionID_fkey" FOREIGN KEY ("PermissionID") REFERENCES "Permissions"("PermissionID") ON DELETE RESTRICT ON UPDATE CASCADE;

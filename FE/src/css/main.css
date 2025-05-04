@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import 'flowbite/src/themes/default';
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+html {
+  font-size: 62.5%;
+}
+
+.some-element {
+  font-size: 1.2rem;
+}

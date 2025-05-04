@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -30,17 +29,28 @@ enum DiscountType {
   fixed_amount
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model User {
-  id          BigInt   @id @default(autoincrement()) @map("UserID")
-  email       String   @unique
-  password    String?
-  googleId    String?  @unique @map("GoogleID")
-  firstName   String?  @map("FirstName")
-  lastName    String?  @map("LastName")
-  phoneNumber String?  @unique @map("PhoneNumber")
-  isActive    Boolean  @default(true) @map("IsActive")
-  createdAt   DateTime @default(now()) @map("CreatedAt")
-  updatedAt   DateTime @default(now()) @map("UpdatedAt")
+  id                       Int       @id @default(autoincrement()) @map("UserID")
+  email                    String?   @unique
+  password                 String?
+  googleId                 String?   @unique @map("GoogleID")
+  firstName                String?   @map("FirstName")
+  lastName                 String?   @map("LastName")
+  avatarUrl                String?
+  gender                   Gender    @default(OTHER)
+  birthDate                DateTime
+  phoneNumber              String?   @unique @map("PhoneNumber")
+  isActive                 Boolean   @default(false) @map("IsActive")
+  verificationToken        String?
+  verificationTokenExpires DateTime?
+  createdAt                DateTime  @default(now()) @map("CreatedAt")
+  updatedAt                DateTime  @default(now()) @map("UpdatedAt")
 
   addresses Address[]
   carts     Cart[]
@@ -52,8 +62,8 @@ model User {
 }
 
 model Address {
-  id                BigInt   @id @default(autoincrement()) @map("AddressID")
-  userId            BigInt   @map("UserID")
+  id                Int      @id @default(autoincrement()) @map("AddressID")
+  userId            Int      @map("UserID")
   recipientName     String   @map("RecipientName")
   phoneNumber       String   @map("PhoneNumber")
   province          String
@@ -154,7 +164,7 @@ model Attribute {
 }
 
 model AttributeValue {
-  id          BigInt @id @default(autoincrement()) @map("ValueID")
+  id          Int    @id @default(autoincrement()) @map("ValueID")
   attributeId Int    @map("AttributeID")
   value       String @map("Value")
 
@@ -165,10 +175,10 @@ model AttributeValue {
 }
 
 model ProductAttributeValue {
-  id          BigInt @id @default(autoincrement()) @map("ProductAttributeValueID")
-  productId   Int    @map("ProductID")
-  attributeId Int    @map("AttributeID")
-  valueId     BigInt @map("ValueID")
+  id          Int @id @default(autoincrement()) @map("ProductAttributeValueID")
+  productId   Int @map("ProductID")
+  attributeId Int @map("AttributeID")
+  valueId     Int @map("ValueID")
 
   product        Product        @relation(fields: [productId], references: [id])
   attributeValue AttributeValue @relation(fields: [valueId], references: [id])
@@ -178,7 +188,7 @@ model ProductAttributeValue {
 
 model Cart {
   id        String   @id @default(uuid()) @map("CartID")
-  userId    BigInt?  @map("UserID")
+  userId    Int?     @map("UserID")
   createdAt DateTime @default(now()) @map("CreatedAt")
   updatedAt DateTime @default(now()) @map("UpdatedAt")
 
@@ -189,7 +199,7 @@ model Cart {
 }
 
 model CartItem {
-  id        BigInt   @id @default(autoincrement()) @map("CartItemID")
+  id        Int      @id @default(autoincrement()) @map("CartItemID")
   cartId    String   @map("CartID")
   productId Int      @map("ProductID")
   quantity  Int      @default(1) @map("Quantity")
@@ -203,12 +213,12 @@ model CartItem {
 }
 
 model Order {
-  id             BigInt        @id @default(autoincrement()) @map("OrderID")
+  id             Int           @id @default(autoincrement()) @map("OrderID")
   orderCode      String        @unique @map("OrderCode")
-  userId         BigInt?       @map("UserID")
-  addressId      BigInt?       @map("AddressID")
-  paymentId      BigInt        @map("PaymentID")
-  shippingId     BigInt?       @map("ShippingID")
+  userId         Int?          @map("UserID")
+  addressId      Int?          @map("AddressID")
+  paymentId      Int           @map("PaymentID")
+  shippingId     Int?          @map("ShippingID")
   subtotal       Decimal       @map("Subtotal") @db.Decimal(18, 2)
   shippingFee    Decimal       @default(0) @map("ShippingFee") @db.Decimal(18, 2)
   discountAmount Decimal       @default(0) @map("DiscountAmount") @db.Decimal(18, 2)
@@ -233,8 +243,8 @@ model Order {
 }
 
 model OrderItem {
-  id             BigInt   @id @default(autoincrement()) @map("OrderItemID")
-  orderId        BigInt   @map("OrderID")
+  id             Int      @id @default(autoincrement()) @map("OrderItemID")
+  orderId        Int      @map("OrderID")
   productId      Int      @map("ProductID")
   productName    String   @map("ProductName")
   quantity       Int      @map("Quantity")
@@ -252,7 +262,7 @@ model OrderItem {
 }
 
 model PaymentMethod {
-  id          BigInt  @id @default(autoincrement()) @map("PaymentID")
+  id          Int     @id @default(autoincrement()) @map("PaymentID")
   name        String  @map("Name")
   code        String  @unique @map("Code")
   description String? @map("Description")
@@ -263,7 +273,7 @@ model PaymentMethod {
 }
 
 model ShippingMethod {
-  id          BigInt  @id @default(autoincrement()) @map("ShippingID")
+  id          Int     @id @default(autoincrement()) @map("ShippingID")
   name        String  @map("Name")
   description String? @map("Description")
 
@@ -273,7 +283,7 @@ model ShippingMethod {
 }
 
 model Coupon {
-  id              BigInt       @id @default(autoincrement()) @map("CouponID")
+  id              Int          @id @default(autoincrement()) @map("CouponID")
   code            String       @unique @map("Code")
   description     String       @map("Description")
   discountType    DiscountType @map("DiscountType")
@@ -292,10 +302,10 @@ model Coupon {
 }
 
 model OrderStatusHistory {
-  id               BigInt      @id @default(autoincrement()) @map("HistoryID")
-  orderId          BigInt      @map("OrderID")
+  id               Int         @id @default(autoincrement()) @map("HistoryID")
+  orderId          Int         @map("OrderID")
   status           OrderStatus @map("Status")
-  changedByAdminId BigInt?     @map("ChangedByAdminID")
+  changedByAdminId Int?        @map("ChangedByAdminID")
   changedAt        DateTime    @default(now()) @map("ChangedAt")
 
   order Order  @relation(fields: [orderId], references: [id])
@@ -305,8 +315,8 @@ model OrderStatusHistory {
 }
 
 model Favorite {
-  id        BigInt   @id @default(autoincrement()) @map("FavoriteID")
-  userId    BigInt   @unique @map("UserID")
+  id        Int      @id @default(autoincrement()) @map("FavoriteID")
+  userId    Int      @unique @map("UserID")
   createdAt DateTime @default(now()) @map("CreatedAt")
 
   user  User           @relation(fields: [userId], references: [id])
@@ -316,8 +326,8 @@ model Favorite {
 }
 
 model FavoriteItem {
-  id         BigInt   @id @default(autoincrement()) @map("FavoriteItemID")
-  favoriteId BigInt   @map("FavoriteID")
+  id         Int      @id @default(autoincrement()) @map("FavoriteItemID")
+  favoriteId Int      @map("FavoriteID")
   productId  Int      @map("ProductID")
   addedAt    DateTime @default(now()) @map("AddedAt")
 
@@ -329,10 +339,10 @@ model FavoriteItem {
 }
 
 model Review {
-  id        BigInt   @id @default(autoincrement()) @map("ReviewID")
+  id        Int      @id @default(autoincrement()) @map("ReviewID")
   productId Int      @map("ProductID")
-  userId    BigInt   @map("UserID")
-  orderId   BigInt   @map("OrderID")
+  userId    Int      @map("UserID")
+  orderId   Int      @map("OrderID")
   rating    Int      @map("Rating")
   title     String?  @map("Title")
   comment   String   @map("Comment")
@@ -349,8 +359,8 @@ model Review {
 }
 
 model ReviewImage {
-  id       BigInt @id @default(autoincrement()) @map("ReviewImageID")
-  reviewId BigInt @map("ReviewID")
+  id       Int    @id @default(autoincrement()) @map("ReviewImageID")
+  reviewId Int    @map("ReviewID")
   imageUrl String @map("ImageURL")
 
   review Review @relation(fields: [reviewId], references: [id])
@@ -359,12 +369,12 @@ model ReviewImage {
 }
 
 model Admin {
-  id        BigInt   @id @default(autoincrement()) @map("AdminID")
+  id        Int      @id @default(autoincrement()) @map("AdminID")
   username  String   @unique @map("Username")
   email     String   @unique @map("Email")
   password  String   @map("Password")
   fullName  String?  @map("FullName")
-  roleId    BigInt   @map("RoleID")
+  roleId    Int      @map("RoleID")
   isActive  Boolean  @default(true) @map("IsActive")
   createdAt DateTime @default(now()) @map("CreatedAt")
   updatedAt DateTime @default(now()) @map("UpdatedAt")
@@ -376,7 +386,7 @@ model Admin {
 }
 
 model Role {
-  id          BigInt  @id @default(autoincrement()) @map("RoleID")
+  id          Int     @id @default(autoincrement()) @map("RoleID")
   name        String  @unique @map("Name")
   description String? @map("Description")
 
@@ -387,7 +397,7 @@ model Role {
 }
 
 model Permission {
-  id   BigInt @id @default(autoincrement()) @map("PermissionID")
+  id   Int    @id @default(autoincrement()) @map("PermissionID")
   code String @unique @map("Code")
   name String @map("Name")
 
@@ -397,9 +407,9 @@ model Permission {
 }
 
 model RolePermission {
-  id           BigInt @id @default(autoincrement()) @map("RolePermissionID")
-  roleId       BigInt @map("RoleID")
-  permissionId BigInt @map("PermissionID")
+  id           Int @id @default(autoincrement()) @map("RolePermissionID")
+  roleId       Int @map("RoleID")
+  permissionId Int @map("PermissionID")
 
   role       Role       @relation(fields: [roleId], references: [id])
   permission Permission @relation(fields: [permissionId], references: [id])

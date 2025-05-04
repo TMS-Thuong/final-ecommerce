@@ -14,20 +14,49 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@app": ["src"],
-      "@app/*": ["src/*"],
-      "@test/*": ["test/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@plugins/*": ["src/plugins/*"],
-      "@routes/*": ["src/routes/*"],
-      "@schemas/*": ["src/schemas/*"],
-      "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"],
-      "@config/*": ["src/config/*"],
-      "@decorator/*": ["src/decorator/*"]
+      "@app": [
+        "src"
+      ],
+      "@app/*": [
+        "src/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ],
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+      "@middleware/*": [
+        "src/middleware/*"
+      ],
+      "@plugins/*": [
+        "src/plugins/*"
+      ],
+      "@routes/*": [
+        "src/routes/*"
+      ],
+      "@schemas/*": [
+        "src/schemas/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@decorator/*": [
+        "src/decorator/*"
+      ]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
