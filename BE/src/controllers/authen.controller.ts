@@ -16,10 +16,8 @@ import AuthService from '@app/services/auth-user.service';
 import { createResetPasswordToken } from '@app/utils/jwt-token.util';
 import { generateEmailVerificationToken } from '@app/utils/mail-verification-token.util';
 import { getResetPasswordEmail, getVerificationEmail } from '@app/utils/text-email.util';
-
-import EmailService from '@services/email.service';
-
 import { binding } from '@decorator/binding';
+import EmailService from '@services/email.service';
 
 class AuthController {
   @binding

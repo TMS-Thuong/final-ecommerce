@@ -12,6 +12,12 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
+  ".lint-staged": {
+    "src/**/*.{ts,js,vue,json}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.4",
     "flowbite": "^3.1.2",

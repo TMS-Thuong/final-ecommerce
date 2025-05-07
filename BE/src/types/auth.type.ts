@@ -37,3 +37,28 @@ export type UserData = {
   birthDate: Date;
   gender: number;
 };
+
+export interface SaveEmailVerificationTokenParams {
+  userId: number;
+  token: string;
+  expiresAt: Date;
+}
+
+export interface GoogleAuthResponse {
+  status: string;
+  accesstoken: string;
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  success: boolean;
+  message?: string;
+  code?: string;
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export interface VerifyTokenResponse {
+  success: boolean;
+  message: string;
+}

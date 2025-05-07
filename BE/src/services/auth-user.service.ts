@@ -5,13 +5,19 @@ import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
 import { AuthErrorMessages, AuthMessages } from '@app/config/auth.message';
-import { ILoginData, UserData, IGoogleUser } from '@app/types/auth.type';
+import {
+  ILoginData,
+  UserData,
+  IGoogleUser,
+  SaveEmailVerificationTokenParams,
+  GoogleAuthResponse,
+  RefreshTokenResponse,
+  VerifyTokenResponse,
+} from '@app/types/auth.type';
 import { IJwtPayload } from '@app/types/jwt.type';
 import { IJwtTokenPair } from '@app/types/jwt.type';
-
-import { generateTokenPair } from '@utils/jwt-token.util';
-
 import { GOOGLE_CLIENT_ID, JWT_SECRET } from '@config/index';
+import { generateTokenPair } from '@utils/jwt-token.util';
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -36,7 +42,7 @@ class AuthService {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     return this.prisma.user.create({
       data: {
-        email: userData.email,
+        ...userData,
         password: hashedPassword,
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -48,7 +54,7 @@ class AuthService {
     });
   }
 
-  async saveEmailVerificationToken(userId: number, token: string, expiresAt: Date): Promise<void> {
+  async saveEmailVerificationToken({ userId, token, expiresAt }: SaveEmailVerificationTokenParams): Promise<void> {
     try {
       await this.prisma.user.update({
         where: { id: userId },
@@ -62,7 +68,7 @@ class AuthService {
     }
   }
 
-  async verifyToken(token: string): Promise<{ success: boolean; message: string }> {
+  async verifyToken(token: string): Promise<VerifyTokenResponse> {
     try {
       const user = await this.prisma.user.findFirst({
         where: { verificationToken: token },
@@ -105,12 +111,7 @@ class AuthService {
     }
   }
 
-  async authenticateWithGoogle(googleUser: IGoogleUser): Promise<{
-    [x: string]: unknown;
-    status: string;
-    accesstoken: string;
-    refreshToken: string;
-  }> {
+  async authenticateWithGoogle(googleUser: IGoogleUser): Promise<GoogleAuthResponse> {
     const { email, name, picture, uid } = googleUser;
 
     const existingUser = await this.prisma.user.findUnique({
@@ -188,9 +189,7 @@ class AuthService {
     return generateTokenPair(payload);
   }
 
-  async refreshAccessToken(
-    refreshToken: string
-  ): Promise<{ success: boolean; message?: string; code?: string; accessToken?: string; refreshToken?: string }> {
+  async refreshAccessToken(refreshToken: string): Promise<RefreshTokenResponse> {
     try {
       const decoded = jwt.verify(refreshToken, this.jwtSecret) as IJwtPayload & { userId: number };
 

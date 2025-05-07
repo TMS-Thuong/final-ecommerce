@@ -2,7 +2,6 @@ import cors from '@fastify/cors';
 import fastify from 'fastify';
 
 import AuthController from '@app/services/auth-user.service';
-
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
 
 import { authUserRoutes } from './routes/auth-user.routes';

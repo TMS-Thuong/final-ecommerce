@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 
 import { IJwtPayload } from '@app/types/jwt.type';
-
 import { JWT_SECRET } from '@config/index';
 
 export const generateTokenPair = (payload: object): { accessToken: string; refreshToken: string } => {
