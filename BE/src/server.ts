@@ -2,7 +2,7 @@ import app from './app';
 
 const port = 3000;
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
     await app.ready();
     await app.listen({ port, host: '0.0.0.0' });

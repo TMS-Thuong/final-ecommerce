@@ -1,49 +1,45 @@
-import { JWT_SECRET, logger } from '@config/index';
-import { binding } from '@decorator/binding';
+import { FastifyReply, FastifyRequest } from 'fastify';
+
+import { logger } from '@app/config';
+import { AuthErrorMessages, AuthMessages } from '@app/config/auth.message';
 import {
   forgotPasswordZodSchema,
-  googleLoginSchema,
+  loginViaGoogleZobSchema,
   loginZodSchema,
   refreshTokenZodSchema,
   registerUserZobSchema,
+  resendVerifyEmailZobSchema,
   resetPasswordZodSchema,
   verifyEmailZobSchema,
-} from '@schemas/auth.zod';
-import authService from '@services/auth.service';
-import AuthService from '@services/auth.service';
+} from '@app/schemas/auth-user.zod';
+import AuthService from '@app/services/auth-user.service';
+import { createResetPasswordToken } from '@app/utils/jwt-token.util';
+import { generateEmailVerificationToken } from '@app/utils/mail-verification-token.util';
+import { getResetPasswordEmail, getVerificationEmail } from '@app/utils/text-email.util';
+
 import EmailService from '@services/email.service';
-import { getResetPasswordEmail, getVerificationEmail } from '@utils/email.utils';
-import dayjs from 'dayjs';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import jwt from 'jsonwebtoken';
-import { ZodError } from 'zod';
+
+import { binding } from '@decorator/binding';
 
 class AuthController {
   @binding
-  async registerUserByEmail(request: FastifyRequest, reply: FastifyReply) {
+  async registerUserByEmail(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const result = registerUserZobSchema.safeParse(request.body);
 
       if (!result.success) {
-        const errors = result.error.errors;
-        const emailOrPasswordError = errors.find((err) => err.path.includes('email') || err.path.includes('password'));
+        const emailOrPasswordError = result.error.errors.find(
+          (err) => err.path.includes('email') || err.path.includes('password')
+        );
 
-        if (emailOrPasswordError) {
-          return reply.badRequest(emailOrPasswordError.message);
-        }
-
-        return reply.badRequest('Dữ liệu không hợp lệ');
+        return reply.badRequest(emailOrPasswordError?.message || AuthErrorMessages.INVALID_DATA, 'INVALID_DATA');
       }
 
       const { email, password, firstName, lastName, birthDate, gender } = result.data;
 
-      if (!email || !password) {
-        return reply.badRequest('Email và mật khẩu là bắt buộc.');
-      }
-
-      const isEmailUsed = await AuthService.checkEmail(email);
-      if (isEmailUsed) {
-        return reply.badRequest('Email đã được sử dụng.');
+      const isEmailExists = await AuthService.checkEmail(email);
+      if (isEmailExists) {
+        return reply.conflict(AuthErrorMessages.EMAIL_USED, 'EMAIL_USED');
       }
 
       const newUser = await AuthService.createUser({
@@ -52,112 +48,150 @@ class AuthController {
         firstName: firstName || '',
         lastName: lastName || '',
         birthDate: birthDate || null,
-        gender: gender || 'OTHER',
+        gender,
       });
 
-      const emailVerificationToken = jwt.sign({ email: newUser.email }, JWT_SECRET, { expiresIn: '24h' });
-
-      const verificationTokenExpires = dayjs().add(24, 'hour').toDate();
+      const { token: emailVerificationToken, expiresAt: verificationTokenExpires } = generateEmailVerificationToken(
+        newUser.email,
+        'crypto'
+      );
       await AuthService.saveEmailVerificationToken(newUser.id, emailVerificationToken, verificationTokenExpires);
 
-      const { subject, text } = getVerificationEmail(newUser.firstName, emailVerificationToken);
-      const emailResult = await EmailService.sendEmail(newUser.email as string, subject, text);
+      const { subject, html } = getVerificationEmail(newUser.firstName, emailVerificationToken);
+      const emailResult = await EmailService.sentResult(newUser.email, subject, html);
 
       if (!emailResult.success) {
-        return reply.internalError('Không thể gửi email xác thực.');
+        return reply.internalError(AuthErrorMessages.VERIFICATION_EMAIL_FAILED);
       }
 
       return reply.created({
-        message: 'Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản.',
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          isActive: newUser.isActive,
-        },
+        message: AuthMessages.REGISTRATION_SUCCESS,
       });
     } catch (error: unknown) {
-      logger.error('Lỗi register', error);
-      if (error instanceof ZodError) {
-        const messages = error.issues.map((i) => `- ${i.message}`).join('\n');
-        return reply.badRequest(`Dữ liệu không hợp lệ:\n${messages}`);
-      }
-
-      return reply.internalError('Đã xảy ra lỗi không xác định.');
-    }
-  }
-
-  @binding
-  async verifyEmailController(request: FastifyRequest<{ Querystring: { token: string } }>, reply: FastifyReply) {
-    try {
-      const validationResult = verifyEmailZobSchema.safeParse({ token: request.query.token });
-
-      if (!validationResult.success) {
-        const errorMessage = validationResult.error.errors[0]?.message || 'Token không hợp lệ';
-        return reply.badRequest(errorMessage);
-      }
-
-      const { token } = validationResult.data;
-      const verifyResult = await AuthService.verifyEmailToken(token);
-
-      if (verifyResult.success) return reply.ok({ message: verifyResult.message });
-      return reply.badRequest(verifyResult.message);
-    } catch (error) {
-      logger.error('Lỗi verifying email:', error);
       return reply.internalError();
     }
   }
 
   @binding
-  async googleSignInController(request: FastifyRequest, reply: FastifyReply) {
+  async resendVerificationEmail(
+    request: FastifyRequest<{ Querystring: { email: string } }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
-      const result = googleLoginSchema.safeParse(request.body);
-      if (!result.success) {
-        return reply.badRequest(result.error.errors[0]?.message || 'ID token không hợp lệ');
+      const { email } = resendVerifyEmailZobSchema.parse(request.query);
+
+      const user = await AuthService.checkEmail(email);
+      if (!user) {
+        return reply.badRequest(AuthErrorMessages.USER_NOT_FOUND, 'USER_NOT_FOUND');
       }
 
-      const { idToken } = result.data;
-
-      const payload = await authService.verifyGoogleIdToken(idToken);
-
-      if (!payload.email_verified) {
-        return reply.badRequest('Email Google chưa được xác minh.');
+      if (user.isActive) {
+        return reply.badRequest(AuthErrorMessages.ALREADY_VERIFIED, 'ALREADY_VERIFIED');
       }
 
-      if (!payload.email || !payload.name || !payload.sub) {
-        return reply.badRequest('Thông tin người dùng không đầy đủ.');
+      const { token: emailVerificationToken, expiresAt: verificationTokenExpires } = generateEmailVerificationToken(
+        user.email,
+        'crypto'
+      );
+
+      await AuthService.saveEmailVerificationToken(user.id, emailVerificationToken, verificationTokenExpires);
+
+      const { subject, html } = getVerificationEmail(user.firstName, emailVerificationToken);
+      const emailResult = await EmailService.sentResult(user.email, subject, html);
+
+      if (!emailResult.success) {
+        return reply.internalError(AuthErrorMessages.VERIFICATION_EMAIL_FAILED);
       }
 
-      const authResult = await authService.handleGoogleAuth({
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture || '',
-        uid: payload.sub,
-      });
-
-      return reply.status(200).send({
-        message: authResult.message,
-        accessToken: authResult.token,
-        user: {
-          data: authResult.user,
-        },
+      return reply.ok({
+        message: AuthMessages.VERIFICATION_EMAIL_SENT,
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.stack : error;
-      logger.error('Lỗi đăng nhập bằng Google, stack:', errorMessage);
-      return reply.internalError('Lỗi đăng nhập Google');
+      return reply.internalError();
     }
   }
 
   @binding
-  async loginUserWithEmail(request: FastifyRequest, reply: FastifyReply) {
+  async verifyEmail(request: FastifyRequest<{ Querystring: { token: string } }>, reply: FastifyReply): Promise<void> {
+    try {
+      const validationResult = verifyEmailZobSchema.safeParse({ token: request.query.token });
+
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors[0]?.message || AuthErrorMessages.TOKEN_INVALID;
+        return reply.badRequest(errorMessage, 'TOKEN_INVALID');
+      }
+
+      const { token } = validationResult.data;
+      const verifyResult = await AuthService.verifyToken(token);
+
+      if (!verifyResult.success) {
+        if (verifyResult.message === AuthErrorMessages.TOKEN_INVALID) {
+          return reply.badRequest(verifyResult.message, 'TOKEN_INVALID');
+        }
+
+        if (verifyResult.message === AuthErrorMessages.TOKEN_EXPIRED) {
+          return reply.badRequest(verifyResult.message, 'TOKEN_EXPIRED');
+        }
+
+        return reply.badRequest(AuthErrorMessages.INVALID_DATA, 'INVALID_DATA');
+      }
+      return reply.ok({ message: verifyResult.message });
+    } catch (error) {
+      return reply.internalError();
+    }
+  }
+
+  @binding
+  async loginViaGoogle(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const result = loginViaGoogleZobSchema.safeParse(request.body);
+      if (!result.success) {
+        return reply.badRequest(AuthErrorMessages.TOKENID_INVALID, 'TOKENID_INVALID');
+      }
+
+      const { idToken } = result.data;
+      const payload = await AuthService.verifyGoogleIdToken(idToken);
+      if (!payload.name || !payload.sub) {
+        return reply.badRequest(AuthErrorMessages.USER_INFO_INCOMPLETE, 'USER_INFO_INCOMPLETE');
+      }
+
+      const authResult = await AuthService.authenticateWithGoogle({
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture || '',
+        uid: payload.sub,
+        birthDate: undefined,
+      });
+      logger.info('authResult', authResult);
+
+      if (authResult.status === 'ok') {
+        return reply.ok({
+          message: AuthMessages.LOGIN_SUCCESS,
+          accessToken: authResult.accesstoken,
+          refreshToken: authResult.refreshToken,
+        });
+      }
+
+      if (authResult.status === 'created') {
+        return reply.created({
+          message: AuthMessages.REGISTER_GOOGLE_SUCCESS,
+          accessToken: authResult.accesstoken,
+          refreshToken: authResult.refreshToken,
+        });
+      }
+    } catch {
+      return reply.internalError();
+    }
+  }
+
+  @binding
+  async loginUserWithEmail(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const validationResult = loginZodSchema.safeParse(request.body);
 
       if (!validationResult.success) {
-        const errorMessage = validationResult.error.errors[0]?.message || 'Dữ liệu đăng nhập không hợp lệ';
-        return reply.badRequest(errorMessage);
+        const errorMessage = validationResult.error.errors[0]?.message || AuthErrorMessages.INVALID_DATA;
+        return reply.badRequest(errorMessage, 'INVALID_DATA');
       }
 
       const { email, password } = validationResult.data;
@@ -169,99 +203,102 @@ class AuthController {
       });
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message === 'Email không tồn tại') {
-          return reply.notFound(error.message);
+        if (error.message === AuthErrorMessages.EMAIL_NOT_FOUND) {
+          return reply.notFound(error.message, 'EMAIL_NOT_FOUND');
         }
-        if (error.message === 'Tài khoản chưa được kích hoạt') {
-          return reply.badRequest(error.message);
+        if (error.message === AuthErrorMessages.USER_NOT_ACTIVE) {
+          return reply.unauthorized(error.message, 'USER_NOT_ACTIVE');
         }
-        if (error.message === 'Mật khẩu không chính xác') {
-          return reply.unauthorized(error.message);
+        if (error.message === AuthErrorMessages.PASSWORD_INCORRECT) {
+          return reply.unauthorized(error.message, 'PASSWORD_INCORRECT');
         }
       }
-      logger.error('Lỗi controller login', error);
       return reply.internalError();
     }
   }
 
   @binding
-  async refreshToken(request: FastifyRequest, reply: FastifyReply) {
+  async refreshToken(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const validationResult = refreshTokenZodSchema.safeParse(request.body);
 
       if (!validationResult.success) {
-        const errorMessage = validationResult.error.errors[0]?.message || 'Refresh token không hợp lệ';
-        return reply.badRequest(errorMessage);
+        const errorMessage = validationResult.error.errors[0]?.message || AuthErrorMessages.REFRESH_TOKEN_INVALID;
+        return reply.badRequest(errorMessage, 'REFRESH_TOKEN_INVALID');
       }
 
       const { refreshToken } = validationResult.data;
       const refreshResult = await AuthService.refreshAccessToken(refreshToken);
 
       if (!refreshResult.success) {
-        return reply.unauthorized(refreshResult.message || 'Unauthorized access');
+        const errorCode = refreshResult.code || 'UNAUTHORIZED';
+        return reply.unauthorized(refreshResult.message || AuthErrorMessages.UNAUTHORIZED, errorCode);
       }
-
       return reply.ok({ accessToken: refreshResult.accessToken });
     } catch (error) {
-      request.log.error('Lỗi refresh token:', error);
       return reply.internalError();
     }
   }
 
   @binding
-  async forgotPassword(request: FastifyRequest, reply: FastifyReply) {
+  async forgotPassword(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const validationResult = forgotPasswordZodSchema.safeParse(request.body);
 
       if (!validationResult.success) {
-        const errorMessage = validationResult.error.errors[0]?.message || 'Email không hợp lệ';
-        return reply.badRequest(errorMessage);
+        const errorMessage = validationResult.error.errors[0]?.message || AuthErrorMessages.EMAIL_INVALID;
+        return reply.badRequest(errorMessage, 'EMAIL_INVALID');
       }
 
       const { email } = validationResult.data;
+
       const user = await AuthService.checkEmail(email);
+
       if (!user) {
-        return reply.send({ message: 'Email đặt lại mật khẩu đã được gửi.' });
+        console.log(`No user found with email: ${email}`);
+        return reply.badRequest(AuthErrorMessages.USER_NOT_FOUND, 'USER_NOT_FOUND');
       }
-      if (user.googleId && user.password === '') {
-        return reply.send({
-          message: 'Tài khoản này được đăng nhập qua Google. Bạn không thể sử dụng tính năng đặt lại mật khẩu.',
-        });
+
+      if (!user.isActive) {
+        return reply.badRequest(AuthErrorMessages.USER_NOT_ACTIVE, 'USER_NOT_ACTIVE');
       }
-      const resetToken = await AuthService.createResetPasswordToken(email);
+
+      if (user.googleId && user.password === null) {
+        return reply.badRequest(AuthErrorMessages.GOOGLE_ACCOUNT_CANNOT_RESET, 'GOOGLE_ACCOUNT_CANNOT_RESET');
+      }
+
+      const resetToken = await createResetPasswordToken(email);
       const emailContent = getResetPasswordEmail(user.firstName ?? '', resetToken);
-      const emailResult = await EmailService.sendEmail(email, emailContent.subject, emailContent.text);
+      const emailResult = await EmailService.sentResult(email, emailContent.subject, emailContent.html);
 
       if (!emailResult.success) {
-        return reply.internalError('Gửi email thất bại');
+        return reply.internalError(AuthErrorMessages.FAILED_TO_SEND_EMAIL);
       }
 
-      return reply.send({ message: 'Email đặt lại mật khẩu đã được gửi.' });
+      return reply.ok({ message: AuthMessages.RESET_EMAIL_SENT });
     } catch (error) {
-      console.error('Lỗi khi xử lý yêu cầu quên mật khẩu:', error);
-      return reply.internalError(error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định');
+      console.error('Error in forgotPassword:', error);
+      return reply.internalError(AuthErrorMessages.SERVER_ERROR, 'SERVER_ERROR');
     }
   }
 
   @binding
-  async resetPassword(request: FastifyRequest, reply: FastifyReply) {
+  async resetPassword(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const validationResult = resetPasswordZodSchema.safeParse(request.body);
 
       if (!validationResult.success) {
-        const errorMessage = validationResult.error.errors[0]?.message || 'Dữ liệu không hợp lệ';
-        return reply.badRequest(errorMessage);
+        const errorMessage = validationResult.error.errors[0]?.message || AuthErrorMessages.INVALID_DATA;
+        return reply.badRequest(errorMessage, 'INVALID_DATA');
       }
 
       const { token, newPassword } = validationResult.data;
       await AuthService.resetPassword(token, newPassword);
 
-      return reply.ok({
-        message: 'Mật khẩu đã được cập nhật thành công!',
-      });
+      return reply.ok({ message: AuthMessages.PASSWORD_UPDATED });
     } catch (error) {
       if (error instanceof Error) {
-        reply.badRequest(error.message);
+        return reply.badRequest(AuthErrorMessages.EMAIL_INVALID, 'EMAIL_INVALID');
       } else {
         reply.internalError();
       }

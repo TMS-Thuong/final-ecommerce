@@ -3,7 +3,7 @@ import { FastifySchema } from 'fastify';
 const errorResponseSchema = {
   type: 'object',
   properties: {
-    statusCode: { type: 'number' },
+    code: { type: 'string' },
     error: { type: 'string' },
     message: { type: 'string' },
   },
@@ -20,20 +20,52 @@ export const registerUserSchema: FastifySchema = {
       firstName: { type: 'string' },
       lastName: { type: 'string' },
       birthDate: { type: 'string', format: 'date' },
-      gender: { type: 'number' },
+      gender: {
+        type: 'string',
+        enum: ['male', 'female', 'other'],
+      },
     },
     required: ['email', 'password'],
+  },
+  response: {
+    201: {
+      type: 'object',
+      properties: {
+        data: {
+          message: { type: 'string' },
+        },
+      },
+    },
+    400: errorResponseSchema,
+    409: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
+export const resendVerifyEmailSchema: FastifySchema = {
+  summary: 'Gửi lại email xác nhận',
+  tags: ['Auth'],
+  querystring: {
+    type: 'object',
+    properties: {
+      email: { type: 'string', format: 'email' },
+    },
+    required: ['email'],
   },
   response: {
     200: {
       type: 'object',
       properties: {
-        statusCode: { type: 'number' },
-        message: { type: 'string' },
-        data: { type: 'object' },
+        data: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+        },
       },
     },
     400: errorResponseSchema,
+    404: errorResponseSchema,
     409: errorResponseSchema,
     500: errorResponseSchema,
   },
@@ -68,7 +100,7 @@ export const verifyEmailSchema: FastifySchema = {
   },
 };
 
-export const googleSignInSchema: FastifySchema = {
+export const loginGoogleSchema: FastifySchema = {
   summary: 'Đăng nhập bằng Google',
   tags: ['Auth'],
   body: {
@@ -82,24 +114,20 @@ export const googleSignInSchema: FastifySchema = {
     200: {
       type: 'object',
       properties: {
-        message: { type: 'string' },
-        accessToken: { type: 'string' },
-        user: {
-          type: 'object',
-          properties: {
-            data: {
-              type: 'object',
-              properties: {
-                id: { type: 'number' },
-                email: { type: 'string' },
-                firstName: { type: 'string' },
-                lastName: { type: 'string' },
-                avatarUrl: { type: 'string' },
-                isActive: { type: 'boolean' },
-              },
-            },
-          },
-          additionalProperties: true,
+        data: {
+          message: { type: 'string' },
+          accessToken: { type: 'string' },
+          refreshToken: { type: 'string' },
+        },
+      },
+    },
+    201: {
+      type: 'object',
+      properties: {
+        data: {
+          message: { type: 'string' },
+          accessToken: { type: 'string' },
+          refreshToken: { type: 'string' },
         },
       },
     },
@@ -185,7 +213,9 @@ export const forgotPasswordSchema: FastifySchema = {
     200: {
       type: 'object',
       properties: {
-        message: { type: 'string' },
+        data: {
+          message: { type: 'string' },
+        },
       },
     },
     400: errorResponseSchema,

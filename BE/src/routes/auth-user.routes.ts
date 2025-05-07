@@ -1,33 +1,39 @@
-import {
-  forgotPasswordSchema,
-  googleSignInSchema,
-  loginSchema,
-  refreshTokenSchema,
-  registerUserSchema,
-  resetPasswordSchema,
-  verifyEmailSchema,
-} from '@schemas/auth.schema';
 import { FastifyInstance } from 'fastify';
 
 import AuthController from '@app/controllers/authen.controller';
+import {
+  forgotPasswordSchema,
+  loginGoogleSchema,
+  loginSchema,
+  refreshTokenSchema,
+  registerUserSchema,
+  resendVerifyEmailSchema,
+  resetPasswordSchema,
+  verifyEmailSchema,
+} from '@app/schemas/auth-user.schema';
 
-export async function authUserRoutes(fastify: FastifyInstance) {
-  fastify.post('/user/auth/register', {
+export async function authUserRoutes(fastify: FastifyInstance): Promise<void> {
+  fastify.post('/auth/register', {
     schema: registerUserSchema,
     handler: AuthController.registerUserByEmail,
   });
 
-  fastify.get('/user/auth/verify-email', {
+  fastify.get('/auth/verify-email', {
     schema: verifyEmailSchema,
-    handler: AuthController.verifyEmailController,
+    handler: AuthController.verifyEmail,
   });
 
-  fastify.post('/user/auth/google-signin', {
-    schema: googleSignInSchema,
-    handler: AuthController.googleSignInController,
+  fastify.get('/auth/resend-verify-email', {
+    schema: resendVerifyEmailSchema,
+    handler: AuthController.resendVerificationEmail,
   });
 
-  fastify.post('/user/auth/login', {
+  fastify.post('/auth/google-signin', {
+    schema: loginGoogleSchema,
+    handler: AuthController.loginViaGoogle,
+  });
+
+  fastify.post('/auth/login', {
     schema: loginSchema,
     handler: AuthController.loginUserWithEmail,
   });
@@ -36,6 +42,7 @@ export async function authUserRoutes(fastify: FastifyInstance) {
     schema: refreshTokenSchema,
     handler: AuthController.refreshToken,
   });
+
   fastify.post('/auth/forgot-password', {
     schema: forgotPasswordSchema,
     handler: AuthController.forgotPassword,

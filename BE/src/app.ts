@@ -1,13 +1,15 @@
 import cors from '@fastify/cors';
-import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
-import AuthController from '@services/auth.service';
 import fastify from 'fastify';
 
-import { authUserRoutes } from './routes/auth.routes';
+import AuthController from '@app/services/auth-user.service';
+
+import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
+
+import { authUserRoutes } from './routes/auth-user.routes';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    verifyEmailToken: (token: string) => Promise<{ success: boolean; message: string }>;
+    verifyToken: (token: string) => Promise<{ success: boolean; message: string }>;
   }
 }
 
@@ -33,11 +35,11 @@ app.register(zodPlugin);
 
 swagger(app);
 
-app.decorate('verifyEmailToken', AuthController.verifyEmailToken);
+app.decorate('verifyToken', AuthController.verifyToken);
 
 app.get('/', async () => {
   return { message: 'Fastify Blog API is running' };
 });
-app.register(authUserRoutes, { prefix: '/api' });
+app.register(authUserRoutes, { prefix: '/user/api' });
 
 export default app;

@@ -29,12 +29,6 @@ enum DiscountType {
   fixed_amount
 }
 
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
 model User {
   id                       Int       @id @default(autoincrement()) @map("UserID")
   email                    String?   @unique
@@ -43,7 +37,7 @@ model User {
   firstName                String?   @map("FirstName")
   lastName                 String?   @map("LastName")
   avatarUrl                String?
-  gender                   Gender    @default(OTHER)
+  gender                   Int       @default(0)
   birthDate                DateTime
   phoneNumber              String?   @unique @map("PhoneNumber")
   isActive                 Boolean   @default(false) @map("IsActive")

@@ -1,5 +1,6 @@
-import { SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD } from '@config/index';
 import nodemailer from 'nodemailer';
+
+import { SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD } from '@config/index';
 
 class EmailService {
   private transporter: nodemailer.Transporter;
@@ -16,13 +17,13 @@ class EmailService {
     });
   }
 
-  async sendEmail(to: string, subject: string, text: string) {
+  async sentResult(to: string, subject: string, html: string): Promise<{ success: boolean; message: string }> {
     try {
       const mailOptions = {
         from: `"Blog" <${SMTP_USERNAME}>`,
         to,
         subject,
-        text,
+        html,
       };
 
       await this.transporter.sendMail(mailOptions);
