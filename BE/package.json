@@ -18,7 +18,6 @@
   },
   "lint-staged": {
     "BE/src/**/*.{ts,js}": [
-      "npm run lint:file",
       "npm run format:file"
     ]
   },

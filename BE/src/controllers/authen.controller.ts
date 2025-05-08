@@ -53,7 +53,11 @@ class AuthController {
         newUser.email,
         'crypto'
       );
-      await AuthService.saveEmailVerificationToken(newUser.id, emailVerificationToken, verificationTokenExpires);
+      await AuthService.saveEmailVerificationToken({
+        userId: newUser.id,
+        token: emailVerificationToken,
+        expiresAt: verificationTokenExpires,
+      });
 
       const { subject, html } = getVerificationEmail(newUser.firstName, emailVerificationToken);
       const emailResult = await EmailService.sentResult(newUser.email, subject, html);
@@ -92,7 +96,11 @@ class AuthController {
         'crypto'
       );
 
-      await AuthService.saveEmailVerificationToken(user.id, emailVerificationToken, verificationTokenExpires);
+      await AuthService.saveEmailVerificationToken({
+        userId: user.id,
+        token: emailVerificationToken,
+        expiresAt: verificationTokenExpires,
+      });
 
       const { subject, html } = getVerificationEmail(user.firstName, emailVerificationToken);
       const emailResult = await EmailService.sentResult(user.email, subject, html);
