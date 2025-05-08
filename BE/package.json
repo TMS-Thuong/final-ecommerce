@@ -11,7 +11,7 @@
     "lint:check": "eslint \"{src,apps,libs}/**/*.ts\"",
     "prepare": "cd .. && husky install",
     "precommit": "lint-staged",
-    "prepush": "",
+    "prepush": "echo Running prepush hook...",
     "dev": "npx tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"

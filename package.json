@@ -2,7 +2,8 @@
   "script": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "prepush": "echo Running prepush hook..."
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
