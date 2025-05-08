@@ -4,11 +4,13 @@ declare module '*.vue' {
   export default component
 }
 
-declare module '@heroicons/vue/outline' {
+declare module '@heroicons/vue/solid' {
   import { DefineComponent } from 'vue'
 
   export const EyeIcon: DefineComponent
   export const EyeOffIcon: DefineComponent
+  export const LockClosedIcon: DefineComponent
+  export const LockOpenIcon: DefineComponent
 }
 
 declare global {
@@ -16,3 +18,6 @@ declare global {
     initGoogleSignIn: () => void
   }
 }
+
+
+

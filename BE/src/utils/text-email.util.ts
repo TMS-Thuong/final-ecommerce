@@ -33,7 +33,7 @@ export const getResetPasswordEmail = (firstName: string, token: string): { subje
             <h2 style="color: #333;">Xin chào ${firstName},</h2>
             <p style="color: #555;">Bạn đã yêu cầu đặt lại mật khẩu. Để tạo mật khẩu mới, vui lòng nhấp vào liên kết dưới đây:</p>
             <p style="text-align: center;">
-              <a href="${CLIENT_URL}/account/reset-password?token=${token}" style="background-color: #28a745; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px;">Đặt lại mật khẩu</a>
+              <a href="${CLIENT_URL}/user/reset-password/${token}" style="background-color: #28a745; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px;">Đặt lại mật khẩu</a>
             </p>
             <p style="color: #555;">Liên kết này sẽ hết hạn trong 30 phút.</p>
             <p style="color: #555;">Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>

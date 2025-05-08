@@ -32,7 +32,7 @@ export const AuthErrorMessages = {
   TOKEN_INVALID: 'Invalid or expired token.',
   REFRESH_TOKEN_INVALID: 'Invalid refresh token.',
   TOKEN_NOT_FOUND: 'Token not found.',
-  TOKEN_EXPIRED: 'Token has expired.',
+  TOKEN_EXPIRED: 'Token is invalid or expired',
   TOKENID_INVALID: 'Invalid token ID.',
 
   INVALID_CREDENTIALS: 'Incorrect email or password.',

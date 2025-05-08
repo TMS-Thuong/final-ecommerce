@@ -12,6 +12,9 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss()
   ],
+  optimizeDeps: {
+    include: ['vue-i18n']
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

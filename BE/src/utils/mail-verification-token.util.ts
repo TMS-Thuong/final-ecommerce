@@ -3,14 +3,10 @@ import crypto from 'crypto';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 
+import { EmailVerificationToken } from '@app/types/email.type';
 import { JWT_SECRET } from '@config/index';
 
 type TokenStrategy = 'jwt' | 'crypto';
-
-interface EmailVerificationToken {
-  token: string;
-  expiresAt: Date;
-}
 
 export function generateEmailVerificationToken(
   email: string,

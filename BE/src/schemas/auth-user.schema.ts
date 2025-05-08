@@ -10,7 +10,7 @@ const errorResponseSchema = {
 };
 
 export const registerUserSchema: FastifySchema = {
-  summary: 'Đăng ký người dùng',
+  summary: 'User registration',
   tags: ['Auth'],
   body: {
     type: 'object',
@@ -43,7 +43,7 @@ export const registerUserSchema: FastifySchema = {
 };
 
 export const resendVerifyEmailSchema: FastifySchema = {
-  summary: 'Gửi lại email xác nhận',
+  summary: 'Send the confirmation email',
   tags: ['Auth'],
   querystring: {
     type: 'object',
@@ -72,7 +72,7 @@ export const resendVerifyEmailSchema: FastifySchema = {
 };
 
 export const verifyEmailSchema: FastifySchema = {
-  summary: 'Xác minh email',
+  summary: 'Email verification',
   tags: ['Auth'],
   querystring: {
     type: 'object',
@@ -101,7 +101,7 @@ export const verifyEmailSchema: FastifySchema = {
 };
 
 export const loginGoogleSchema: FastifySchema = {
-  summary: 'Đăng nhập bằng Google',
+  summary: 'Log in with Google',
   tags: ['Auth'],
   body: {
     type: 'object',
@@ -137,7 +137,7 @@ export const loginGoogleSchema: FastifySchema = {
 };
 
 export const loginSchema: FastifySchema = {
-  summary: 'Đăng nhập',
+  summary: 'Log in',
   tags: ['Auth'],
   body: {
     type: 'object',
@@ -170,7 +170,7 @@ export const loginSchema: FastifySchema = {
 };
 
 export const refreshTokenSchema: FastifySchema = {
-  summary: 'Làm mới token',
+  summary: 'Refresh the token',
   tags: ['Auth'],
   body: {
     type: 'object',
@@ -200,7 +200,7 @@ export const refreshTokenSchema: FastifySchema = {
 };
 
 export const forgotPasswordSchema: FastifySchema = {
-  summary: 'Quên mật khẩu',
+  summary: 'Forgot the password',
   tags: ['Auth'],
   body: {
     type: 'object',
@@ -225,7 +225,7 @@ export const forgotPasswordSchema: FastifySchema = {
 };
 
 export const resetPasswordSchema: FastifySchema = {
-  summary: 'Đặt lại mật khẩu',
+  summary: 'Reset the password',
   tags: ['Auth'],
   body: {
     type: 'object',

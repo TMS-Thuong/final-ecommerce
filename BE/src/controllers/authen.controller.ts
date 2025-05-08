@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { logger } from '@app/config';
 import { AuthErrorMessages, AuthMessages } from '@app/config/auth.message';
 import {
   forgotPasswordZodSchema,
@@ -168,7 +167,6 @@ class AuthController {
         uid: payload.sub,
         birthDate: undefined,
       });
-      logger.info('authResult', authResult);
 
       if (authResult.status === 'ok') {
         return reply.ok({
@@ -304,7 +302,7 @@ class AuthController {
       return reply.ok({ message: AuthMessages.PASSWORD_UPDATED });
     } catch (error) {
       if (error instanceof Error) {
-        return reply.badRequest(AuthErrorMessages.EMAIL_INVALID, 'EMAIL_INVALID');
+        return reply.badRequest(AuthErrorMessages.TOKEN_EXPIRED, 'TOKEN_EXPIRED');
       } else {
         reply.internalError();
       }

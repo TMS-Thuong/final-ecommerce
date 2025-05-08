@@ -5,34 +5,50 @@ import {
   type RouteLocationNormalized,
 } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import LoginView from '@/views/LoginView.vue'
-import ForgotPWView from '@/views/ForgotPWView.vue'
-import ResetPWView from '@/views/ResetPWView.vue'
-import { RouterName } from '@/enums/router'
+import RegisterView from '@/views/auth/register/FormView.vue'
+import LoginView from '@/views/auth/login/FormView.vue'
+import ForgotPWView from '@/views/auth/forgot-password/FormView.vue'
+import ResetPWView from '@/views/auth/reset-password/FormView.vue'
+import { AuthRouterName, RouterName, } from '@/enums/router'
 
 const routes = [
-  { path: '/', name: RouterName.Home, component: HomeView },
-  { path: '/login', name: RouterName.Login, component: LoginView },
-  { path: '/register', name: RouterName.Register, component: RegisterView },
-  { path: '/forgot-password', name: RouterName.ForgotPW, component: ForgotPWView },
-  { path: '/account/reset-password', name: RouterName.ResetPW, component: ResetPWView },
   {
-    path: '/account/reset-password',
-    name: RouterName.ResetPW,
-    component: ResetPWView,
-    beforeEnter: (
-      to: RouteLocationNormalized,
-      from: RouteLocationNormalized,
-      next: NavigationGuardNext,
-    ) => {
-      const token = to.query.token
-      if (!token) {
-        next({ name: RouterName.Login })
-      } else {
-        next()
+    path: '/',
+    name: RouterName.Home,
+    component: HomeView,
+  },
+  {
+    path: '/user',
+    children: [
+      {
+        path: 'login',
+        name: AuthRouterName.Login,
+        component: LoginView,
+      },
+      {
+        path: 'register',
+        name: AuthRouterName.Register,
+        component: RegisterView,
+      },
+      {
+        path: 'forgot-password',
+        name: AuthRouterName.ForgotPW,
+        component: ForgotPWView,
+      },
+      {
+        path: 'reset-password/:token',
+        name: AuthRouterName.ResetPW,
+        component: ResetPWView,
+        beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+          const token = to.params.token;
+          if (!token) {
+            next({ name: AuthRouterName.Login });
+          } else {
+            next();
+          }
+        }
       }
-    },
+    ],
   },
 ]
 

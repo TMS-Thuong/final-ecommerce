@@ -14,32 +14,3 @@ export const ERROR_MESSAGES = {
   firstNameTooLong: 'Tên không được quá 50 ký tự',
   firtNameTooShort: 'Tên phải có ít nhất một ký tự',
 }
-
-export const FORM_FIELDS = {
-  lastName: 'Họ',
-  firstName: 'Tên',
-  email: 'Email',
-  password: 'Mật khẩu',
-  birthDate: 'Ngày sinh',
-  gender: 'Giới tính',
-}
-
-export const GENDER_OPTIONS = [
-  { label: 'Nam', value: 0 },
-  { label: 'Nữ', value: 1 },
-  { label: 'Khác', value: 2 },
-]
-
-export const DEFAULT_FORM_DATA = {
-  lastName: '',
-  firstName: '',
-  email: '',
-  password: '',
-  birthDate: '',
-  gender: 0,
-}
-
-export const EMPTY_FORM_DATA = {
-  password: '',
-  confirmPassword: '',
-}

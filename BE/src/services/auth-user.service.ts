@@ -14,10 +14,9 @@ import {
   RefreshTokenResponse,
   VerifyTokenResponse,
 } from '@app/types/auth.type';
-import { IJwtPayload } from '@app/types/jwt.type';
 import { IJwtTokenPair } from '@app/types/jwt.type';
 import { GOOGLE_CLIENT_ID, JWT_SECRET } from '@config/index';
-import { generateTokenPair } from '@utils/jwt-token.util';
+import { generateTokenPair, verifyRefreshToken } from '@utils/jwt-token.util';
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -191,7 +190,7 @@ class AuthService {
 
   async refreshAccessToken(refreshToken: string): Promise<RefreshTokenResponse> {
     try {
-      const decoded = jwt.verify(refreshToken, this.jwtSecret) as IJwtPayload & { userId: number };
+      const decoded = verifyRefreshToken(refreshToken);
 
       const user = await this.prisma.user.findUnique({
         where: { id: decoded.userId },
@@ -205,7 +204,10 @@ class AuthService {
         email: user.email,
         userId: user.id,
       });
-      return { success: true, accessToken: newAccessToken.accessToken, refreshToken: newAccessToken.refreshToken };
+      return {
+        success: true,
+        ...newAccessToken,
+      };
     } catch (error) {
       return { success: false, message: AuthErrorMessages.TOKEN_INVALID, code: 'TOKEN_INVALID' };
     }
@@ -213,8 +215,7 @@ class AuthService {
 
   async resetPassword(token: string, newPassword: string): Promise<boolean> {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { email: string };
-      const { email } = decoded;
+      const { email } = jwt.verify(token, JWT_SECRET) as { email: string };
 
       const user = await this.prisma.user.findUnique({
         where: { email },

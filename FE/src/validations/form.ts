@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ERROR_MESSAGES } from '@/constants/form'
+import { ERROR_MESSAGES } from '@/constants/auth/_utils/message'
 
 export const registerSchema = z.object({
   lastName: z

@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 
+import { EmailSentResultType } from '@app/types/email.type';
 import { SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD } from '@config/index';
 
 class EmailService {
@@ -17,7 +18,7 @@ class EmailService {
     });
   }
 
-  async sentResult(to: string, subject: string, html: string): Promise<{ success: boolean; message: string }> {
+  async sentResult(to: string, subject: string, html: string): Promise<EmailSentResultType> {
     try {
       const mailOptions = {
         from: `"Blog" <${SMTP_USERNAME}>`,
