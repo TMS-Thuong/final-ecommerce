@@ -12,7 +12,6 @@
     "prepare": "cd .. && husky install",
     "precommit": "lint-staged",
     "prepush": "",
-    "prebuild": "node ./node_modules/rimraf/bin.js dist",
     "dev": "npx tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
