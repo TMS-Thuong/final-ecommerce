@@ -29,10 +29,10 @@ class EmailService {
 
       await this.transporter.sendMail(mailOptions);
 
-      return { success: true, message: 'Email đã được gửi thành công.' };
+      return { success: true, message: 'Email has been successfully sent.' };
     } catch (error) {
-      console.error('Gửi email thất bại:', error);
-      return { success: false, message: 'Gửi email thất bại.' };
+      console.error('Email failure:', error);
+      return { success: false, message: 'Email failed.' };
     }
   }
 }
