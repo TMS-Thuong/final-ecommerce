@@ -1,7 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './BE/tsconfig.json',
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin', 'import'],
@@ -16,23 +17,62 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'dist', 'node_modules'],
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'warn', //return type
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
+    '@typescript-eslint/no-explicit-any': 'error',
     'import/order': [
       'error',
       {
         pathGroups: [
           {
-            pattern: '@nest/**',
-            group: 'external',
-            position: 'before',
+            pattern: '@app/**',
+            group: 'internal',
+            position: 'after',
           },
           {
-            pattern: '@app/**',
+            pattern: '@controllers/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@middleware/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@plugins/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@routes/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@schemas/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@services/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@utils/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@config/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@decorator/**',
             group: 'internal',
             position: 'after',
           },
@@ -46,5 +86,13 @@ module.exports = {
         },
       },
     ],
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+    },
   },
 };

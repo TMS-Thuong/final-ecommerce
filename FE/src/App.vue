@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import ToastComponent from '@/components/molecules/utils/ToastComponent.vue'
 </script>
 
 <template>
@@ -39,7 +40,6 @@ import { RouterView } from 'vue-router'
       </li>
     </ol>
   </nav>
-
 
   <RouterView />
 </template>

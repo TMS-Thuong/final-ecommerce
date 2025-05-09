@@ -2,7 +2,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { FastifyInstance } from 'fastify';
 
-export async function swagger(fastify: FastifyInstance) {
+export async function swagger(fastify: FastifyInstance): Promise<void> {
   fastify.register(fastifySwagger, {
     openapi: {
       openapi: '3.0.0',

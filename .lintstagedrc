@@ -1,0 +1,10 @@
+{
+  "BE/**/*.{ts,js}": [
+    "cd BE && npm run lint",
+    "cd BE && npm run format"
+  ],
+  "FE/**/*.{ts,js,vue}": [
+    "cd FE && npm run lint",
+    "cd FE && npm run format"
+  ]
+}
