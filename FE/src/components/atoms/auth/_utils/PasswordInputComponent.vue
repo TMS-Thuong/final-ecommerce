@@ -1,13 +1,13 @@
 <template>
-  <div class="relative ">
+  <div class="relative">
     <label class="block text-lg font-semibold text-gray-700">
-      {{ label }}
+      {{ $t('auth.login.password') }}
       <span class="text-red-500">*</span>
     </label>
     <div class="relative flex items-center">
       <input :type="showPassword ? 'text' : 'password'" :id="id"
         class="w-full px-3 py-2 border shadow-sm focus:ring-[#704F38] focus:border-[#704F38] border-gray-300 rounded-lg text-base"
-        :placeholder="placeholder" :value="modelValue"
+        :placeholder="$t('auth.login.password')" :value="modelValue"
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
       <button type="button"
         class="absolute right-0 pr-3 flex items-center justify-center text-gray-500 top-1/2 transform -translate-y-1/2"
@@ -30,11 +30,11 @@ defineProps({
   },
   label: {
     type: String,
-    default: 'Mật khẩu',
+    default: 'Password',
   },
   placeholder: {
     type: String,
-    default: 'Mật khẩu',
+    default: 'Password',
   },
   modelValue: {
     type: String,

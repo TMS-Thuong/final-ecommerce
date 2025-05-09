@@ -1,8 +1,9 @@
-export enum RouterName {
+export enum RouterEnum {
   Home = 'Home',
+  Login = "Login",
 }
 
-export enum AuthRouterName {
+export enum AuthRouterEnum {
   Login = 'Login',
   Register = 'Register',
   ForgotPW = 'ForgotPW',

@@ -1,13 +1,13 @@
 <template>
   <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
-    <h1 class="text-2xl font-bold mb-6">Quyền lợi với thành viên</h1>
+    <h1 class="text-2xl font-bold mb-6">{{ $t('benefits.title') }}</h1>
 
     <ul class="space-y-4 text-base font-semibold mb-8">
-      <li>Vận chuyển siêu tốc</li>
-      <li>Sản phẩm đa dạng</li>
-      <li>Đổi trả dễ dàng</li>
-      <li>Tích điểm đổi quà</li>
-      <li>Nhiều mã coupon dành cho thành viên thường xuyên</li>
+      <li>{{ $t('benefits.shipping') }}</li>
+      <li>{{ $t('benefits.productVariety') }}</li>
+      <li>{{ $t('benefits.easyReturns') }}</li>
+      <li>{{ $t('benefits.rewardPoints') }}</li>
+      <li>{{ $t('benefits.coupons') }}</li>
     </ul>
 
     <button :disabled="disabled"

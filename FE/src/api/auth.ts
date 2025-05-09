@@ -15,13 +15,6 @@ export const authApi = {
     instanceAxios.post(`${USE_URL}/forgot-password`, { email }),
   resetPassword: (data: { token: string; newPassword: string; confirmPassword: string }) =>
     instanceAxios.post(`${USE_URL}/reset-password`, data),
-  refreshAccessToken: async (refreshToken: string) => {
-    try {
-      const response = await instanceAxios.post(`${USE_URL}/refresh-token`, { refreshToken });
-      return response.data.accessToken;
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-      throw new Error('Failed to refresh token');
-    }
-  }
+  refreshAccessToken: (refreshToken: string) =>
+    instanceAxios.post(`${USE_URL}/refresh-token`, { refreshToken }).then(response => response.data.accessToken)
 };

@@ -17,9 +17,11 @@ import { nextTick, onMounted, ref } from 'vue'
 import { gapi } from 'gapi-script'
 import { authApi } from '@/api/auth'
 import router from '@/router'
-import { RouterName } from '@/enums/router'
+import { RouterEnum } from '@/enums/router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth/login/token.store'
+import { useToast } from '@/hooks/useToast'
+import { ToastEnum } from '@/enums/toast'
 
 const { t } = useI18n()
 
@@ -29,18 +31,8 @@ declare global {
   }
 }
 
-const showToast = ref(false)
-const toastType = ref<'success' | 'error' | 'warning'>('success')
-const toastMessage = ref('')
+const { showToast } = useToast()
 
-const showToastMessage = (type: 'success' | 'error' | 'warning', message: string) => {
-  toastType.value = type
-  toastMessage.value = message
-  showToast.value = true
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
-}
 
 onMounted(() => {
   const script = document.createElement('script')
@@ -59,13 +51,13 @@ onMounted(() => {
 
 const onGoogleSignIn = () => {
   if (!gapi.auth2) {
-    console.error(t('error.GOOGLE_API_NOT_INITIALIZED'))
+    console.error(t('error.googleApiNotInitialized'))
     return
   }
 
   const GoogleAuth = gapi.auth2.getAuthInstance()
   if (!GoogleAuth) {
-    console.error('error.GOOGLE_AUTH_INSTANCE_NOT_FOUND')
+    console.error('error.googleAuthInstanceNotFound')
     return
   }
 
@@ -75,8 +67,8 @@ const onGoogleSignIn = () => {
       onGoogleLogin(idToken)
     })
     .catch((error) => {
-      console.error(t('error.GOOGLE_SIGNIN_FAILED'), error)
-      showToastMessage('error', 'error.GOOGLE_SIGNIN_FAILED')
+      console.error(t('error.googleSigninFailed'), error)
+      showToast(ToastEnum.Error, t('error.googleSigninFailed'))
     })
 }
 
@@ -88,14 +80,13 @@ const onGoogleLogin = async (idToken: string) => {
       const { accessToken, refreshToken } = response.data;
       useAuthStore().setTokens(accessToken, refreshToken)
       await nextTick();
-      router.push({ name: RouterName.Home });
-      showToastMessage('success', t('success.GOOGLE_SIGNIN_SUCCESS'));
+      router.push({ name: RouterEnum.Home });
+      showToast(ToastEnum.Success, t('success.googleSignInSuccess'));
     } else {
-      showToastMessage('error', t('error.NO_RESPONSE_DATA'));
+      showToast(ToastEnum.Error, t('error.noResponseData'));
     }
   } catch (error) {
-    showToastMessage('error', t('error.SERVER_ERROR'));
+    showToast(ToastEnum.Error, t('error.serverError'));
   }
 }
-
 </script>

@@ -1,16 +1,16 @@
 export const FORM_FIELDS = {
-  lastName: 'Họ',
-  firstName: 'Tên',
+  lastName: 'Last name',
+  firstName: 'First name',
   email: 'Email',
-  password: 'Mật khẩu',
-  birthDate: 'Ngày sinh',
-  gender: 'Giới tính',
+  password: 'Password',
+  birthDate: 'Birth date',
+  gender: 'Gender',
 }
 
 export const GENDER_OPTIONS = [
-  { label: "Nam", value: "male" },
-  { label: "Nữ", value: "female" },
-  { label: "Khác", value: "other" }
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Other", value: "other" }
 ]
 
 export const DEFAULT_FORM_DATA = {

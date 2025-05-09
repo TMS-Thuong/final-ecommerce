@@ -8,11 +8,11 @@
 import { useRoute } from 'vue-router'
 import ResetPW from '@/components/organisms/ResetPWComponent.vue'
 import router from '@/router'
-import { RouterName } from '@/enums/router'
+import { RouterEnum } from '@/enums/router'
 
 const route = useRoute()
 const token = (route.query.token as string | undefined) ?? ''
 if (!token) {
-  router.push({ name: RouterName.Login })
+  router.push({ name: RouterEnum.Login })
 }
 </script>
