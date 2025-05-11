@@ -122,14 +122,14 @@ model Product {
   createdAt     DateTime @default(now()) @map("CreatedAt")
   updatedAt     DateTime @default(now()) @map("UpdatedAt")
 
-  category        Category                @relation(fields: [categoryId], references: [id])
-  brand           Brand                   @relation(fields: [brandId], references: [id])
-  images          ProductImage[]
-  attributeValues ProductAttributeValue[]
-  cartItems       CartItem[]
-  orderItems      OrderItem[]
-  reviews         Review[]
-  favoriteItems   FavoriteItem[]
+  category               Category                @relation(fields: [categoryId], references: [id])
+  brand                  Brand                   @relation(fields: [brandId], references: [id])
+  images                 ProductImage[]
+  productAttributeValues ProductAttributeValue[]
+  cartItems              CartItem[]
+  orderItems             OrderItem[]
+  reviews                Review[]
+  favoriteItems          FavoriteItem[]
 
   @@map("Products")
 }
@@ -148,34 +148,23 @@ model ProductImage {
 
 model Attribute {
   id                 Int     @id @default(autoincrement()) @map("AttributeID")
-  name               String  @unique @map("Name")
-  code               String  @unique @map("Code")
+  name               String
+  code               String  @unique
+  value              String // Chứa cục JSON với tất cả giá trị thuộc tính 
   isVariantAttribute Boolean @default(false) @map("IsVariantAttribute")
 
-  attributeValues AttributeValue[]
-
-  @@map("Attributes")
-}
-
-model AttributeValue {
-  id          Int    @id @default(autoincrement()) @map("ValueID")
-  attributeId Int    @map("AttributeID")
-  value       String @map("Value")
-
-  attribute              Attribute               @relation(fields: [attributeId], references: [id])
   productAttributeValues ProductAttributeValue[]
 
-  @@map("AttributeValues")
+  @@map("Attributes")
 }
 
 model ProductAttributeValue {
   id          Int @id @default(autoincrement()) @map("ProductAttributeValueID")
   productId   Int @map("ProductID")
   attributeId Int @map("AttributeID")
-  valueId     Int @map("ValueID")
 
-  product        Product        @relation(fields: [productId], references: [id])
-  attributeValue AttributeValue @relation(fields: [valueId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+  attribute Attribute @relation(fields: [attributeId], references: [id])
 
   @@map("ProductAttributeValues")
 }
