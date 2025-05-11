@@ -1,0 +1,566 @@
+id,sku,name,slug,category_id,brand_id,price,sale_price
+1,164405,Smart Tivi QA55Q60D,smart-tivi-qa55q60d,1,2,17900000,13990000
+2,164407,Smart Tivi QA43Q60D,smart-tivi-qa43q60d,1,2,12900000,10390000
+3,164636,BRAVIA 3 K-55S30,bravia-3-k-55s30,1,1,19990000,16990000
+4,164599,Smart Tivi 55UT8050PSB,smart-tivi-55ut8050psb,1,3,16900000,11390000
+5,164414,Smart Tivi UA65DU8000,smart-tivi-ua65du8000,1,2,18400000,13990000
+6,164633,BRAVIA 3 K-85S30,bravia-3-k-85s30,1,1,42890000,0
+7,162651,Smart Tivi 32S5400A,smart-tivi-32s5400a,1,4,5690000,3990000
+8,164399,Smart Tivi QA65Q70D,smart-tivi-qa65q70d,1,2,26400000,20590000
+9,149614,Google Tivi 55P638,google-tivi-55p638,1,4,13090000,7990000
+10,164400,Smart Tivi QA55Q70D,smart-tivi-qa55q70d,1,2,21900000,14990000
+11,164182,Loa Kéo K-1200,loa-keo-k-1200,2,13,8590000,5990000
+12,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,2,1,8490000,6490000
+13,162474,Loa Kéo K-18X5,loa-keo-k-18x5,2,13,11890000,0
+14,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,2,14,13490000,11490000
+15,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,2,14,8790000,7890000
+16,162972,Loa Kéo K-360,loa-keo-k-360,2,13,5990000,3490000
+17,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,2,14,13990000,5990000
+18,165338,Loa Kéo K-15X9,loa-keo-k-15x9,2,13,9990000,7990000
+19,148948,Loa Thùng Kéo BA 1000VII,loa-thung-keo-ba-1000vii,2,1,15990000,12390000
+20,151052,Loa Kéo Điện TS-18A8000,loa-keo-ien-ts-18a8000,2,14,22990000,19890000
+21,164182,Loa Kéo K-1200,loa-keo-k-1200,3,13,8590000,5990000
+22,164033,Loa Kéo S1588K,loa-keo-s1588k,3,16,8490000,3490000
+23,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,3,1,8490000,6490000
+24,162474,Loa Kéo K-18X5,loa-keo-k-18x5,3,13,11890000,0
+25,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,3,14,13490000,11490000
+26,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,3,14,8790000,7890000
+27,162972,Loa Kéo K-360,loa-keo-k-360,3,13,5990000,3490000
+28,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,3,14,13990000,5990000
+29,145761,Loa Kéo K-1000,loa-keo-k-1000,3,13,8590000,999000
+30,165338,Loa Kéo K-15X9,loa-keo-k-15x9,3,13,9990000,7990000
+31,164061,Loa Karaoke Xách Tay X-316,loa-karaoke-xach-tay-x-316,4,13,6990000,4890000
+32,150785,Loa Xách Tay Hiệu BA 9999 VII,loa-xach-tay-hieu-ba-9999-vii,4,1,10490000,9390000
+33,150120,Loa Di Động Xách Tay PASION 2,loa-di-ong-xach-tay-pasion-2,4,17,9990000,6590000
+34,162970,Dàn Âm Thanh Di Động CS445D,dan-am-thanh-di-ong-cs445d,4,23,6490000,2990000
+35,162382,Loa Karaoke Xách Tay S8,loa-karaoke-xach-tay-s8,4,19,7490000,5490000
+36,164818,Loa Xách Tay N3379K,loa-xach-tay-n3379k,4,16,7990000,5390000
+37,150379,Loa Xách Tay Karaoke MK-4026,loa-xach-tay-karaoke-mk-4026,4,24,4290000,1490000
+38,165431,Loa Karaoke Xách Tay K208C,loa-karaoke-xach-tay-k208c,4,14,10700000,8190000
+39,148840,Dàn Âm Thanh Di Động KSNet450,dan-am-thanh-di-ong-ksnet450,4,23,12170000,10490000
+40,162442,Loa Di Động Xách Tay PASION 2c (Màu Vàng),loa-di-ong-xach-tay-pasion-2c-mau-vang,4,17,9990000,6890000
+41,148792,Inverter 550 Lít NR-DZ601YGKV,inverter-550-lit-nr-dz601ygkv,5,11,40290000,31990000
+42,164522,Inverter 496 Lít EQE4900A-A,inverter-496-lit-eqe4900a-a,5,28,23490000,14990000
+43,165728,Inverter 205 Lít RT256N4EBN,inverter-205-lit-rt256n4ebn,5,6,5990000,4990000
+44,148151,Inverter 325 Lít GR-RB410WE-PMV(37)-SG,inverter-325-lit-gr-rb410we-pmv37-sg,5,5,15240000,9490000
+45,163702,147 Lít HR T6147TDG,147-lit-hr-t6147tdg,5,31,4800000,3890000
+46,148135,Inverter 268 Lít NR-TV301BPKV,inverter-268-lit-nr-tv301bpkv,5,11,12290000,10690000
+47,145309,Inverter 188 Lít NR-BA229PAVN,inverter-188-lit-nr-ba229pavn,5,11,8190000,6990000
+48,162418,Inverter 382 Lít RT38CG6584B1SV,inverter-382-lit-rt38cg6584b1sv,5,2,15590000,12290000
+49,145304,Inverter 236 Lít TMF-RT22M4032BU,inverter-236-lit-tmf-rt22m4032bu,5,2,9190000,6690000
+50,164777,Inverter 458 Lít RS-460PBW,inverter-458-lit-rs-460pbw,5,7,15490000,10990000
+51,145271,180 Lít VH-2299HY2,180-lit-vh-2299hy2,6,35,6390000,4490000
+52,148258,Inverter 450 Lít DMF-4699WSI-2,inverter-450-lit-dmf-4699wsi-2,6,37,9990000,6990000
+53,162963,327 Lít KGFZ389NK2,327-lit-kgfz389nk2,6,39,8490000,0
+54,148453,Inverter 425 Lít AQF-C5701E,inverter-425-lit-aqf-c5701e,6,29,13290000,9290000
+55,142773,Inverter 485 Lít VH-6699W3,inverter-485-lit-vh-6699w3,6,35,17290000,14890000
+56,141114,Inverter 410 Lít VH-5699HY3,inverter-410-lit-vh-5699hy3,6,35,14890000,11990000
+57,143050,Inverter 770 Lít DMF-7699WSI,inverter-770-lit-dmf-7699wsi,6,37,13990000,0
+58,140747,100 Lít VH-150HY2,100-lit-vh-150hy2,6,35,5490000,0
+59,162637,230 Lít DMF-2688W2,230-lit-dmf-2688w2,6,37,6990000,3990000
+60,162969,220 Lít VH-2899W2KD,220-lit-vh-2899w2kd,6,35,8990000,0
+61,165462,280 Lít DL-2800A2,280-lit-dl-2800a2,7,37,10990000,6690000
+62,148450,235 Lít AQS-AF340S,235-lit-aqs-af340s,7,29,10890000,6490000
+63,149667,280 Lít AQS-AF400N,280-lit-aqs-af400n,7,29,10990000,6990000
+64,145545,Inverter 340 Lít VH-408W3L,inverter-340-lit-vh-408w3l,7,35,14590000,12490000
+65,150085,Inverter 480 Lít VH-5089K3,inverter-480-lit-vh-5089k3,7,35,16790000,14690000
+66,164371,630 Lít DL-7000A2,630-lit-dl-7000a2,7,37,21690000,0
+67,147131,Inverter 340 Lít VH-408K3L,inverter-340-lit-vh-408k3l,7,35,13990000,12090000
+68,145194,Inverter 500 Lít DL-5000A3,inverter-500-lit-dl-5000a3,7,37,14990000,10990000
+69,145746,Inverter 700 Lít VH-8009HP3,inverter-700-lit-vh-8009hp3,7,35,30190000,26090000
+70,144132,Inverter 900 Lít VH-1009HP3,inverter-900-lit-vh-1009hp3,7,35,33190000,28390000
+71,162659,Inverter 9.5 Kg BD-954HVOW,inverter-95-kg-bd-954hvow,8,27,10990000,6490000
+72,148653,Inverter 10.5 Kg TW-BL115A2V(SS),inverter-105-kg-tw-bl115a2vss,8,5,12090000,6490000
+73,163309,14 Kg AQW-FR140UHT.SS,14-kg-aqw-fr140uhtss,8,29,15290000,7990000
+74,165152,Inverter 15 Kg TV2515DV5J,inverter-15-kg-tv2515dv5j,8,3,13990000,9790000
+75,149705,Inverter Giặt 10 Kg - Sấy 2 Kg NA-V10FR1BVT,inverter-giat-10-kg-say-2-kg-na-v10fr1bvt,8,11,16990000,14790000
+76,148380,9 Kg WGG244A0SG,9-kg-wgg244a0sg,8,34,18700000,6490000
+77,166060,Inverter 12 Kg AW12-BP4959U1K(W),inverter-12-kg-aw12-bp4959u1kw,8,29,8990000,0
+78,162719,8.2 Kg NA-F82Y01DRV,82-kg-na-f82y01drv,8,11,5990000,5190000
+79,148061,10 Kg AQW-FR100GT.BK,10-kg-aqw-fr100gtbk,8,29,8190000,6190000
+80,162789,8.5 Kg VWVC8502FS,85-kg-vwvc8502fs,8,32,7490000,3499000
+81,162689,Máy Sấy Thông Hơi 7 Kg TD-H80SEV(SK),may-say-thong-hoi-7-kg-td-h80sevsk,9,5,7490000,5990000
+82,165452,Máy Sấy Thông Hơi 9 Kg EDV904N3SC,may-say-thong-hoi-9-kg-edv904n3sc,9,28,11490000,0
+83,165451,Máy Sấy Thông Hơi 9 Kg EDV904H3WC,may-say-thong-hoi-9-kg-edv904h3wc,9,28,10490000,0
+84,163802,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50M,may-say-bom-nhiet-inverter-105-kg-dvhp50m,9,3,29490000,19490000
+85,163803,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50W,may-say-bom-nhiet-inverter-105-kg-dvhp50w,9,3,28990000,19790000
+86,162409,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50B,may-say-bom-nhiet-inverter-105-kg-dvhp50b,9,3,30490000,20190000
+87,162687,Máy Sấy Inverter 10 Kg TD-BK110GHV(MK),may-say-inverter-10-kg-td-bk110ghvmk,9,5,16990000,0
+88,165454,Máy Sấy Thông Hơi 9 Kg EDS904N3SC,may-say-thong-hoi-9-kg-eds904n3sc,9,28,12990000,0
+89,165453,Máy Sấy Thông Hơi 9 Kg EDS904H3WC,may-say-thong-hoi-9-kg-eds904h3wc,9,28,11990000,0
+90,162688,Máy Sấy Ngưng Tụ 8 Kg TD-K90MEV(SK),may-say-ngung-tu-8-kg-td-k90mevsk,9,5,9990000,0
+91,164141,Inverter 1 Hp CU/CS-PU9AKH-8,inverter-1-hp-cucs-pu9akh-8,10,11,11990000,0
+92,164438,Inverter 1 Hp ATKF25YVMV,inverter-1-hp-atkf25yvmv,10,42,10590000,0
+93,165254,Inverter 1 Hp 42XIT009 - Thương Hiệu Mỹ,inverter-1-hp-42xit009-thuong-hieu-my,10,43,11290000,5490000
+94,164162,Inverter 1 Hp RAS-H10S4KCV2G-V,inverter-1-hp-ras-h10s4kcv2g-v,10,5,10990000,8490000
+95,164142,Inverter 1.5 Hp CU/CS-PU12AKH-8,inverter-15-hp-cucs-pu12akh-8,10,11,14590000,0
+96,151070,Inverter 1.5 Hp AH-X13ZEW,inverter-15-hp-ah-x13zew,10,12,11290000,8490000
+97,162096,Inverter 1 Hp CU/CS-XU9ZKH-8,inverter-1-hp-cucs-xu9zkh-8,10,11,13990000,0
+98,164078,Inverter 1 Hp V10WIN1,inverter-1-hp-v10win1,10,3,11220000,9090000
+99,164139,Inverter 1 Hp AQA-RV10QC2,inverter-1-hp-aqa-rv10qc2,10,29,9090000,5990000
+100,151069,Inverter 1 Hp AH-X10ZEW,inverter-1-hp-ah-x10zew,10,12,9690000,6990000
+101,166807,Quạt Điều Hòa WIN M,quat-ieu-hoa-win-m,11,1,1990000,999000
+102,162667,Máy Làm Mát Không Khí SHD7744,may-lam-mat-khong-khi-shd7744,11,46,4390000,2690000
+103,145033,Máy làm mát không khí SHD7727,may-lam-mat-khong-khi-shd7727,11,46,6500000,4390000
+104,164298,Quạt Làm Mát Không Khí I-99 200W - Thái Lan,quat-lam-mat-khong-khi-i-99-200w-thai-lan,11,1,5990000,3990000
+105,164292,Quạt Điều Hòa HPCF1-045 112W,quat-ieu-hoa-hpcf1-045-112w,11,1,5590000,3299000
+106,141659,Máy làm mát không khí S106,may-lam-mat-khong-khi-s106,11,1,8390000,6990000
+107,164294,Quạt Điều Hòa HPCF1-021 86W,quat-ieu-hoa-hpcf1-021-86w,11,1,4590000,1990000
+108,164470,Máy Làm Mát Không Khí SHD7776 200W,may-lam-mat-khong-khi-shd7776-200w,11,46,4990000,3990000
+109,148865,Quạt Điều Hòa FEAB-110,quat-ieu-hoa-feab-110,11,1,5990000,4990000
+110,166869,Quạt Tháp Đối Lưu Cao Cấp DFS-D40G1,quat-thap-oi-luu-cao-cap-dfs-d40g1,12,1,1690000,699000
+111,149234,Quạt Bàn B202,quat-ban-b202,12,1,399000,199000
+112,141918,Quạt đứng F-LSA20(W)VN,quat-ung-f-lsa20wvn,12,5,1590000,1390000
+113,164549,Quạt Để Bàn Có Sạc Tích Điện PF-QB2150,quat-e-ban-co-sac-tich-ien-pf-qb2150,12,1,199000,99000
+114,166829,Quạt Đứng Có Remote Điều Khiển PF-QD310,quat-ung-co-remote-ieu-khien-pf-qd310,12,1,590000,399000
+115,149039,Quạt Treo Tường VY377990 - Xám,quat-treo-tuong-vy377990-xam,12,1,1072000,729000
+116,149040,Quạt Lửng VY538790 - Xám,quat-lung-vy538790-xam,12,1,666000,549000
+117,163663,Quạt lỡ L1638 - Xám Đồng,quat-lo-l1638-xam-ong,12,1,490000,349000
+118,131807,Quạt lửng L828,quat-lung-l828,12,1,550000,390000
+119,163659,Quạt Treo TC1622 - Đen Cam,quat-treo-tc1622-en-cam,12,1,570000,490000
+120,163910,Máy Lọc Không Khí MCQ30ZVM7-G - Malaysia,may-loc-khong-khi-mcq30zvm7-g-malaysia,13,42,4012000,3590000
+121,148979,Máy Lọc Không Khí SMART Air Purifier 4 Lite (BHR5274GL),may-loc-khong-khi-smart-air-purifier-4-lite-bhr5274gl,13,9,3990000,2090000
+122,162187,Máy Lọc Không Khí Puricare 360 Hit AS60GHWG0,may-loc-khong-khi-puricare-360-hit-as60ghwg0,13,3,8390000,5790000
+123,163911,Máy Lọc Không Khí MC30YVM7 - Malaysia,may-loc-khong-khi-mc30yvm7-malaysia,13,42,4586000,3990000
+124,164067,Máy Lọc Không Khí Smart Air Purifier 4 Compact EU (BHR5860EU),may-loc-khong-khi-smart-air-purifier-4-compact-eu-bhr5860eu,13,9,2590000,1590000
+125,148978,Máy Lọc Không Khí SMART Air Purifier 4,may-loc-khong-khi-smart-air-purifier-4,13,9,4990000,3590000
+126,163779,Máy Lọc Không Khí 360 Độ Alpha 2 Tầng Màu Vàng Be AS10GDBY0,may-loc-khong-khi-360-o-alpha-2-tang-mau-vang-be-as10gdby0,13,3,38800000,27790000
+127,150638,Máy Lọc Không Khí AC0850/20,may-loc-khong-khi-ac085020,13,1,4590000,3499000
+128,144898,Máy lọc không khí FP-J30E-A,may-loc-khong-khi-fp-j30e-a,13,12,2640000,2290000
+129,144058,Máy lọc không khí FP-J30E-B,may-loc-khong-khi-fp-j30e-b,13,12,2640000,2290000
+130,500001208,Máy Xay Sinh Tố BL3301B,may-xay-sinh-to-bl3301b,14,1,790000,259000
+131,165352,Máy Lọc Nước RO 9 Lõi DN107 - Lõi RO Mỹ,may-loc-nuoc-ro-9-loi-dn107-loi-ro-my,14,48,5990000,2599000
+132,149234,Quạt Bàn B202,quat-ban-b202,14,1,399000,199000
+133,165088,Lò Vi Sóng MS2535GIK 25 Lít,lo-vi-song-ms2535gik-25-lit,14,3,5990000,3790000
+134,166807,Quạt Điều Hòa WIN M,quat-ieu-hoa-win-m,14,1,1990000,999000
+135,166603,Máy Hút Bụi CW-18M01A,may-hut-bui-cw-18m01a,14,1,840000,389000
+136,163649,Máy Rửa Chén BDFN26430XC - Xuất Xứ Châu Âu,may-rua-chen-bdfn26430xc-xuat-xu-chau-au,14,40,21790000,8990000
+137,166869,Quạt Tháp Đối Lưu Cao Cấp DFS-D40G1,quat-thap-oi-luu-cao-cap-dfs-d40g1,14,1,1690000,699000
+138,166641,Quạt Điều Hòa PAC-288U 200W,quat-ieu-hoa-pac-288u-200w,14,1,4990000,2799000
+139,164549,Quạt Để Bàn Có Sạc Tích Điện PF-QB2150,quat-e-ban-co-sac-tich-ien-pf-qb2150,14,1,199000,99000
+140,144924,Máy rửa mặt Dual Cleanser BCL1,may-rua-mat-dual-cleanser-bcl1,15,3,7000000,5490000
+141,144926,Máy nâng cơ toàn diện Total Lift-up BLL1,may-nang-co-toan-dien-total-lift-up-bll1,15,3,11400000,3990000
+142,144927,Mặt nạ Derma LED BWL1,mat-na-derma-led-bwl1,15,3,25000000,14990000
+143,LG BLM1V,Máy Nâng Cơ Toàn Diện BLM1V,may-nang-co-toan-dien-blm1v,15,3,9000000,7890000
+144,LGBWM1V,Mặt Nạ LED Chăm Sóc Da BWM1V,mat-na-led-cham-soc-da-bwm1v,15,3,12790000,0
+145,144543,Máy Đo Đường Sinocare,may-o-uong-sinocare,15,1,299000,39000
+146,164014,Máy Lọc Nước RO TK-CA811K-VN - Malaysia,may-loc-nuoc-ro-tk-ca811k-vn-malaysia,16,11,7390000,6490000
+147,165352,Máy Lọc Nước RO 9 Lõi DN107 - Lõi RO Mỹ,may-loc-nuoc-ro-9-loi-dn107-loi-ro-my,16,48,5990000,2599000
+148,164530,Máy Lọc Nước RO TWP-N2396SVN(W) 10 Lõi,may-loc-nuoc-ro-twp-n2396svnw-10-loi,16,5,6990000,0
+149,164770,Máy Lọc Nước Ion Kiềm Hydrogen 10 Lõi MP-S1001H,may-loc-nuoc-ion-kiem-hydrogen-10-loi-mp-s1001h,16,47,8390000,3990000
+150,165120,Máy Lọc Nước Nóng Nguội Lạnh KAD-M29 11 Lõi,may-loc-nuoc-nong-nguoi-lanh-kad-m29-11-loi,16,45,13900000,11490000
+151,164858,Máy Lọc Nước Nóng Nguội Lạnh TWP-W2398SVN(M) 10 Lõi,may-loc-nuoc-nong-nguoi-lanh-twp-w2398svnm-10-loi,16,5,13990000,9490000
+152,142919,Máy lọc nước A1,may-loc-nuoc-a1,16,1,10400000,7990000
+153,164995,Máy Lọc Nước KAQ-UC05 10 Lõi,may-loc-nuoc-kaq-uc05-10-loi,16,45,6400000,4790000
+154,164771,Máy Lọc Nước Ion Kiềm Hydrogen Nóng Lạnh Nguội 10 Lõi MP-S1021H,may-loc-nuoc-ion-kiem-hydrogen-nong-lanh-nguoi-10-loi-mp-s1021h,16,47,11890000,7490000
+155,164531,Máy Lọc Nước RO Nóng Nguội Lạnh TWP-W2396SVN(M) 10 Lõi,may-loc-nuoc-ro-nong-nguoi-lanh-twp-w2396svnm-10-loi,16,5,13490000,7990000
+156,164034,Máy Nước Nóng Trực Tiếp LUXE-TE,may-nuoc-nong-truc-tiep-luxe-te,17,1,1990000,1090000
+157,165395,Máy Nước Nóng Gián Tiếp 20 Lít SWH 20H M-14 ESA SLIM 823044 - Thái Lan,may-nuoc-nong-gian-tiep-20-lit-swh-20h-m-14-esa-slim-823044-thai-lan,17,1,2990000,1790000
+158,166206,Máy Nước Nóng Trực Tiếp TWH-45EMCPVN(K)-CB,may-nuoc-nong-truc-tiep-twh-45emcpvnk-cb,17,5,4150000,3490000
+159,150403,Máy Nước Nóng Trực Tiếp AURES PREMIUM 4.5P SPACE,may-nuoc-nong-truc-tiep-aures-premium-45p-space,17,1,4390000,3190000
+160,150405,Máy Nước Nóng Trực Tiếp AURES PREMIUM+ 4.5P,may-nuoc-nong-truc-tiep-aures-premium-45p,17,1,4590000,3290000
+161,166205,Máy Nước Nóng Trực Tiếp TWH-45MCNVN(S)-WB,may-nuoc-nong-truc-tiep-twh-45mcnvns-wb,17,5,2990000,2490000
+162,164035,Máy Nước Nóng Trực Tiếp LUXE-SN,may-nuoc-nong-truc-tiep-luxe-sn,17,1,2090000,1690000
+163,165613,Máy Nước Nóng Gián Tiếp SLIM3 15 RS VN 15 Lít,may-nuoc-nong-gian-tiep-slim3-15-rs-vn-15-lit,17,1,2610000,2190000
+164,150450,Máy Nước Nóng Trực Tiếp DH-4UP1VS,may-nuoc-nong-truc-tiep-dh-4up1vs,17,11,6200000,4990000
+165,150404,Máy Nước Nóng Trực Tiếp AURES PREMIUM 4.5,may-nuoc-nong-truc-tiep-aures-premium-45,17,1,3190000,2290000
+166,165848,"Máy Rửa Rau Quả - Giảm Thuốc Trừ Sâu UC-B01FWH Diệt Khuẩn Virus 99.9%",may-rua-rau-qua-giam-thuoc-tru-sau-uc-b01fwh-diet-khuan-virus-999,18,1,11900000,6490000
+167,164797,Màng Bọc Thực Phẩm Horeca KS-WR45250H 250m X 45cm,mang-boc-thuc-pham-horeca-ks-wr45250h-250m-x-45cm,18,46,299000,59000
+168,164902,Máy Tiệt Trùng Sấy Khô Đa Năng NU-MX100PYUE,may-tiet-trung-say-kho-a-nang-nu-mx100pyue,19,11,1840000,1590000
+169,HX3806,Máy Tăm Nước HX3806/31,may-tam-nuoc-hx380631,19,1,0,2695000
+170,HX3671/23,Bàn Chải Đánh Răng Điện Philips HX3671/23,ban-chai-anh-rang-ien-philips-hx367123,19,1,1655000,1390000
+171,HX3641,Bàn Chải Đánh Răng Điện Sonicare HX3641/41,ban-chai-anh-rang-ien-sonicare-hx364141,19,1,1255000,1090000
+172,166810,V50 Lite 5G (12GB+256GB),v50-lite-5g-12gb256gb,20,52,0,10990000
+173,165581,iPhone 16 Pro Max 256GB Titan Trắng,iphone-16-pro-max-256gb-titan-trang,20,50,34990000,29999000
+174,166308,Reno13 F (8GB+256GB),reno13-f-8gb256gb,20,51,0,8690000
+175,166366,Galaxy S25 Ultra 5G (12GB+256GB),galaxy-s25-ultra-5g-12gb256gb,20,2,33990000,26990000
+176,163710,iPhone 15 128GB,iphone-15-128gb,20,50,19990000,15450000
+177,164994,A18 (4GB+64GB),a18-4gb64gb,20,51,3290000,2490000
+178,165966,Y19s (8GB+128GB),y19s-8gb128gb,20,52,4790000,3890000
+179,166146,POCO M6 (6GB+128GB),poco-m6-6gb128gb,20,9,4290000,3190000
+180,164942,Reno12 5G (12GB+256GB),reno12-5g-12gb256gb,20,51,12990000,8990000
+181,166020,MacBook Air M1 13 inch 256GB MGN63SA/A Xám,macbook-air-m1-13-inch-256gb-mgn63saa-xam,21,50,19990000,16999000
+182,166167,MacBook Air 13 inch M2 (16GB+256GB),macbook-air-13-inch-m2-16gb256gb,21,50,24990000,21590000
+183,164883,Pro M4 11 inch WiFi (8GB+256GB),pro-m4-11-inch-wifi-8gb256gb,21,1,26990000,0
+184,166223,Macbook Pro 14 inch M4 (16GB+512GB),macbook-pro-14-inch-m4-16gb512gb,21,50,37990000,0
+185,162871,Galaxy Tab S9 Plus (12GB+512GB),galaxy-tab-s9-plus-12gb512gb,21,2,27990000,0
+186,162879,Galaxy Tab S9 Ultra (12GB+512GB),galaxy-tab-s9-ultra-12gb512gb,21,2,34990000,26990000
+187,162877,Galaxy Tab S9 Ultra (12GB+256GB),galaxy-tab-s9-ultra-12gb256gb,21,2,32990000,25490000
+188,162881,Galaxy Tab S9 Ultra (16GB+1TB),galaxy-tab-s9-ultra-16gb1tb,21,2,38990000,32990000
+189,163573,Galaxy Tab A9 Plus (4GB+64GB) WiFi,galaxy-tab-a9-plus-4gb64gb-wifi,21,2,5990000,4290000
+190,163572,Galaxy Tab A9 (4GB+64GB) Wifi,galaxy-tab-a9-4gb64gb-wifi,21,2,3990000,2490000
+191,149908,Tai nghe Bluetooth True Wireless Galaxy Buds 2 Pro R510N,tai-nghe-bluetooth-true-wireless-galaxy-buds-2-pro-r510n,22,2,4990000,2499000
+192,162977,Ốp Lưng Thông Minh Nhập Hội Linh Hoạt Z Flip5,op-lung-thong-minh-nhap-hoi-linh-hoat-z-flip5,22,2,1990000,199000
+193,162333,Củ Sạc 45W đen (Kèm cáp 1.8m),cu-sac-45w-en-kem-cap-18m,22,2,1190000,699000
+194,165734,Watch SE 2 GPS 40mm viền nhôm dây thể thao,watch-se-2-gps-40mm-vien-nhom-day-the-thao,23,50,5490000,0
+195,162882,Galaxy Watch6 40mm BT,galaxy-watch6-40mm-bt,23,2,6990000,2990000
+196,163950,Vòng Đeo Tay Thông Minh Mi Band 8,vong-eo-tay-thong-minh-mi-band-8,23,9,990000,290000
+197,163952,Vòng Đeo Tay Thông Minh Mi Band 8 Active,vong-eo-tay-thong-minh-mi-band-8-active,23,9,690000,390000
+198,165598,Redmi Watch 5 Lite,redmi-watch-5-lite,23,9,1390000,1190000
+199,165018,Galaxy Watch FE,galaxy-watch-fe,23,2,4990000,2090000
+200,165597,Redmi Watch 5 Active,redmi-watch-5-active,23,9,890000,750000
+201,162885,Galaxy Watch6 44mm BT,galaxy-watch6-44mm-bt,23,2,7490000,3490000
+202,162888,Galaxy Watch6 Classic 43mm BT,galaxy-watch6-classic-43mm-bt,23,2,8990000,4490000
+203,162891,Galaxy Watch6 Classic 47mm BT,galaxy-watch6-classic-47mm-bt,23,2,9490000,4990000
+204,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,24,1,1490000,999000
+205,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,24,1,199000,109000
+206,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,24,1,1539000,799000
+207,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,24,1,699000,279000
+208,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,24,1,199000,99000
+209,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,24,1,14990000,11990000
+210,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,24,1,67590000,39990000
+211,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,24,1,11290000,8990000
+212,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,25,1,1490000,999000
+213,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,25,1,199000,109000
+214,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,25,1,1539000,799000
+215,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,25,1,699000,279000
+216,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,25,1,199000,99000
+217,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,25,1,14990000,11990000
+218,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,25,1,67590000,39990000
+219,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,25,1,11290000,8990000
+220,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,26,1,1490000,999000
+221,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,26,1,199000,109000
+222,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,26,1,1539000,799000
+223,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,26,1,699000,279000
+224,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,26,1,199000,99000
+225,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,26,1,14990000,11990000
+226,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,26,1,67590000,39990000
+227,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,26,1,11290000,8990000
+228,560000826,Đèn Treo Trần Thủy Tinh ECODL6 Đen,en-treo-tran-thuy-tinh-ecodl6-en,27,1,6999000,1490000
+229,560000835,Đèn Treo Trần Thủy Tinh ECODL9 Vàng,en-treo-tran-thuy-tinh-ecodl9-vang,27,1,3699000,1790000
+230,560000837,Đèn Treo Trần Thủy Tinh ECODL10 Vàng,en-treo-tran-thuy-tinh-ecodl10-vang,27,1,4999000,2390000
+231,560000838,Đèn Treo Trần Thủy Tinh ECODL10 Đen,en-treo-tran-thuy-tinh-ecodl10-en,27,1,4999000,1390000
+232,560000839,Đèn Treo Trần Thủy Tinh ECODL11,en-treo-tran-thuy-tinh-ecodl11,27,1,7499000,0
+233,164405,Smart Tivi QA55Q60D,smart-tivi-qa55q60d,0,2,17900000,13990000
+234,164407,Smart Tivi QA43Q60D,smart-tivi-qa43q60d,0,2,12900000,10390000
+235,164636,BRAVIA 3 K-55S30,bravia-3-k-55s30,0,1,19990000,16990000
+236,164599,Smart Tivi 55UT8050PSB,smart-tivi-55ut8050psb,0,3,16900000,11390000
+237,164414,Smart Tivi UA65DU8000,smart-tivi-ua65du8000,0,2,18400000,13990000
+238,164633,BRAVIA 3 K-85S30,bravia-3-k-85s30,0,1,0,42890000
+239,162651,Smart Tivi 32S5400A,smart-tivi-32s5400a,0,4,5690000,3990000
+240,164399,Smart Tivi QA65Q70D,smart-tivi-qa65q70d,0,2,26400000,20590000
+241,149614,Google Tivi 55P638,google-tivi-55p638,0,4,13090000,7990000
+242,164400,Smart Tivi QA55Q70D,smart-tivi-qa55q70d,0,2,21900000,14990000
+243,164182,Loa Kéo K-1200,loa-keo-k-1200,0,13,8590000,5990000
+244,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,0,1,8490000,6490000
+245,162474,Loa Kéo K-18X5,loa-keo-k-18x5,0,13,11890000,0
+246,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,0,14,13490000,11490000
+247,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,0,14,8790000,7890000
+248,162972,Loa Kéo K-360,loa-keo-k-360,0,13,5990000,3490000
+249,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,0,14,13990000,5990000
+250,165338,Loa Kéo K-15X9,loa-keo-k-15x9,0,13,9990000,7990000
+251,148948,Loa Thùng Kéo BA 1000VII,loa-thung-keo-ba-1000vii,0,1,15990000,12390000
+252,151052,Loa Kéo Điện TS-18A8000,loa-keo-ien-ts-18a8000,0,14,22990000,19890000
+253,164182,Loa Kéo K-1200,loa-keo-k-1200,0,13,8590000,5990000
+254,164033,Loa Kéo S1588K,loa-keo-s1588k,0,16,8490000,3490000
+255,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,0,1,8490000,6490000
+256,162474,Loa Kéo K-18X5,loa-keo-k-18x5,0,13,11890000,0
+257,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,0,14,13490000,11490000
+258,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,0,14,8790000,7890000
+259,162972,Loa Kéo K-360,loa-keo-k-360,0,13,5990000,3490000
+260,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,0,14,13990000,5990000
+261,145761,Loa Kéo K-1000,loa-keo-k-1000,0,13,8590000,999000
+262,165338,Loa Kéo K-15X9,loa-keo-k-15x9,0,13,9990000,7990000
+263,164061,Loa Karaoke Xách Tay X-316,loa-karaoke-xach-tay-x-316,0,13,6990000,4890000
+264,150785,Loa Xách Tay Hiệu BA 9999 VII,loa-xach-tay-hieu-ba-9999-vii,0,1,10490000,9390000
+265,150120,Loa Di Động Xách Tay PASION 2,loa-di-ong-xach-tay-pasion-2,0,17,9990000,6590000
+266,162970,Dàn Âm Thanh Di Động CS445D,dan-am-thanh-di-ong-cs445d,0,23,6490000,2990000
+267,162382,Loa Karaoke Xách Tay S8,loa-karaoke-xach-tay-s8,0,19,7490000,5490000
+268,164818,Loa Xách Tay N3379K,loa-xach-tay-n3379k,0,16,7990000,5390000
+269,150379,Loa Xách Tay Karaoke MK-4026,loa-xach-tay-karaoke-mk-4026,0,24,4290000,1490000
+270,165431,Loa Karaoke Xách Tay K208C,loa-karaoke-xach-tay-k208c,0,14,10700000,8190000
+271,148840,Dàn Âm Thanh Di Động KSNet450,dan-am-thanh-di-ong-ksnet450,0,23,12170000,10490000
+272,162442,Loa Di Động Xách Tay PASION 2c (Màu Vàng),loa-di-ong-xach-tay-pasion-2c-mau-vang,0,17,9990000,6890000
+273,148792,Inverter 550 Lít NR-DZ601YGKV,inverter-550-lit-nr-dz601ygkv,0,11,40290000,31990000
+274,164522,Inverter 496 Lít EQE4900A-A,inverter-496-lit-eqe4900a-a,0,28,23490000,14990000
+275,165728,Inverter 205 Lít RT256N4EBN,inverter-205-lit-rt256n4ebn,0,6,5990000,4990000
+276,148151,Inverter 325 Lít GR-RB410WE-PMV(37)-SG,inverter-325-lit-gr-rb410we-pmv37-sg,0,5,15240000,9490000
+277,163702,147 Lít HR T6147TDG,147-lit-hr-t6147tdg,0,31,4800000,3890000
+278,148135,Inverter 268 Lít NR-TV301BPKV,inverter-268-lit-nr-tv301bpkv,0,11,12290000,10690000
+279,145309,Inverter 188 Lít NR-BA229PAVN,inverter-188-lit-nr-ba229pavn,0,11,8190000,6990000
+280,162418,Inverter 382 Lít RT38CG6584B1SV,inverter-382-lit-rt38cg6584b1sv,0,2,15590000,12290000
+281,145304,Inverter 236 Lít TMF-RT22M4032BU,inverter-236-lit-tmf-rt22m4032bu,0,2,9190000,6690000
+282,164777,Inverter 458 Lít RS-460PBW,inverter-458-lit-rs-460pbw,0,7,15490000,10990000
+283,145271,180 Lít VH-2299HY2,180-lit-vh-2299hy2,0,35,6390000,4490000
+284,162627,100 Lít IF-11,100-lit-if-11,0,36,6509000,4990000
+285,162963,327 Lít KGFZ389NK2,327-lit-kgfz389nk2,0,39,0,8490000
+286,148453,Inverter 425 Lít AQF-C5701E,inverter-425-lit-aqf-c5701e,0,29,13290000,9290000
+287,142773,Inverter 485 Lít VH-6699W3,inverter-485-lit-vh-6699w3,0,35,17290000,14890000
+288,141114,Inverter 410 Lít VH-5699HY3,inverter-410-lit-vh-5699hy3,0,35,14890000,11990000
+289,143050,Inverter 770 Lít DMF-7699WSI,inverter-770-lit-dmf-7699wsi,0,37,0,13990000
+290,140747,100 Lít VH-150HY2,100-lit-vh-150hy2,0,35,5490000,0
+291,162637,230 Lít DMF-2688W2,230-lit-dmf-2688w2,0,37,6990000,3990000
+292,162969,220 Lít VH-2899W2KD,220-lit-vh-2899w2kd,0,35,8990000,0
+293,165462,280 Lít DL-2800A2,280-lit-dl-2800a2,0,37,10990000,6690000
+294,148450,235 Lít AQS-AF340S,235-lit-aqs-af340s,0,29,10890000,6490000
+295,149667,280 Lít AQS-AF400N,280-lit-aqs-af400n,0,29,10990000,6990000
+296,145545,Inverter 340 Lít VH-408W3L,inverter-340-lit-vh-408w3l,0,35,14590000,12490000
+297,150085,Inverter 480 Lít VH-5089K3,inverter-480-lit-vh-5089k3,0,35,16790000,14690000
+298,164371,630 Lít DL-7000A2,630-lit-dl-7000a2,0,37,0,21690000
+299,147131,Inverter 340 Lít VH-408K3L,inverter-340-lit-vh-408k3l,0,35,13990000,12090000
+300,145194,Inverter 500 Lít DL-5000A3,inverter-500-lit-dl-5000a3,0,37,14990000,10990000
+301,145746,Inverter 700 Lít VH-8009HP3,inverter-700-lit-vh-8009hp3,0,35,30190000,26090000
+302,144132,Inverter 900 Lít VH-1009HP3,inverter-900-lit-vh-1009hp3,0,35,33190000,28390000
+303,162659,Inverter 9.5 Kg BD-954HVOW,inverter-95-kg-bd-954hvow,0,27,10990000,6490000
+304,148653,Inverter 10.5 Kg TW-BL115A2V(SS),inverter-105-kg-tw-bl115a2vss,0,5,12090000,6490000
+305,163309,14 Kg AQW-FR140UHT.SS,14-kg-aqw-fr140uhtss,0,29,15290000,7990000
+306,165152,Inverter 15 Kg TV2515DV5J,inverter-15-kg-tv2515dv5j,0,3,13990000,9790000
+307,149705,Inverter Giặt 10 Kg - Sấy 2 Kg NA-V10FR1BVT,inverter-giat-10-kg-say-2-kg-na-v10fr1bvt,0,11,16990000,14790000
+308,148380,9 Kg WGG244A0SG,9-kg-wgg244a0sg,0,34,18700000,6490000
+309,166060,Inverter 12 Kg AW12-BP4959U1K(W),inverter-12-kg-aw12-bp4959u1kw,0,29,0,8990000
+310,162719,8.2 Kg NA-F82Y01DRV,82-kg-na-f82y01drv,0,11,5990000,5190000
+311,148061,10 Kg AQW-FR100GT.BK,10-kg-aqw-fr100gtbk,0,29,8190000,6190000
+312,162789,8.5 Kg VWVC8502FS,85-kg-vwvc8502fs,0,32,7490000,3499000
+313,162689,Máy Sấy Thông Hơi 7 Kg TD-H80SEV(SK),may-say-thong-hoi-7-kg-td-h80sevsk,0,5,7490000,5990000
+314,165452,Máy Sấy Thông Hơi 9 Kg EDV904N3SC,may-say-thong-hoi-9-kg-edv904n3sc,0,28,0,11490000
+315,165451,Máy Sấy Thông Hơi 9 Kg EDV904H3WC,may-say-thong-hoi-9-kg-edv904h3wc,0,28,0,10490000
+316,163802,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50M,may-say-bom-nhiet-inverter-105-kg-dvhp50m,0,3,29490000,19490000
+317,163803,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50W,may-say-bom-nhiet-inverter-105-kg-dvhp50w,0,3,28990000,19790000
+318,162687,Máy Sấy Inverter 10 Kg TD-BK110GHV(MK),may-say-inverter-10-kg-td-bk110ghvmk,0,5,0,16990000
+319,162409,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50B,may-say-bom-nhiet-inverter-105-kg-dvhp50b,0,3,30490000,20190000
+320,165454,Máy Sấy Thông Hơi 9 Kg EDS904N3SC,may-say-thong-hoi-9-kg-eds904n3sc,0,28,0,12990000
+321,165453,Máy Sấy Thông Hơi 9 Kg EDS904H3WC,may-say-thong-hoi-9-kg-eds904h3wc,0,28,0,11990000
+322,162688,Máy Sấy Ngưng Tụ 8 Kg TD-K90MEV(SK),may-say-ngung-tu-8-kg-td-k90mevsk,0,5,0,9990000
+323,164141,Inverter 1 Hp CU/CS-PU9AKH-8,inverter-1-hp-cucs-pu9akh-8,0,11,0,11990000
+324,164438,Inverter 1 Hp ATKF25YVMV,inverter-1-hp-atkf25yvmv,0,42,0,10590000
+325,165254,Inverter 1 Hp 42XIT009 - Thương Hiệu Mỹ,inverter-1-hp-42xit009-thuong-hieu-my,0,43,11290000,5490000
+326,164162,Inverter 1 Hp RAS-H10S4KCV2G-V,inverter-1-hp-ras-h10s4kcv2g-v,0,5,10990000,8490000
+327,164142,Inverter 1.5 Hp CU/CS-PU12AKH-8,inverter-15-hp-cucs-pu12akh-8,0,11,0,14590000
+328,151070,Inverter 1.5 Hp AH-X13ZEW,inverter-15-hp-ah-x13zew,0,12,11290000,8490000
+329,162096,Inverter 1 Hp CU/CS-XU9ZKH-8,inverter-1-hp-cucs-xu9zkh-8,0,11,0,13990000
+330,164078,Inverter 1 Hp V10WIN1,inverter-1-hp-v10win1,0,3,11220000,9090000
+331,164139,Inverter 1 Hp AQA-RV10QC2,inverter-1-hp-aqa-rv10qc2,0,29,9090000,5990000
+332,151069,Inverter 1 Hp AH-X10ZEW,inverter-1-hp-ah-x10zew,0,12,9690000,6990000
+333,162667,Máy Làm Mát Không Khí SHD7744,may-lam-mat-khong-khi-shd7744,0,46,4390000,2690000
+334,145033,Máy làm mát không khí SHD7727,may-lam-mat-khong-khi-shd7727,0,46,6500000,4390000
+335,164298,Quạt Làm Mát Không Khí I-99 200W - Thái Lan,quat-lam-mat-khong-khi-i-99-200w-thai-lan,0,1,5990000,3990000
+336,164292,Quạt Điều Hòa HPCF1-045 112W,quat-ieu-hoa-hpcf1-045-112w,0,1,5590000,3299000
+337,164405,Smart Tivi QA55Q60D,smart-tivi-qa55q60d,0,2,17900000,13990000
+338,164407,Smart Tivi QA43Q60D,smart-tivi-qa43q60d,0,2,12900000,10390000
+339,164636,BRAVIA 3 K-55S30,bravia-3-k-55s30,0,1,19990000,16990000
+340,164599,Smart Tivi 55UT8050PSB,smart-tivi-55ut8050psb,0,3,16900000,11390000
+341,164414,Smart Tivi UA65DU8000,smart-tivi-ua65du8000,0,2,18400000,13990000
+342,164633,BRAVIA 3 K-85S30,bravia-3-k-85s30,0,1,0,42890000
+343,162651,Smart Tivi 32S5400A,smart-tivi-32s5400a,0,4,5690000,3990000
+344,164399,Smart Tivi QA65Q70D,smart-tivi-qa65q70d,0,2,26400000,20590000
+345,149614,Google Tivi 55P638,google-tivi-55p638,0,4,13090000,7990000
+346,164400,Smart Tivi QA55Q70D,smart-tivi-qa55q70d,0,2,21900000,14990000
+347,164182,Loa Kéo K-1200,loa-keo-k-1200,0,13,8590000,5990000
+348,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,0,1,8490000,6490000
+349,162474,Loa Kéo K-18X5,loa-keo-k-18x5,0,13,11890000,0
+350,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,0,14,13490000,11490000
+351,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,0,14,8790000,7890000
+352,162972,Loa Kéo K-360,loa-keo-k-360,0,13,5990000,3490000
+353,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,0,14,13990000,5990000
+354,165338,Loa Kéo K-15X9,loa-keo-k-15x9,0,13,9990000,7990000
+355,148948,Loa Thùng Kéo BA 1000VII,loa-thung-keo-ba-1000vii,0,1,15990000,12390000
+356,151052,Loa Kéo Điện TS-18A8000,loa-keo-ien-ts-18a8000,0,14,22990000,19890000
+357,164182,Loa Kéo K-1200,loa-keo-k-1200,0,13,8590000,5990000
+358,164033,Loa Kéo S1588K,loa-keo-s1588k,0,16,8490000,3490000
+359,164472,Loa Kéo BA 850 V,loa-keo-ba-850-v,0,1,8490000,6490000
+360,162474,Loa Kéo K-18X5,loa-keo-k-18x5,0,13,11890000,0
+361,165430,Loa Kéo DA-118XP,loa-keo-da-118xp,0,14,13490000,11490000
+362,165426,Loa Kéo TS-15G550N,loa-keo-ts-15g550n,0,14,8790000,7890000
+363,162972,Loa Kéo K-360,loa-keo-k-360,0,13,5990000,3490000
+364,144852,Loa Kéo TS-18G800X,loa-keo-ts-18g800x,0,14,13990000,5990000
+365,145761,Loa Kéo K-1000,loa-keo-k-1000,0,13,8590000,999000
+366,165338,Loa Kéo K-15X9,loa-keo-k-15x9,0,13,9990000,7990000
+367,164061,Loa Karaoke Xách Tay X-316,loa-karaoke-xach-tay-x-316,0,13,6990000,4890000
+368,150785,Loa Xách Tay Hiệu BA 9999 VII,loa-xach-tay-hieu-ba-9999-vii,0,1,10490000,9390000
+369,150120,Loa Di Động Xách Tay PASION 2,loa-di-ong-xach-tay-pasion-2,0,17,9990000,6590000
+370,162970,Dàn Âm Thanh Di Động CS445D,dan-am-thanh-di-ong-cs445d,0,23,6490000,2990000
+371,162382,Loa Karaoke Xách Tay S8,loa-karaoke-xach-tay-s8,0,19,7490000,5490000
+372,164818,Loa Xách Tay N3379K,loa-xach-tay-n3379k,0,16,7990000,5390000
+373,150379,Loa Xách Tay Karaoke MK-4026,loa-xach-tay-karaoke-mk-4026,0,24,4290000,1490000
+374,165431,Loa Karaoke Xách Tay K208C,loa-karaoke-xach-tay-k208c,0,14,10700000,8190000
+375,148840,Dàn Âm Thanh Di Động KSNet450,dan-am-thanh-di-ong-ksnet450,0,23,12170000,10490000
+376,162442,Loa Di Động Xách Tay PASION 2c (Màu Vàng),loa-di-ong-xach-tay-pasion-2c-mau-vang,0,17,9990000,6890000
+377,148792,Inverter 550 Lít NR-DZ601YGKV,inverter-550-lit-nr-dz601ygkv,0,11,40290000,31990000
+378,164522,Inverter 496 Lít EQE4900A-A,inverter-496-lit-eqe4900a-a,0,28,23490000,14990000
+379,165728,Inverter 205 Lít RT256N4EBN,inverter-205-lit-rt256n4ebn,0,6,5990000,4990000
+380,148151,Inverter 325 Lít GR-RB410WE-PMV(37)-SG,inverter-325-lit-gr-rb410we-pmv37-sg,0,5,15240000,9490000
+381,163702,147 Lít HR T6147TDG,147-lit-hr-t6147tdg,0,31,4800000,3890000
+382,148135,Inverter 268 Lít NR-TV301BPKV,inverter-268-lit-nr-tv301bpkv,0,11,12290000,10690000
+383,145309,Inverter 188 Lít NR-BA229PAVN,inverter-188-lit-nr-ba229pavn,0,11,8190000,6990000
+384,162418,Inverter 382 Lít RT38CG6584B1SV,inverter-382-lit-rt38cg6584b1sv,0,2,15590000,12290000
+385,145304,Inverter 236 Lít TMF-RT22M4032BU,inverter-236-lit-tmf-rt22m4032bu,0,2,9190000,6690000
+386,164777,Inverter 458 Lít RS-460PBW,inverter-458-lit-rs-460pbw,0,7,15490000,10990000
+387,145271,180 Lít VH-2299HY2,180-lit-vh-2299hy2,0,35,6390000,4490000
+388,162627,100 Lít IF-11,100-lit-if-11,0,36,6509000,4990000
+389,162963,327 Lít KGFZ389NK2,327-lit-kgfz389nk2,0,39,0,8490000
+390,148453,Inverter 425 Lít AQF-C5701E,inverter-425-lit-aqf-c5701e,0,29,13290000,9290000
+391,142773,Inverter 485 Lít VH-6699W3,inverter-485-lit-vh-6699w3,0,35,17290000,14890000
+392,141114,Inverter 410 Lít VH-5699HY3,inverter-410-lit-vh-5699hy3,0,35,14890000,11990000
+393,143050,Inverter 770 Lít DMF-7699WSI,inverter-770-lit-dmf-7699wsi,0,37,0,13990000
+394,140747,100 Lít VH-150HY2,100-lit-vh-150hy2,0,35,5490000,0
+395,162637,230 Lít DMF-2688W2,230-lit-dmf-2688w2,0,37,6990000,3990000
+396,162969,220 Lít VH-2899W2KD,220-lit-vh-2899w2kd,0,35,8990000,0
+397,165462,280 Lít DL-2800A2,280-lit-dl-2800a2,0,37,10990000,6690000
+398,148450,235 Lít AQS-AF340S,235-lit-aqs-af340s,0,29,10890000,6490000
+399,149667,280 Lít AQS-AF400N,280-lit-aqs-af400n,0,29,10990000,6990000
+400,145545,Inverter 340 Lít VH-408W3L,inverter-340-lit-vh-408w3l,0,35,14590000,12490000
+401,150085,Inverter 480 Lít VH-5089K3,inverter-480-lit-vh-5089k3,0,35,16790000,14690000
+402,164371,630 Lít DL-7000A2,630-lit-dl-7000a2,0,37,0,21690000
+403,147131,Inverter 340 Lít VH-408K3L,inverter-340-lit-vh-408k3l,0,35,13990000,12090000
+404,145194,Inverter 500 Lít DL-5000A3,inverter-500-lit-dl-5000a3,0,37,14990000,10990000
+405,145746,Inverter 700 Lít VH-8009HP3,inverter-700-lit-vh-8009hp3,0,35,30190000,26090000
+406,144132,Inverter 900 Lít VH-1009HP3,inverter-900-lit-vh-1009hp3,0,35,33190000,28390000
+407,162659,Inverter 9.5 Kg BD-954HVOW,inverter-95-kg-bd-954hvow,0,27,10990000,6490000
+408,148653,Inverter 10.5 Kg TW-BL115A2V(SS),inverter-105-kg-tw-bl115a2vss,0,5,12090000,6490000
+409,163309,14 Kg AQW-FR140UHT.SS,14-kg-aqw-fr140uhtss,0,29,15290000,7990000
+410,165152,Inverter 15 Kg TV2515DV5J,inverter-15-kg-tv2515dv5j,0,3,13990000,9790000
+411,149705,Inverter Giặt 10 Kg - Sấy 2 Kg NA-V10FR1BVT,inverter-giat-10-kg-say-2-kg-na-v10fr1bvt,0,11,16990000,14790000
+412,148380,9 Kg WGG244A0SG,9-kg-wgg244a0sg,0,34,18700000,6490000
+413,166060,Inverter 12 Kg AW12-BP4959U1K(W),inverter-12-kg-aw12-bp4959u1kw,0,29,0,8990000
+414,162719,8.2 Kg NA-F82Y01DRV,82-kg-na-f82y01drv,0,11,5990000,5190000
+415,148061,10 Kg AQW-FR100GT.BK,10-kg-aqw-fr100gtbk,0,29,8190000,6190000
+416,162789,8.5 Kg VWVC8502FS,85-kg-vwvc8502fs,0,32,7490000,3499000
+417,162689,Máy Sấy Thông Hơi 7 Kg TD-H80SEV(SK),may-say-thong-hoi-7-kg-td-h80sevsk,0,5,7490000,5990000
+418,165452,Máy Sấy Thông Hơi 9 Kg EDV904N3SC,may-say-thong-hoi-9-kg-edv904n3sc,0,28,0,11490000
+419,165451,Máy Sấy Thông Hơi 9 Kg EDV904H3WC,may-say-thong-hoi-9-kg-edv904h3wc,0,28,0,10490000
+420,163802,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50M,may-say-bom-nhiet-inverter-105-kg-dvhp50m,0,3,29490000,19490000
+421,163803,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50W,may-say-bom-nhiet-inverter-105-kg-dvhp50w,0,3,28990000,19790000
+422,162687,Máy Sấy Inverter 10 Kg TD-BK110GHV(MK),may-say-inverter-10-kg-td-bk110ghvmk,0,5,0,16990000
+423,162409,Máy Sấy Bơm Nhiệt Inverter 10.5 Kg DVHP50B,may-say-bom-nhiet-inverter-105-kg-dvhp50b,0,3,30490000,20190000
+424,165454,Máy Sấy Thông Hơi 9 Kg EDS904N3SC,may-say-thong-hoi-9-kg-eds904n3sc,0,28,0,12990000
+425,165453,Máy Sấy Thông Hơi 9 Kg EDS904H3WC,may-say-thong-hoi-9-kg-eds904h3wc,0,28,0,11990000
+426,162688,Máy Sấy Ngưng Tụ 8 Kg TD-K90MEV(SK),may-say-ngung-tu-8-kg-td-k90mevsk,0,5,0,9990000
+427,164141,Inverter 1 Hp CU/CS-PU9AKH-8,inverter-1-hp-cucs-pu9akh-8,0,11,0,11990000
+428,164438,Inverter 1 Hp ATKF25YVMV,inverter-1-hp-atkf25yvmv,0,42,0,10590000
+429,165254,Inverter 1 Hp 42XIT009 - Thương Hiệu Mỹ,inverter-1-hp-42xit009-thuong-hieu-my,0,43,11290000,5490000
+430,164162,Inverter 1 Hp RAS-H10S4KCV2G-V,inverter-1-hp-ras-h10s4kcv2g-v,0,5,10990000,8490000
+431,164142,Inverter 1.5 Hp CU/CS-PU12AKH-8,inverter-15-hp-cucs-pu12akh-8,0,11,0,14590000
+432,151070,Inverter 1.5 Hp AH-X13ZEW,inverter-15-hp-ah-x13zew,0,12,11290000,8490000
+433,162096,Inverter 1 Hp CU/CS-XU9ZKH-8,inverter-1-hp-cucs-xu9zkh-8,0,11,0,13990000
+434,164078,Inverter 1 Hp V10WIN1,inverter-1-hp-v10win1,0,3,11220000,9090000
+435,164139,Inverter 1 Hp AQA-RV10QC2,inverter-1-hp-aqa-rv10qc2,0,29,9090000,5990000
+436,151069,Inverter 1 Hp AH-X10ZEW,inverter-1-hp-ah-x10zew,0,12,9690000,6990000
+437,162667,Máy Làm Mát Không Khí SHD7744,may-lam-mat-khong-khi-shd7744,0,46,4390000,2690000
+438,145033,Máy làm mát không khí SHD7727,may-lam-mat-khong-khi-shd7727,0,46,6500000,4390000
+439,164298,Quạt Làm Mát Không Khí I-99 200W - Thái Lan,quat-lam-mat-khong-khi-i-99-200w-thai-lan,0,1,5990000,3990000
+440,164292,Quạt Điều Hòa HPCF1-045 112W,quat-ieu-hoa-hpcf1-045-112w,0,1,5590000,3299000
+441,141659,Máy làm mát không khí S106,may-lam-mat-khong-khi-s106,0,1,8390000,6990000
+442,164294,Quạt Điều Hòa HPCF1-021 86W,quat-ieu-hoa-hpcf1-021-86w,0,1,4590000,1990000
+443,164470,Máy Làm Mát Không Khí SHD7776 200W,may-lam-mat-khong-khi-shd7776-200w,0,46,4990000,3990000
+444,148865,Quạt Điều Hòa FEAB-110,quat-ieu-hoa-feab-110,0,1,5990000,4990000
+445,166869,Quạt Tháp Đối Lưu Cao Cấp DFS-D40G1,quat-thap-oi-luu-cao-cap-dfs-d40g1,0,1,1690000,699000
+446,149234,Quạt Bàn B202,quat-ban-b202,0,1,399000,199000
+447,141918,Quạt đứng F-LSA20(W)VN,quat-ung-f-lsa20wvn,0,5,1590000,1390000
+448,164549,Quạt Để Bàn Có Sạc Tích Điện PF-QB2150,quat-e-ban-co-sac-tich-ien-pf-qb2150,0,1,199000,99000
+449,166829,Quạt Đứng Có Remote Điều Khiển PF-QD310,quat-ung-co-remote-ieu-khien-pf-qd310,0,1,590000,399000
+450,149039,Quạt Treo Tường VY377990 - Xám,quat-treo-tuong-vy377990-xam,0,1,1072000,729000
+451,149040,Quạt Lửng VY538790 - Xám,quat-lung-vy538790-xam,0,1,666000,549000
+452,163663,Quạt lỡ L1638 - Xám Đồng,quat-lo-l1638-xam-ong,0,1,490000,349000
+453,131807,Quạt lửng L828,quat-lung-l828,0,1,550000,390000
+454,163659,Quạt Treo TC1622 - Đen Cam,quat-treo-tc1622-en-cam,0,1,570000,490000
+455,163910,Máy Lọc Không Khí MCQ30ZVM7-G - Malaysia,may-loc-khong-khi-mcq30zvm7-g-malaysia,0,42,4012000,3590000
+456,148979,Máy Lọc Không Khí SMART Air Purifier 4 Lite (BHR5274GL),may-loc-khong-khi-smart-air-purifier-4-lite-bhr5274gl,0,9,3990000,2090000
+457,162187,Máy Lọc Không Khí Puricare 360 Hit AS60GHWG0,may-loc-khong-khi-puricare-360-hit-as60ghwg0,0,3,8390000,5790000
+458,163911,Máy Lọc Không Khí MC30YVM7 - Malaysia,may-loc-khong-khi-mc30yvm7-malaysia,0,42,4586000,3990000
+459,164067,Máy Lọc Không Khí Smart Air Purifier 4 Compact EU (BHR5860EU),may-loc-khong-khi-smart-air-purifier-4-compact-eu-bhr5860eu,0,9,2590000,1590000
+460,148978,Máy Lọc Không Khí SMART Air Purifier 4,may-loc-khong-khi-smart-air-purifier-4,0,9,4990000,3590000
+461,163779,Máy Lọc Không Khí 360 Độ Alpha 2 Tầng Màu Vàng Be AS10GDBY0,may-loc-khong-khi-360-o-alpha-2-tang-mau-vang-be-as10gdby0,0,3,38800000,27790000
+462,150638,Máy Lọc Không Khí AC0850/20,may-loc-khong-khi-ac085020,0,1,4590000,3499000
+463,144898,Máy lọc không khí FP-J30E-A,may-loc-khong-khi-fp-j30e-a,0,12,2640000,2290000
+464,144058,Máy lọc không khí FP-J30E-B,may-loc-khong-khi-fp-j30e-b,0,12,2640000,2290000
+465,165352,Máy Lọc Nước RO 9 Lõi DN107 - Lõi RO Mỹ,may-loc-nuoc-ro-9-loi-dn107-loi-ro-my,0,48,5990000,2599000
+466,149234,Quạt Bàn B202,quat-ban-b202,0,1,399000,199000
+467,166869,Quạt Tháp Đối Lưu Cao Cấp DFS-D40G1,quat-thap-oi-luu-cao-cap-dfs-d40g1,0,1,1690000,699000
+468,164014,Máy Lọc Nước RO TK-CA811K-VN - Malaysia,may-loc-nuoc-ro-tk-ca811k-vn-malaysia,0,11,7390000,6490000
+469,148367,Bếp từ âm đôi EHI7260BB,bep-tu-am-oi-ehi7260bb,0,28,11500000,4599000
+470,163935,Nồi Cơm Điện Tử HD3170/66 0.85 Lít,noi-com-ien-tu-hd317066-085-lit,0,1,1290000,499000
+471,162982,Nồi Chiên Không Dầu FAF6.0M,noi-chien-khong-dau-faf60m,0,1,1990000,699000
+472,500000989,Bếp hồng ngoại đơn P45-1 2000W,bep-hong-ngoai-on-p45-1-2000w,0,1,999000,399000
+473,144924,Máy rửa mặt Dual Cleanser BCL1,may-rua-mat-dual-cleanser-bcl1,0,3,7000000,5490000
+474,144926,Máy nâng cơ toàn diện Total Lift-up BLL1,may-nang-co-toan-dien-total-lift-up-bll1,0,3,11400000,3990000
+475,144927,Mặt nạ Derma LED BWL1,mat-na-derma-led-bwl1,0,3,25000000,14990000
+476,LG BLM1V,Máy Nâng Cơ Toàn Diện BLM1V,may-nang-co-toan-dien-blm1v,0,3,9000000,7890000
+477,LGBWM1V,Mặt Nạ LED Chăm Sóc Da BWM1V,mat-na-led-cham-soc-da-bwm1v,0,3,0,12790000
+478,144543,Máy Đo Đường Sinocare,may-o-uong-sinocare,0,1,299000,39000
+479,164014,Máy Lọc Nước RO TK-CA811K-VN - Malaysia,may-loc-nuoc-ro-tk-ca811k-vn-malaysia,0,11,7390000,6490000
+480,165352,Máy Lọc Nước RO 9 Lõi DN107 - Lõi RO Mỹ,may-loc-nuoc-ro-9-loi-dn107-loi-ro-my,0,48,5990000,2599000
+481,164530,Máy Lọc Nước RO TWP-N2396SVN(W) 10 Lõi,may-loc-nuoc-ro-twp-n2396svnw-10-loi,0,5,6990000,0
+482,164770,Máy Lọc Nước Ion Kiềm Hydrogen 10 Lõi MP-S1001H,may-loc-nuoc-ion-kiem-hydrogen-10-loi-mp-s1001h,0,47,8390000,3990000
+483,165120,Máy Lọc Nước Nóng Nguội Lạnh KAD-M29 11 Lõi,may-loc-nuoc-nong-nguoi-lanh-kad-m29-11-loi,0,45,13900000,11490000
+484,164858,Máy Lọc Nước Nóng Nguội Lạnh TWP-W2398SVN(M) 10 Lõi,may-loc-nuoc-nong-nguoi-lanh-twp-w2398svnm-10-loi,0,5,13990000,9490000
+485,142919,Máy lọc nước A1,may-loc-nuoc-a1,0,1,10400000,7990000
+486,164995,Máy Lọc Nước KAQ-UC05 10 Lõi,may-loc-nuoc-kaq-uc05-10-loi,0,45,6400000,4790000
+487,164771,Máy Lọc Nước Ion Kiềm Hydrogen Nóng Lạnh Nguội 10 Lõi MP-S1021H,may-loc-nuoc-ion-kiem-hydrogen-nong-lanh-nguoi-10-loi-mp-s1021h,0,47,11890000,7490000
+488,164531,Máy Lọc Nước RO Nóng Nguội Lạnh TWP-W2396SVN(M) 10 Lõi,may-loc-nuoc-ro-nong-nguoi-lanh-twp-w2396svnm-10-loi,0,5,13490000,7990000
+489,164034,Máy Nước Nóng Trực Tiếp LUXE-TE,may-nuoc-nong-truc-tiep-luxe-te,0,1,1990000,1090000
+490,165395,Máy Nước Nóng Gián Tiếp 20 Lít SWH 20H M-14 ESA SLIM 823044 - Thái Lan,may-nuoc-nong-gian-tiep-20-lit-swh-20h-m-14-esa-slim-823044-thai-lan,0,1,2990000,1790000
+491,166206,Máy Nước Nóng Trực Tiếp TWH-45EMCPVN(K)-CB,may-nuoc-nong-truc-tiep-twh-45emcpvnk-cb,0,5,4150000,3490000
+492,150403,Máy Nước Nóng Trực Tiếp AURES PREMIUM 4.5P SPACE,may-nuoc-nong-truc-tiep-aures-premium-45p-space,0,1,4390000,3190000
+493,150405,Máy Nước Nóng Trực Tiếp AURES PREMIUM+ 4.5P,may-nuoc-nong-truc-tiep-aures-premium-45p,0,1,4590000,3290000
+494,166205,Máy Nước Nóng Trực Tiếp TWH-45MCNVN(S)-WB,may-nuoc-nong-truc-tiep-twh-45mcnvns-wb,0,5,2990000,2490000
+495,164035,Máy Nước Nóng Trực Tiếp LUXE-SN,may-nuoc-nong-truc-tiep-luxe-sn,0,1,2090000,1690000
+496,165613,Máy Nước Nóng Gián Tiếp SLIM3 15 RS VN 15 Lít,may-nuoc-nong-gian-tiep-slim3-15-rs-vn-15-lit,0,1,2610000,2190000
+497,150450,Máy Nước Nóng Trực Tiếp DH-4UP1VS,may-nuoc-nong-truc-tiep-dh-4up1vs,0,11,6200000,4990000
+498,150404,Máy Nước Nóng Trực Tiếp AURES PREMIUM 4.5,may-nuoc-nong-truc-tiep-aures-premium-45,0,1,3190000,2290000
+499,165848,"Máy Rửa Rau Quả - Giảm Thuốc Trừ Sâu UC-B01FWH Diệt Khuẩn Virus 99.9%" may-rua-rau-qua-giam-thuoc-tru-sau-uc-b01fwh-diet-khuan-virus-999,0,1,11900000,6490000
+500,164797,Màng Bọc Thực Phẩm Horeca KS-WR45250H 250m X 45cm,mang-boc-thuc-pham-horeca-ks-wr45250h-250m-x-45cm,0,46,299000,59000
+501,164902,Máy Tiệt Trùng Sấy Khô Đa Năng NU-MX100PYUE,may-tiet-trung-say-kho-a-nang-nu-mx100pyue,0,11,1840000,1590000
+502,HX3806,Máy Tăm Nước HX3806/31,may-tam-nuoc-hx380631,0,1,0,2695000
+503,HX3671/23,Bàn Chải Đánh Răng Điện Philips HX3671/23,ban-chai-anh-rang-ien-philips-hx367123,0,1,1655000,1390000
+504,HX3641,Bàn Chải Đánh Răng Điện Sonicare HX3641/41,ban-chai-anh-rang-ien-sonicare-hx364141,0,1,1255000,1090000
+505,166810,V50 Lite 5G (12GB+256GB),v50-lite-5g-12gb256gb,0,52,0,10990000
+506,165581,iPhone 16 Pro Max 256GB Titan Trắng,iphone-16-pro-max-256gb-titan-trang,0,50,34990000,29999000
+507,166308,Reno13 F (8GB+256GB),reno13-f-8gb256gb,0,51,0,8690000
+508,166366,Galaxy S25 Ultra 5G (12GB+256GB),galaxy-s25-ultra-5g-12gb256gb,0,2,33990000,26990000
+509,163710,iPhone 15 128GB,iphone-15-128gb,0,50,19990000,15450000
+510,164994,A18 (4GB+64GB),a18-4gb64gb,0,51,3290000,2490000
+511,165966,Y19s (8GB+128GB),y19s-8gb128gb,0,52,4790000,3890000
+512,166146,POCO M6 (6GB+128GB),poco-m6-6gb128gb,0,9,4290000,3190000
+513,164942,Reno12 5G (12GB+256GB),reno12-5g-12gb256gb,0,51,12990000,8990000
+514,166020,MacBook Air M1 13 inch 256GB MGN63SA/A Xám,macbook-air-m1-13-inch-256gb-mgn63saa-xam,0,50,19990000,16999000
+515,166167,MacBook Air 13 inch M2 (16GB+256GB),macbook-air-13-inch-m2-16gb256gb,0,50,24990000,21590000
+516,164883,Pro M4 11 inch WiFi (8GB+256GB),pro-m4-11-inch-wifi-8gb256gb,0,1,0,26990000
+517,166223,Macbook Pro 14 inch M4 (16GB+512GB),macbook-pro-14-inch-m4-16gb512gb,0,50,0,37990000
+518,162871,Galaxy Tab S9 Plus (12GB+512GB),galaxy-tab-s9-plus-12gb512gb,0,2,0,27990000
+519,162879,Galaxy Tab S9 Ultra (12GB+512GB),galaxy-tab-s9-ultra-12gb512gb,0,2,34990000,26990000
+520,162877,Galaxy Tab S9 Ultra (12GB+256GB),galaxy-tab-s9-ultra-12gb256gb,0,2,32990000,25490000
+521,162881,Galaxy Tab S9 Ultra (16GB+1TB),galaxy-tab-s9-ultra-16gb1tb,0,2,38990000,32990000
+522,163573,Galaxy Tab A9 Plus (4GB+64GB) WiFi,galaxy-tab-a9-plus-4gb64gb-wifi,0,2,5990000,4290000
+523,163572,Galaxy Tab A9 (4GB+64GB) Wifi,galaxy-tab-a9-4gb64gb-wifi,0,2,3990000,2490000
+524,149908,Tai nghe Bluetooth True Wireless Galaxy Buds 2 Pro R510N,tai-nghe-bluetooth-true-wireless-galaxy-buds-2-pro-r510n,0,2,4990000,2499000
+525,162977,Ốp Lưng Thông Minh Nhập Hội Linh Hoạt Z Flip5,op-lung-thong-minh-nhap-hoi-linh-hoat-z-flip5,0,2,1990000,199000
+526,162333,Củ Sạc 45W đen (Kèm cáp 1.8m),cu-sac-45w-en-kem-cap-18m,0,2,1190000,699000
+527,165734,Watch SE 2 GPS 40mm viền nhôm dây thể thao,watch-se-2-gps-40mm-vien-nhom-day-the-thao,0,50,0,5490000
+528,162882,Galaxy Watch6 40mm BT,galaxy-watch6-40mm-bt,0,2,6990000,2990000
+529,163950,Vòng Đeo Tay Thông Minh Mi Band 8,vong-eo-tay-thong-minh-mi-band-8,0,9,990000,290000
+530,163952,Vòng Đeo Tay Thông Minh Mi Band 8 Active,vong-eo-tay-thong-minh-mi-band-8-active,0,9,690000,390000
+531,165598,Redmi Watch 5 Lite,redmi-watch-5-lite,0,9,1390000,1190000
+532,165018,Galaxy Watch FE,galaxy-watch-fe,0,2,4990000,2090000
+533,165597,Redmi Watch 5 Active,redmi-watch-5-active,0,9,890000,750000
+534,162885,Galaxy Watch6 44mm BT,galaxy-watch6-44mm-bt,0,2,7490000,3490000
+535,162888,Galaxy Watch6 Classic 43mm BT,galaxy-watch6-classic-43mm-bt,0,2,8990000,4490000
+536,162891,Galaxy Watch6 Classic 47mm BT,galaxy-watch6-classic-47mm-bt,0,2,9490000,4990000
+537,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,0,1,1490000,999000
+538,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,0,1,199000,109000
+539,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,0,1,1539000,799000
+540,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,0,1,699000,279000
+541,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,0,1,199000,99000
+542,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,0,1,14990000,11990000
+543,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,0,1,67590000,39990000
+544,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,0,1,11290000,8990000
+545,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,0,1,1490000,999000
+546,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,0,1,199000,109000
+547,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,0,1,1539000,799000
+548,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,0,1,699000,279000
+549,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,0,1,199000,99000
+550,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,0,1,14990000,11990000
+551,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,0,1,67590000,39990000
+552,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,0,1,11290000,8990000
+553,130002266,Ghế Nhựa SL-8022A1 Xanh,ghe-nhua-sl-8022a1-xanh,0,1,1490000,999000
+554,130001529,Đôn Sắt SC99001M Đen,on-sat-sc99001m-en,0,1,199000,109000
+555,130002269,Ghế Nhựa SL-8023A2 Kem,ghe-nhua-sl-8023a2-kem,0,1,1539000,799000
+556,130001852,Ghế Xếp Florida HM-SC27015F-C,ghe-xep-florida-hm-sc27015f-c,0,1,699000,279000
+557,130001530,Đôn Lưới Sắt SC99001M Hồng,on-luoi-sat-sc99001m-hong,0,1,199000,99000
+558,130001671,Tủ Áo 4 Cửa Rosa A3003,tu-ao-4-cua-rosa-a3003,0,1,14990000,11990000
+559,130001087,Tủ Áo 4 Cửa Morgan CP1104W1-V36FWH 2.4M,tu-ao-4-cua-morgan-cp1104w1-v36fwh-24m,0,1,67590000,39990000
+560,130001564,Tủ Áo 3 Cửa Queen NS03051-3 Trắng,tu-ao-3-cua-queen-ns03051-3-trang,0,1,11290000,8990000
+561,560000826,Đèn Treo Trần Thủy Tinh ECODL6 Đen,en-treo-tran-thuy-tinh-ecodl6-en,0,1,6999000,1490000
+562,560000835,Đèn Treo Trần Thủy Tinh ECODL9 Vàng,en-treo-tran-thuy-tinh-ecodl9-vang,0,1,3699000,1790000
+563,560000837,Đèn Treo Trần Thủy Tinh ECODL10 Vàng,en-treo-tran-thuy-tinh-ecodl10-vang,0,1,4999000,2390000
+564,560000838,Đèn Treo Trần Thủy Tinh ECODL10 Đen,en-treo-tran-thuy-tinh-ecodl10-en,0,1,4999000,1390000
+565,560000839,Đèn Treo Trần Thủy Tinh ECODL11,en-treo-tran-thuy-tinh-ecodl11,0,1,0,7499000

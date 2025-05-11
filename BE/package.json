@@ -14,7 +14,8 @@
     "prepush": "echo Running prepush hook...",
     "dev": "npx tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "prisma:seed": "ts-node prisma/seed/index.ts"
   },
   "lint-staged": {
     "BE/src/**/*.{ts,js}": [
