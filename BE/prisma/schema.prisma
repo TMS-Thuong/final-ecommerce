@@ -148,8 +148,6 @@ model ProductImage {
 
 model Attribute {
   id                 Int     @id @default(autoincrement()) @map("AttributeID")
-  name               String
-  code               String  @unique
   value              String // Chứa cục JSON với tất cả giá trị thuộc tính 
   isVariantAttribute Boolean @default(false) @map("IsVariantAttribute")
 
