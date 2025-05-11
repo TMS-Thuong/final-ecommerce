@@ -77,12 +77,15 @@ const messages = {
     [TransEnum.Auth]: {
       login: {
         title: 'Login',
+        welcomeBack: 'Welcome back',
+        enterDetails: 'Please enter your details to sign in to your account',
         email: 'Email',
         inHere: "in here",
         password: 'Password',
-        forgotPassword: 'Forgot password click',
+        forgotPassword: 'Forgot password?',
         loginWith: 'Or login with',
-        submitButton: 'Login',
+        submitButton: 'Sign in',
+        loginViaGoogle: "Sign in with Google",
       },
       register: {
         title: 'Register',
@@ -93,9 +96,11 @@ const messages = {
         birthDate: 'Birth date',
         gender: 'Gender',
         submitButton: 'Register',
-        emailVerifyText: 'If you didn’t receive the verification email.',
+        emailVerifyText: 'If you did not receive the verification email.',
         resendButton: 'Resend email',
         loginWith: 'Or login with',
+        alreadyHaveAccount: 'Already have an account?',
+        registerDescription: 'Create your account to get started',
       },
       resetPassword: {
         title: 'Reset Password',

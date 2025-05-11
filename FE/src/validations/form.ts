@@ -4,12 +4,12 @@ import { ERROR_MESSAGES } from '@/constants/auth/_utils/message'
 export const registerSchema = z.object({
   lastName: z
     .string()
-    .min(1, { message: ERROR_MESSAGES.firtNameTooShort })
+    .min(1, { message: ERROR_MESSAGES.firstNameTooShort })
     .max(50, { message: ERROR_MESSAGES.lastNameTooLong }),
 
   firstName: z
     .string()
-    .min(1, { message: ERROR_MESSAGES.firtNameTooShort })
+    .min(1, { message: ERROR_MESSAGES.firstNameTooShort })
     .max(50, { message: ERROR_MESSAGES.firstNameTooLong }),
 
   email: z
@@ -61,7 +61,7 @@ export const forgotPasswordSchema = z.object({
 })
 
 export const resetPasswordSchema = z.object({
-  password: z
+  newPassword: z
     .string()
     .regex(/[a-z]/, { message: ERROR_MESSAGES.passwordNoLowercase })
     .regex(/[A-Z]/, { message: ERROR_MESSAGES.passwordNoUppercase })
@@ -73,7 +73,7 @@ export const resetPasswordSchema = z.object({
   confirmPassword: z
     .string()
     .nonempty({ message: ERROR_MESSAGES.required }),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => data.newPassword === data.confirmPassword, {
   path: ['confirmPassword'],
   message: ERROR_MESSAGES.passwordNotMath,
 })

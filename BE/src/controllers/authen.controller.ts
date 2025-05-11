@@ -183,7 +183,8 @@ class AuthController {
           refreshToken: authResult.refreshToken,
         });
       }
-    } catch {
+    } catch (error) {
+      console.error('loginViaGoogle error:', error);
       return reply.internalError();
     }
   }
@@ -211,10 +212,10 @@ class AuthController {
           return reply.notFound(error.message, 'EMAIL_NOT_FOUND');
         }
         if (error.message === AuthErrorMessages.USER_NOT_ACTIVE) {
-          return reply.unauthorized(error.message, 'USER_NOT_ACTIVE');
+          return reply.badRequest(error.message, 'USER_NOT_ACTIVE');
         }
         if (error.message === AuthErrorMessages.PASSWORD_INCORRECT) {
-          return reply.unauthorized(error.message, 'PASSWORD_INCORRECT');
+          return reply.badRequest(error.message, 'PASSWORD_INCORRECT');
         }
       }
       return reply.internalError();

@@ -1,28 +1,41 @@
 <template>
-  <div
-    class="w-full max-w-5xl flex flex-col md:flex-row rounded-lg border border-gray-200 overflow-hidden bg-white font-sans">
-    <div class="flex-1 p-8 flex flex-col justify-center items-center h-auto max-h-[600px]">
-      <h1 class="text-2xl font-bold mb-6 text-center">{{ $t('auth.resetPassword.title') }}</h1>
+  <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
+    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
+      <h1 class="text-3xl md:text-2xl font-bold mb-6 text-center text-black">{{ $t('auth.resetPassword.title') }}</h1>
       <form class="space-y-4 w-full max-w-sm" @submit.prevent="onResetPW">
-        <PasswordInput id="new-password" :label="$t('auth.resetPassword.newPassword')" v-model="formData.password"
-          :error="errors.password" class="w-full" />
-        <PasswordInput id="confirm-password" :label="$t('auth.resetPassword.confirmPassword')"
-          v-model="confirmPassword.password" :error="errors.confirmPassword" class="w-full" />
-        <SubmitButton :text="$t('auth.resetPassword.submitButton')" :disabled="isLoading" class="w-full" />
+        <div class="text-left">
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.resetPassword.newPassword') }}<span
+              class="text-red-500"> *</span></label>
+          <PasswordInput id="newPassword" v-model="confirmPassword.newPassword" :error="errors.newPassword"
+            @input="onClearError('newPassword')" class="w-full" />
+        </div>
+
+        <div class="text-left">
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.resetPassword.confirmPassword') }}<span
+              class="text-red-500"> *</span></label>
+          <PasswordInput id="confirmPassword" v-model="confirmPassword.confirmPassword" :error="errors.confirmPassword"
+            @input="onClearError('confirmPassword')" class="w-full" />
+        </div>
+
+        <div class="relative">
+          <SubmitButton @click="onResetPW" :text="$t('auth.resetPassword.submitButton')" :disabled="isLoading"
+            class="w-full bg-neutral-800" />
+          <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+        </div>
       </form>
+
       <div class="mt-6 text-center">
-        <p class="text-base font-medium text-gray-700 mb-3">{{ $t('auth.resetPassword.orLogin') }}</p>
+        <p class="text-base font-medium text-black mb-3">{{ $t('auth.resetPassword.orLogin') }}</p>
         <div class="flex justify-center">
           <SocialLoginButton />
         </div>
       </div>
-      <Toast v-if="toastMessageStore.isShowToast" :type="toastType" :message="toastMessage"
-        @close="toastMessageStore.isShowToast = false" />
     </div>
-    <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
+
+    <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
       <BoxText :text="$t('auth.register.title')" @click="onRegister" :disabled="isLoading" />
       <div class="flex justify-center">
-        <img src="@/assets/image-auth.png" alt="Description of image" class="w-100 h-80 object-cover" />
+        <ImagePlaceholder :src="imageSrc" alt="Description of image" class="w-full" />
       </div>
     </div>
   </div>
@@ -34,16 +47,11 @@ import PasswordInput from '@/components/atoms/auth/_utils/PasswordInputComponent
 import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
 import BoxText from '@/components/molecules/auth/_utils/BoxTextComponent.vue'
 import SocialLoginButton from '@/components/atoms/auth/_utils/GoogleLoginButtonComponent.vue'
-import Toast from '@/components/molecules/utils/ToastComponent.vue'
+import LoadingSpinner from '@/components/atoms/LoadingComponent.vue'
+import ImagePlaceholder from '@/components/atoms/ImagePlaceholderComponent.vue'
 import { AxiosError } from 'axios'
 import { authApi } from '@/api/auth'
 import { DEFAULT_FORM_DATA, EMPTY_FORM_DATA } from '@/constants/auth/_utils/form'
-
-interface ErrorResponse {
-  code?: string;
-  error?: string;
-  message?: string;
-}
 
 import router from '@/router'
 import { AuthRouterEnum } from '@/enums/router'
@@ -62,8 +70,8 @@ const confirmPassword = ref(EMPTY_FORM_DATA)
 const errors = ref<{ [key: string]: string }>({})
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
-
-const { showToast, toastType, toastMessage, toastMessageStore } = useToast()
+const imageSrc = new URL('@/assets/nen.jpg', import.meta.url).href
+const { showToast } = useToast()
 
 onMounted(() => {
   const token = route.params.token
@@ -73,8 +81,12 @@ onMounted(() => {
   }
 })
 
+const onClearError = (field: string) => {
+  delete errors.value[field]
+}
+
 const onResetPW = async () => {
-  if (isLoading.value) return;
+  if (isLoading.value) return
 
   const token = Array.isArray(route.params.token) ? route.params.token[0] : route.params.token
   if (!token) {
@@ -85,10 +97,7 @@ const onResetPW = async () => {
 
   errors.value = {}
 
-  const parsed = resetPasswordSchema.safeParse({
-    password: formData.value.password,
-    confirmPassword: confirmPassword.value.password,
-  })
+  const parsed = resetPasswordSchema.safeParse(confirmPassword.value)
 
   if (!parsed.success) {
     parsed.error.errors.forEach(err => {
@@ -103,10 +112,11 @@ const onResetPW = async () => {
   try {
     const { data } = await authApi.resetPassword({
       token,
-      newPassword: formData.value.password,
-      confirmPassword: confirmPassword.value.password,
+      newPassword: confirmPassword.value.newPassword,
+      confirmPassword: confirmPassword.value.confirmPassword,
     })
     showToast(ToastEnum.Success, t('success.passwordUpdated'))
+    router.push({ name: AuthRouterEnum.Login })
   } catch (error: unknown) {
     const apiError = error as AxiosError
 
@@ -123,6 +133,7 @@ const onResetPW = async () => {
     isLoading.value = false
   }
 }
+
 
 onUnmounted(() => {
   formData.value = DEFAULT_FORM_DATA

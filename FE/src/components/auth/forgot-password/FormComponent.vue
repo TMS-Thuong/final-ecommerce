@@ -1,32 +1,28 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-gray-100 px-4">
-    <div
-      class="w-full max-w-5xl flex flex-col md:flex-row rounded-lg border border-gray-200 overflow-hidden bg-white font-sans">
-      <div class="flex-1 p-8 flex flex-col justify-center items-center h-auto max-h-[600px]">
-        <h1 class="text-4xl font-bold mb-6 text-center">{{ $t('auth.forgotPassword.title') }}</h1>
-        <form class="mb-6 space-y-4 w-full max-w-sm" @submit.prevent="onForgotPW">
-          <p class="text-base font-medium mb-6 text-left">{{ $t('auth.forgotPassword.description') }}</p>
+  <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
+    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center text-black">{{ $t('auth.forgotPassword.title') }}</h1>
+      <form class="mb-6 space-y-4 w-full max-w-sm" @submit.prevent="onForgotPW">
+        <p class="text-base font-medium mb-6 text-left text-black">{{ $t('auth.forgotPassword.description') }}</p>
 
-          <InputText id="email" :label="$t('auth.forgotPassword.email')" v-model="formData.email" placeholder="Email"
-            type="email" :error="errors.email" @input="onClearError('email')" class="w-full" />
+        <InputText id="email" :label="$t('auth.forgotPassword.email')" v-model="formData.email"
+          placeholder="name@example.com" type="email" :error="errors.email" @input="onClearError('email')"
+          class="w-full" />
 
-          <div class="relative">
-            <SubmitButton :text="$t('auth.forgotPassword.submitButton')" :disabled="isLoading || !isValidEmail"
-              class="w-full" />
-            <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-          </div>
-          <SubmitButton :text="$t('auth.forgotPassword.cancelButton')" :disabled="isLoading" class="w-full"
-            @click="onCancel" />
-        </form>
-        <Toast v-if="toastMessageStore.isShowToast" :type="toastType" :message="toastMessage"
-          @close="toastMessageStore.isShowToast = false" />
-      </div>
-
-      <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
-        <BoxText :text="$t('auth.register.title')" :disabled="isLoading" @click="onRegister" />
-        <div class="flex justify-center">
-          <img src="@/assets/image-auth.png" alt="Description of image" class="w-100 h-80 object-cover" />
+        <div class="relative">
+          <SubmitButton :text="$t('auth.forgotPassword.submitButton')" :disabled="isLoading || !isValidEmail"
+            class="w-full bg-neutral-800" />
+          <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </div>
+        <SubmitButton :text="$t('auth.forgotPassword.cancelButton')" :disabled="isLoading" class="w-full bg-neutral-800"
+          @click="onCancel" />
+      </form>
+    </div>
+
+    <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
+      <BoxText :text="$t('auth.register.title')" :disabled="isLoading" @click="onRegister" />
+      <div class="flex justify-center">
+        <ImagePlaceholder :src="imageSrc" alt="Description of image" />
       </div>
     </div>
   </div>
@@ -38,7 +34,8 @@ import InputText from '@/components/atoms/InputTextComponent.vue'
 import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
 import BoxText from '@/components/molecules/auth/_utils/BoxTextComponent.vue'
 import LoadingSpinner from '@/components/atoms/LoadingComponent.vue'
-import Toast from '@/components/molecules/utils/ToastComponent.vue'
+import ImagePlaceholder from '@/components/atoms/ImagePlaceholderComponent.vue'
+
 import router from '@/router'
 import { AuthRouterEnum } from '@/enums/router'
 import { forgotPasswordSchema } from '@/validations/form'
@@ -56,7 +53,7 @@ const formData = ref({ email: '' })
 const errors = ref<{ [key: string]: string }>({})
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
-
+const imageSrc = new URL('@/assets/nen.jpg', import.meta.url).href
 const onClearError = (field: string) => {
   delete errors.value[field]
 }

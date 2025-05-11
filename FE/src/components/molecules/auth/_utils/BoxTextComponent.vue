@@ -1,24 +1,49 @@
 <template>
-  <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
-    <h1 class="text-2xl font-bold mb-6">{{ $t('benefits.title') }}</h1>
+  <div class="flex-1 text-while p-8 font-sans">
+    <h1 class="text-4xl font-bold mb-6">{{ $t('benefits.title') }}</h1>
 
-    <ul class="space-y-4 text-base font-semibold mb-8">
-      <li>{{ $t('benefits.shipping') }}</li>
-      <li>{{ $t('benefits.productVariety') }}</li>
-      <li>{{ $t('benefits.easyReturns') }}</li>
-      <li>{{ $t('benefits.rewardPoints') }}</li>
-      <li>{{ $t('benefits.coupons') }}</li>
+    <ul class="space-y-4 text-xl text-white font-medium mb-8">
+      <li class="flex items-center gap-2">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <ShippingIcon />
+        </div>
+        {{ $t('benefits.shipping') }}
+      </li>
+      <li class="flex items-center gap-2">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <ProductVarietyIcon />
+        </div>
+        {{ $t('benefits.productVariety') }}
+      </li>
+      <li class="flex items-center gap-2">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <EasyReturnsIcon />
+        </div>
+        {{ $t('benefits.easyReturns') }}
+      </li>
+      <li class="flex items-center gap-2">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <GiftIcon />
+        </div>
+        {{ $t('benefits.rewardPoints') }}
+      </li>
+      <li class="flex items-center gap-2">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <CouponIcon />
+        </div>
+        {{ $t('benefits.coupons') }}
+      </li>
     </ul>
-
-    <button :disabled="disabled"
-      class="w-full border border-white text-white hover:bg-[#674833] py-2 rounded-md transition-colors"
-      @click="$emit('click')">
-      {{ text }}
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import ShippingIcon from '@/components/icons/ShippingIcon.vue'
+import ProductVarietyIcon from '@/components/icons/ProductVarietyIcon.vue'
+import EasyReturnsIcon from '@/components/icons/EasyReturnsIcon.vue'
+import GiftIcon from '@/components/icons/GiftIcon.vue'
+import CouponIcon from '@/components/icons/CouponIcon.vue'
+
 defineProps({
   text: {
     type: String,
@@ -29,5 +54,5 @@ defineProps({
     required: true,
   },
 })
-defineEmits (['click'])
+defineEmits(['click'])
 </script>

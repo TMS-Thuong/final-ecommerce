@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   src: string
   alt?: string
 }>()

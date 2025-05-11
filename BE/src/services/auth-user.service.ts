@@ -118,13 +118,13 @@ class AuthService {
     });
 
     if (existingUser) {
-      if (!existingUser.googleId) {
+      if (!existingUser.avatarUrl && picture) {
         await this.prisma.user.update({
           where: { id: existingUser.id },
           data: {
             googleId: uid,
-            avatarUrl: existingUser.avatarUrl || picture || '',
             isActive: true,
+            avatarUrl: picture,
           },
         });
       }
@@ -153,7 +153,7 @@ class AuthService {
         firstName,
         lastName,
         googleId: uid,
-        avatarUrl: existingUser.avatarUrl || picture || '',
+        avatarUrl: picture || null,
         isActive: true,
         birthDate,
       },

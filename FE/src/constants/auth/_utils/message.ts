@@ -12,5 +12,5 @@ export const ERROR_MESSAGES = {
   lastNameTooLong: 'Last name cannot be longer than 50 characters',
   lastNameTooShort: 'Last name must be at least one character',
   firstNameTooLong: 'First name cannot be longer than 50 characters',
-  firtNameTooShort: 'First name must be at least one character'
+  firstNameTooShort: 'First name must be at least one character'
 }

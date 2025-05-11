@@ -23,7 +23,7 @@ export const DEFAULT_FORM_DATA = {
 }
 
 export const EMPTY_FORM_DATA = {
-  password: '',
+  newPassword: '',
   confirmPassword: '',
 }
 

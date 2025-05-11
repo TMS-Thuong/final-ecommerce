@@ -1,42 +1,72 @@
 <template>
-  <div
-    class="mt-10 w-full max-w-5xl flex flex-col md:flex-row rounded-lg border border-gray-200 overflow-hidden bg-white font-sans">
-    <div class="flex-1 p-8">
-      <h1 class="text-3xl font-bold mb-6">{{ $t('auth.register.title') }}</h1>
+  <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
+    <div class="flex-1 p-6 md:p-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ $t('auth.register.title') }}</h1>
+      <p class="mb-6 text-gray-500 text-lg">{{ $t('auth.register.registerDescription') }}</p>
       <form @submit.prevent="onRegister" class="space-y-4">
-        <InputText id="lastName" :label="$t('auth.register.lastName')" v-model="formData.lastName"
-          :placeholder="$t('auth.register.lastName')" :error="errors.lastName" @input="onClearError('lastName')" />
-        <InputText id="firstName" :label="$t('auth.register.firstName')" v-model="formData.firstName"
-          :placeholder="$t('auth.register.firstName')" :error="errors.firstName" @input="onClearError('firstName')" />
-        <InputText id="email" :label="$t('auth.register.email')" v-model="formData.email"
-          :placeholder="$t('auth.register.email')" type="email" :error="errors.email" @input="onClearError('email')" />
-        <PasswordInput id="password" :label="$t('auth.register.password')" v-model="formData.password"
-          :error="errors.password" @input="onClearError('password')" />
-        <InputText id="birthDate" :label="$t('auth.register.birthDate')" v-model="formData.birthDate"
-          :placeholder="$t('auth.register.gender')" type="date" :error="errors.birthDate"
-          @input="onClearError('birthDate')" />
-        <RadioButtonGroup :label="$t('auth.register.gender')" :options="genderOptions" name="gender"
-          v-model="formData.gender" :error="errors.gender" />
+        <div class="flex flex-col gap-4 md:flex-row">
+          <div class="w-full md:w-1/2">
+            <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.firstName') }}<span
+                class="text-red-500">*</span></label>
+            <InputText id="firstName" :label="$t('auth.register.firstName')" v-model="formData.firstName"
+              :placeholder="$t('auth.register.firstName')" :error="errors.firstName"
+              @input="onClearError('firstName')" />
+          </div>
+          <div class="w-full md:w-1/2">
+            <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.lastName') }}<span
+                class="text-red-500">*</span></label>
+            <InputText id="lastName" :label="$t('auth.register.lastName')" v-model="formData.lastName"
+              :placeholder="$t('auth.register.lastName')" :error="errors.lastName" @input="onClearError('lastName')" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.email') }}<span
+              class="text-red-500">*</span></label>
+          <InputText id="email" v-model="formData.email" placeholder="name@example.com" type="email"
+            :error="errors.email" @input="onClearError('email')" class="w-full" />
+        </div>
+        <div>
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.password') }}<span
+              class="text-red-500">*</span></label>
+          <PasswordInput id="password" :label="$t('auth.register.password')" v-model="formData.password"
+            :error="errors.password" @input="onClearError('password')" />
+        </div>
+        <div>
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.birthDate') }}<span
+              class="text-red-500">*</span></label>
+          <InputText id="birthDate" :label="$t('auth.register.birthDate')" v-model="formData.birthDate"
+            :placeholder="$t('auth.register.gender')" type="date" :error="errors.birthDate"
+            @input="onClearError('birthDate')" class="text-gray-400" />
+        </div>
+        <div>
+          <RadioButtonGroup :label="$t('auth.register.gender')" :options="genderOptions" name="gender"
+            v-model="formData.gender" :error="errors.gender" />
+        </div>
         <div class="relative">
           <SubmitButton :text="$t('auth.register.submitButton')" :disabled="isLoading" class="w-full" />
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </div>
       </form>
       <p class="mt-6 text-center text-gray-600 text-base">{{ $t('auth.register.emailVerifyText') }}
-        <button class="text-blue-700 hover:underline" :disabled="isLoading" @click="onResentEmailVerify">{{
+        <button class="text-blue-500 hover:underline" :disabled="isLoading" @click="onResentEmailVerify">{{
           $t('auth.register.resendButton') }}</button>
       </p>
       <div class="mt-6 text-center">
-        <p class="text-base font-medium text-gray-700 mb-3">{{ $t('auth.register.loginWith') }}</p>
+        <div class="flex items-center my-6">
+          <div class="flex-grow border-t border-gray-200"></div>
+          <span class="mx-4 text-gray-400 text-base font-medium">{{ $t('auth.register.loginWith') }}</span>
+          <div class="flex-grow border-t border-gray-200"></div>
+        </div>
         <div class="flex justify-center">
           <SocialLoginButton />
         </div>
+        <div class="mt-6 text-center text-gray-600 text-sm w-full max-w-md mx-auto">
+          {{ $t('auth.register.alreadyHaveAccount') }}
+          <Button @click="onLogin" class="text-blue-500 font-semibold hover:underline">Sign in</Button>
+        </div>
       </div>
-
-      <Toast v-if="toastMessageStore.isShowToast" :type="toastType" :message="toastMessage"
-        @close="toastMessageStore.isShowToast = false" />
     </div>
-    <div class="flex-1 bg-[#704F38] text-white p-8 font-sans">
+    <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
       <BoxText :text="$t('auth.login.title')" :disabled="isLoading" @click="onLogin" />
       <div class="flex justify-center">
         <ImagePlaceholder :src="imageSrc" alt="Description of image" />
@@ -44,7 +74,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { onBeforeUnmount, ref, reactive } from 'vue'
@@ -56,7 +85,6 @@ import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
 import BoxText from '@/components/molecules/auth/_utils/BoxTextComponent.vue'
 import LoadingSpinner from '@/components/atoms/LoadingComponent.vue'
 import SocialLoginButton from '@/components/atoms/auth/_utils/GoogleLoginButtonComponent.vue'
-import Toast from '@/components/molecules/utils/ToastComponent.vue'
 import ImagePlaceholder from '@/components/atoms/ImagePlaceholderComponent.vue'
 import { z } from 'zod'
 import { registerSchema } from '@/validations/form'
@@ -83,7 +111,7 @@ const onClearError = (field: string) => {
   delete errors[field]
 }
 
-const imageSrc = new URL('@/assets/image-auth.png', import.meta.url).href
+const imageSrc = new URL('@/assets/nen.jpg', import.meta.url).href
 
 const onRegister = async () => {
   if (isLoading.value) return;
@@ -100,6 +128,7 @@ const onRegister = async () => {
     } else {
       showToast(ToastEnum.Success, t('success.registrationSuccess'));
     }
+    router.push({ name: AuthRouterEnum.Login })
     authStore.setEmail(formData.email);
   } catch (err) {
     if (err instanceof z.ZodError) {

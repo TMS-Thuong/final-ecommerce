@@ -3,6 +3,14 @@
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
 
+:root {
+  --color-primary: #000000;
+  --color-secondary: #ffffff;
+  --color-background: #ffffff;
+  --color-text: #000000;
+  --color-border: #e5e5e5;
+}
+
 html {
   font-size: 62.5%;
 }

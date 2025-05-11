@@ -1,7 +1,7 @@
 <template>
   <button
     type="submit"
-    class="w-full bg-[#704F38] hover:bg-[#674833] text-white py-2 rounded-md transition-colors"
+    class="bg-neutral-800 hover:bg-neutral-900 text-white font-semibold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg __web-inspector-hide-shortcut__"
   >
     {{ text }}
   </button>
