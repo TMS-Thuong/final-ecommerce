@@ -18,19 +18,32 @@ async function main() {
       });
 
       if (existingProduct) {
-        // Duyệt qua tất cả các hình ảnh của sản phẩm
-        for (let i = 0; i < product.images.length; i++) {
-          await prisma.productImage.create({
-            data: {
-              productId: existingProduct.id, // Sử dụng productId của sản phẩm đã tìm thấy
-              imageUrl: product.images[i], // Lấy URL hình ảnh
-              isThumbnail: i === 0, // Chỉ có ảnh đầu tiên là Thumbnail
-              displayOrder: i + 1, // Thứ tự hiển thị (1, 2, 3,...)
-            },
-          });
-        }
+        // Kiểm tra xem sản phẩm đã có hình ảnh nào chưa
+        const existingImages = await prisma.productImage.findMany({
+          where: {
+            productId: existingProduct.id,
+          },
+        });
 
-        console.log(`✅ Imported images for product: ${product.sku}`);
+        if (existingImages.length === 0) {
+          // Chưa có hình ảnh nào, tiến hành thêm tất cả hình ảnh cho sản phẩm
+          for (let i = 0; i < product.images.length; i++) {
+            const imageUrl = product.images[i];
+
+            await prisma.productImage.create({
+              data: {
+                productId: existingProduct.id, // Sử dụng productId của sản phẩm đã tìm thấy
+                imageUrl: imageUrl, // Lấy URL hình ảnh
+                isThumbnail: i === 0, // Chỉ có ảnh đầu tiên là Thumbnail
+                displayOrder: i + 1, // Thứ tự hiển thị (1, 2, 3,...)
+              },
+            });
+
+            console.log(`✅ Imported image for product SKU ${product.sku} at position ${i + 1}`);
+          }
+        } else {
+          console.log(`❌ Product SKU ${product.sku} already has images, skipping import.`);
+        }
       } else {
         console.log(`❌ Product with SKU ${product.sku} not found.`);
       }
