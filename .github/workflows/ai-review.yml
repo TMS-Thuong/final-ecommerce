@@ -25,7 +25,7 @@ jobs:
           repository: ${{github.event.pull_request.head.repo.full_name}}
           ref: ${{github.event.pull_request.head.ref}}
           submodules: false
-      - uses: tms-phuongvo/tms-ai-pr-reviewer@latest
+      - uses: tms-phuongvo/tms-ai-pr-reviewer@1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
