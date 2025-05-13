@@ -9,11 +9,7 @@ const toastStore = useToastMessageStore()
 <template>
   <RouterView class="bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-500" />
   <div class="fixed top-4 right-4 z-50">
-    <Toast 
-      v-if="toastStore.isShowToast" 
-      :type="toastStore.toastType" 
-      :message="toastStore.toastMessage" 
-      @close="toastStore.isShowToast = false" 
-    />
+    <Toast v-if="toastStore.isShowToast" :type="toastStore.toastType" :message="toastStore.toastMessage"
+      @close="toastStore.isShowToast = false" />
   </div>
 </template>

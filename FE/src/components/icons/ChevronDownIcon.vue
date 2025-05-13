@@ -37,5 +37,5 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-@import '../../css/icon.scss';
+@use '../../css/icon.scss' as *;
 </style>
