@@ -76,8 +76,8 @@ export class ProductService {
       return products.map((product) => ({
         ...product,
         basePrice: product.basePrice.toNumber(),
-        salePrice: product.salePrice ? product.salePrice.toNumber() : null,
-        averageRating: product.averageRating.toNumber(),
+        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+        averageRating: product.averageRating ? product.averageRating.toNumber() : null,
       }));
     } catch (error) {
       throw new Error('Failed to fetch products');
