@@ -29,7 +29,7 @@ export class ProductService {
       stockQuantity?: { gt?: number; equals?: number };
     } = { isActive: true };
 
-    if (searchQuery) {
+    if (searchQuery && searchQuery.trim() !== '') {
       filters.OR = [
         { name: { contains: searchQuery.trim(), mode: 'insensitive' } },
         { sku: { contains: searchQuery.trim(), mode: 'insensitive' } },
