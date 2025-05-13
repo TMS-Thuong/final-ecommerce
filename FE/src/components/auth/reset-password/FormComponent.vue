@@ -25,7 +25,7 @@
       </form>
 
       <div class="mt-6 text-center">
-        <p class="text-base font-medium text-black mb-3">{{ $t('auth.resetPassword.orLogin') }}</p>
+        <p class="text-lg font-medium text-black mb-3">{{ $t('auth.resetPassword.orLogin') }}</p>
         <div class="flex justify-center">
           <SocialLoginButton />
         </div>

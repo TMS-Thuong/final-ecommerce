@@ -2,7 +2,7 @@
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
     <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
       <h1 class="text-3xl md:text-5xl font-bold mb-2 text-black text-center">{{ $t('auth.login.welcomeBack') }}</h1>
-      <p class="mb-8 text-gray-600 text-base text-center">{{ $t('auth.login.enterDetails') }}</p>
+      <p class="mb-8 text-gray-600 text-lg text-center">{{ $t('auth.login.enterDetails') }}</p>
       <form @submit.prevent="onLogin" class="space-y-4 w-full max-w-md text-center">
         <div class="text-left">
           <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.email') }}<span
@@ -14,7 +14,7 @@
           <div class="flex justify-between items-center mb-1">
             <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.password') }}<span
                 class="text-red-500">*</span></label>
-            <button type="button" @click="onForgotPassword" class="text-sm text-blue-500 hover:underline">{{
+            <button type="button" @click="onForgotPassword" class="text-lg text-blue-500 hover:underline">{{
               $t('auth.login.forgotPassword') }}</button>
           </div>
           <PasswordInput id="password" v-model="formData.password" :error="errors.password"
@@ -33,11 +33,11 @@
       </form>
       <div class="flex items-center my-6 w-full max-w-md">
         <div class="flex-grow border-t border-gray-200"></div>
-        <span class="mx-4 text-gray-400 text-base">{{ $t('auth.login.loginWith') }}</span>
+        <span class="mx-4 text-gray-400 text-lg">{{ $t('auth.login.loginWith') }}</span>
         <div class="flex-grow border-t border-gray-200"></div>
       </div>
       <SocialLoginButton class="w-full max-w-md mx-auto" />
-      <div class="mt-6 text-center text-gray-600 text-sm w-full max-w-md mx-auto">
+      <div class="mt-6 text-center text-gray-600 text-lg w-full max-w-md mx-auto">
         Don't have an account? <button @click="onRegister" class="text-blue-500 font-semibold hover:underline">Sign
           up</button>
       </div>

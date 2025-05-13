@@ -1,9 +1,8 @@
 <template>
   <div class="relative">
     <div class="relative flex items-center">
-      <input
-        :type="showPassword ? 'text' : 'password'"
-        class="w-full px-3 py-2 border shadow-sm focus:ring-neutral-800 focus:border-neutral-800 border-gray-300 rounded-lg text-base"
+      <input :type="showPassword ? 'text' : 'password'"
+        class="w-full px-3 py-2 border shadow-sm focus:ring-neutral-800 focus:border-neutral-800 border-gray-300 rounded-lg text-lg"
         :placeholder="$t('auth.login.password')" :value="modelValue"
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
       <button type="button"
@@ -12,7 +11,7 @@
         <EyeIcon :class="showPassword ? 'text-gray-400' : 'text-gray-500'" class="h-5 w-5" />
       </button>
     </div>
-    <p v-if="error" class="mt-1 text-base text-red-600">{{ error }}</p>
+    <p v-if="error" class="mt-1 text-lg text-red-600">{{ error }}</p>
   </div>
 </template>
 

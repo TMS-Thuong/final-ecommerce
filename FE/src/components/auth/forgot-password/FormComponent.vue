@@ -3,7 +3,7 @@
     <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
       <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center text-black">{{ $t('auth.forgotPassword.title') }}</h1>
       <form class="mb-6 space-y-4 w-full max-w-sm" @submit.prevent="onForgotPW">
-        <p class="text-base font-medium mb-6 text-left text-black">{{ $t('auth.forgotPassword.description') }}</p>
+        <p class="text-lg font-medium mb-6 text-left text-black">{{ $t('auth.forgotPassword.description') }}</p>
 
         <InputText id="email" :label="$t('auth.forgotPassword.email')" v-model="formData.email"
           placeholder="name@example.com" type="email" :error="errors.email" @input="onClearError('email')"
