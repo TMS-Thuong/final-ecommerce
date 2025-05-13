@@ -3,4 +3,6 @@ export enum TransEnum {
   Success = 'success',
   Auth = 'auth',
   ErrorMessage = 'errorMessage',
+  Feature = 'features',
+  Benefits = 'benefits',
 }

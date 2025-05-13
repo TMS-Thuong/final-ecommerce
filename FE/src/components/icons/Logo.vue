@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-auto h-12 sm:h-14">
+  <div class="relative w-auto h-18 sm:h-14">
     <div v-if="!loaded"
       class="absolute inset-0 flex items-center justify-center bg-gray-300 rounded-sm dark:bg-gray-700">
       <svg class="w-6 h-6 text-gray-200 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 18">

@@ -44,7 +44,8 @@
     </div>
     <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
       <BoxText :text="$t('auth.login.title')" :disabled="isLoading" @click="onLogin" />
-      <ImagePlaceholder :src="imageSrc" alt="Description of image" class="flex justify-center h-80 w-auto object-contain" />
+      <ImagePlaceholder :src="imageSrc" alt="Description of image"
+        class="flex justify-center h-80 w-auto object-contain" />
     </div>
   </div>
 </template>

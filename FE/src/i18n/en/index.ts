@@ -125,6 +125,24 @@ const messages = {
       rewardPoints: 'Points to redeem for gifts',
       coupons: 'Many coupons for frequent members',
     },
+    [TransEnum.Feature]: {
+      freeShipping: {
+        title: 'Free Shipping',
+        desc: 'For orders over 500K'
+      },
+      warranty: {
+        title: '1-Year Warranty',
+        desc: 'Easy returns'
+      },
+      securePayment: {
+        title: 'Secure Payment',
+        desc: 'Multiple methods'
+      },
+      support: {
+        title: '24/7 Support',
+        desc: 'Always available'
+      }
+    }
   }
 }
 

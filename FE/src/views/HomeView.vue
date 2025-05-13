@@ -1,6 +1,11 @@
 <template>
-  <HeaderComponent/>
+  <div>
+    <HeroSection />
+    <FeatureSection />
+  </div>
 </template>
-<script lang="ts" setup>
-import HeaderComponent from '@/components/home/HeaderComponent.vue'
+
+<script setup>
+import FeatureSection from '@/components/molecules/utils/FeatureSelectionComponent.vue'
+import HeroSection from '@/components/molecules/home/HeroSectionComponent.vue'
 </script>

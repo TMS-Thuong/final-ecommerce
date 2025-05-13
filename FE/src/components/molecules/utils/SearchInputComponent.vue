@@ -1,21 +1,23 @@
 <template>
-  <form class="max-w-md mx-auto" @submit.prevent="onSubmit">
+  <form :class="[
+    popup ? 'absolute top-full left-0 mt-2 p-4 bg-white shadow-lg rounded max-w-md w-screen sm:w-auto z-50' : width,
+    'mx-auto',
+    $attrs.class
+  ]" @submit.prevent="onSubmit">
     <label for="default-search" class="mb-2 text-lg font-medium text-gray-900 sr-only dark:text-white">
       Search
     </label>
-    <div class="relative">
-      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-        </svg>
+    <div class="relative w-full">
+      <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+        <SearchIcon class="w-5 h-5 text-neutral-900 dark:text-gray-600" />
       </div>
-      <input type="search" id="default-search" v-model="searchQuery" class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50
-         focus:ring-neutral-500 focus:border-neutral-500 dark:bg-gray-700 dark:border-gray-600
-         dark:placeholder-gray-400 dark:text-white dark:focus:ring-neutral-500 dark:focus:border-neutral-500
-         hover:border-neutral-400" :placeholder="placeholder" required />
-
+      <input type="search" id="default-search" v-model="searchQuery" :placeholder="placeholder" required :class="[
+        'block w-full p-3 ps-12 text-lg border rounded-lg focus:ring-neutral-500 focus:border-neutral-500 hover:border-neutral-400',
+        bgColor,
+        textColor,
+        placeholderColor,
+        inputClass,
+      ]" />
     </div>
   </form>
 </template>
@@ -25,14 +27,16 @@ import { ref } from 'vue'
 import SearchIcon from '@/components/icons/SearchIcon.vue'
 
 const props = defineProps({
-  placeholder: {
-    type: String,
-    default: 'Search Mockups, Logos...',
-  },
+  placeholder: { type: String, default: 'Search Name, Sku,..' },
+  width: { type: String, default: 'max-w-md' },
+  bgColor: { type: String, default: 'bg-white dark:bg-neutral-50' },
+  textColor: { type: String, default: 'text-gray-900 dark:text-neutral-600' },
+  placeholderColor: { type: String, default: 'dark:placeholder-gray-400' },
+  inputClass: { type: String, default: '' },
+  popup: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['search'])
-
 const searchQuery = ref('')
 
 function onSubmit() {

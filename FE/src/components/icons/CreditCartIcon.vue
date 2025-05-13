@@ -19,11 +19,11 @@
 const props = defineProps({
   size: {
     type: String,
-    default: '6', // 1.5rem = 24px
+    default: '6',
   },
   color: {
     type: String,
-    default: 'currentColor', // Kế thừa màu từ parent
+    default: 'currentColor',
   },
 })
 </script>
