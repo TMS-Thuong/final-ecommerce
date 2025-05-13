@@ -5,4 +5,5 @@ export const ProductErrorMessages = {
   INVALID_QUERY_PARAMETERS: 'Invalid query parameters',
   INVALID_PRODUCT_ID: 'Invalid product ID',
   INVALID_PRODUCT_ID_FORMAT: 'Product ID must be a valid positive number',
+  ERROR_FETCHING_PRODUCT_IMAGES: 'Failed to fetch product images',
 };

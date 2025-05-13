@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
+import { ProductErrorMessages } from '@app/config/product.message';
 import { IProduct, IProductBase, IProductImage } from '@app/types/product.type';
 
 const prisma = new PrismaClient();
@@ -77,10 +78,10 @@ export class ProductService {
         ...product,
         basePrice: product.basePrice.toNumber(),
         salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-        averageRating: product.averageRating ? product.averageRating.toNumber() : null,
+        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
       }));
     } catch (error) {
-      throw new Error('Failed to fetch products');
+      throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }
 
@@ -112,8 +113,8 @@ export class ProductService {
     return {
       ...product,
       basePrice: product.basePrice.toNumber(),
-      salePrice: product.salePrice ? product.salePrice.toNumber() : null,
-      averageRating: product.averageRating.toNumber(),
+      salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+      averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
     };
   }
 
@@ -132,7 +133,7 @@ export class ProductService {
 
       return productImages;
     } catch (error) {
-      throw new Error('Failed to fetch product images');
+      throw new Error(ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR);
     }
   }
 }
