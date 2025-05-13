@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { IProduct, IProducts, IProductImage } from '@app/types/product.type';
+import { IProduct, IProductBase, IProductImage } from '@app/types/product.type';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string
-  ): Promise<IProducts[]> {
+  ): Promise<IProductBase[]> {
     const filters: {
       isActive: boolean;
       OR?: {

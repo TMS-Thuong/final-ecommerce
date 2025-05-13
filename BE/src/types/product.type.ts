@@ -1,4 +1,4 @@
-export interface IProducts {
+export interface IProductBase {
   id: number;
   name: string;
   basePrice: number;
@@ -7,19 +7,13 @@ export interface IProducts {
   ratingCount: number;
 }
 
-export interface IProduct {
-  id: number;
+export interface IProduct extends IProductBase {
   sku: string;
-  name: string;
   slug: string;
   description: string | null;
   categoryId: number;
   brandId: number;
-  basePrice: number;
-  salePrice: number | null;
   stockQuantity: number;
-  averageRating: number;
-  ratingCount: number;
   viewCount: number;
   soldCount: number;
   isActive: boolean;

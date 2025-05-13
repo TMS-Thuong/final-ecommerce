@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { ProductErrorMessages } from '@app/config/product.message';
+import { ProductIdZodSchema, ProductQuerySchema } from '@app/schemas/product.zod';
 import { ProductService } from '@app/services/product.service';
 
 export class ProductController {
@@ -11,36 +12,14 @@ export class ProductController {
   }
 
   async getProducts(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const {
-      page = 1,
-      pageSize = 10,
-      minPrice,
-      maxPrice,
-      brandId,
-      categoryId,
-      stockStatus,
-      searchQuery,
-    } = req.query as {
-      page?: number;
-      pageSize?: number;
-      minPrice?: number;
-      maxPrice?: number;
-      brandId?: number;
-      categoryId?: number;
-      stockStatus?: string;
-      searchQuery?: string;
-    };
+    const validationResult = ProductQuerySchema.safeParse(req.query);
 
-    console.log('Query parameters received:', {
-      page,
-      pageSize,
-      minPrice,
-      maxPrice,
-      brandId,
-      categoryId,
-      stockStatus,
-      searchQuery,
-    });
+    if (!validationResult.success) {
+      reply.badRequest(validationResult.error.message, 'INVALID_QUERY_PARAMETERS');
+      return;
+    }
+
+    const { page, pageSize, minPrice, maxPrice, brandId, categoryId, stockStatus, searchQuery } = validationResult.data;
 
     try {
       const products = await this.productService.getProducts(
@@ -61,18 +40,32 @@ export class ProductController {
   }
 
   async getProductById(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { id } = req.params as { id: number };
+    const { productId } = req.params as { productId: string };
+
+    if (!productId) {
+      reply.badRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'INVALID_PRODUCT_ID');
+      return;
+    }
+
+    const validationResult = ProductIdZodSchema.safeParse({ id: productId });
+    if (!validationResult.success) {
+      reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
+      return;
+    }
+
+    const validProductId = validationResult.data.id;
 
     try {
-      const product = await this.productService.getProductById(id);
+      const product = await this.productService.getProductById(validProductId);
 
       if (!product) {
-        reply.ok(null);
+        reply.ok([]);
         return;
       }
 
       reply.ok(product);
     } catch (error) {
+      console.error(error);
       reply.internalError(error.message || ProductErrorMessages.FETCH_PRODUCT_ERROR, 'FETCH_PRODUCT_ERROR');
     }
   }
@@ -80,8 +73,17 @@ export class ProductController {
   async getProductImagesByProductId(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { productId } = req.params as { productId: string };
 
+    const validationResult = ProductIdZodSchema.safeParse({ id: productId });
+
+    if (!validationResult.success) {
+      reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
+      return;
+    }
+
+    const validProductId = validationResult.data.id;
+
     try {
-      const productImages = await this.productService.getProductImagesByProductId(parseInt(productId, 10));
+      const productImages = await this.productService.getProductImagesByProductId(validProductId);
 
       if (!productImages || productImages.length === 0) {
         reply.ok([]);
@@ -98,6 +100,7 @@ export class ProductController {
 
       reply.ok(formattedImages);
     } catch (error) {
+      console.error(error);
       reply.internalError(
         error.message || ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR,
         'FETCH_PRODUCT_IMAGES_ERROR'
