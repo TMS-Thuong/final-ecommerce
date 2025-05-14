@@ -35,3 +35,4 @@ jobs:
           review_comment_lgtm: false
           light_model: gemini-2.0-flash
           heavy_model: gemini-2.0-flash
+          language: vi
