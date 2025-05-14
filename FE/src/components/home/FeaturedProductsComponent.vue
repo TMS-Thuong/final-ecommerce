@@ -9,7 +9,7 @@
     <div v-else-if="products.length === 0" class="text-center py-8 text-gray-500">
       No products found
     </div>
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-5">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-10">
       <ProductCard v-for="product in products" :key="product.id" :product="product" class="h-full" />
     </div>
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
@@ -35,8 +35,13 @@ const props = defineProps({
   showFeaturedOnly: {
     type: Boolean,
     default: false
+  },
+  page: {
+    type: Number,
+    default: 1
   }
 })
+
 
 const products = ref([])
 const loading = ref(false)
@@ -48,13 +53,14 @@ const loadFeaturedProducts = async () => {
 
   try {
     const params = {
-      page: 1,
+      page: props.page,
       pageSize: props.limit
     }
 
     if (props.showFeaturedOnly) {
       params.isFeatured = true
     }
+
 
     const response = await productApi.getProducts(params)
 

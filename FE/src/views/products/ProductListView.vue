@@ -227,7 +227,7 @@ const loading = ref(false)
 const error = ref('')
 const currentPage = ref(1)
 const hasMorePages = ref(false)
-const pageSize = 9
+const pageSize = 8
 const totalProducts = ref(0)
 
 const filters = ref({

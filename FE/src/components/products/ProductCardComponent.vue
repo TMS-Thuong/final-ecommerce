@@ -1,6 +1,6 @@
 <template>
   <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-    <div class="relative h-[30rem] bg-gray-100 overflow-hidden">
+    <div class="relative h-[25rem] overflow-hidden">
       <div v-if="discountPercent > 0" class="absolute top-2 left-2 bg-red-500 text-white text-lg font-bold px-2 py-1 rounded">
         -{{ discountPercent }}%
       </div>
@@ -13,7 +13,7 @@
         v-if="thumbnailUrl"
         :src="thumbnailUrl"
         :alt="product.name"
-        class="w-full h-full object-cover"
+        class="w-[80%] h-[80%] object-cover pt-[10%] pl-[10%]"
       />
       <div v-else class="flex items-center justify-center h-full">
         <ProductIcon size="15" class="text-gray-400" />
