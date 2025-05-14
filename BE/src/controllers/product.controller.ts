@@ -15,8 +15,7 @@ export class ProductController {
     const validationResult = ProductQuerySchema.safeParse(req.query);
 
     if (!validationResult.success) {
-      reply.badRequest(validationResult.error.message, 'INVALID_QUERY_PARAMETERS');
-      return;
+      return reply.badRequest(validationResult.error.message, 'INVALID_QUERY_PARAMETERS');
     }
 
     const { page, pageSize, minPrice, maxPrice, brandId, categoryId, stockStatus, searchQuery } = validationResult.data;
@@ -32,10 +31,9 @@ export class ProductController {
         stockStatus,
         searchQuery
       );
-      reply.ok(products);
+      return reply.ok(products);
     } catch (error) {
-      console.error(error);
-      reply.internalError(ProductErrorMessages.FETCH_PRODUCTS_ERROR, 'FETCH_PRODUCTS_ERROR');
+      return reply.internalError(ProductErrorMessages.FETCH_PRODUCTS_ERROR, 'FETCH_PRODUCTS_ERROR');
     }
   }
 
@@ -43,14 +41,12 @@ export class ProductController {
     const { productId } = req.params as { productId: string };
 
     if (!productId) {
-      reply.badRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'INVALID_PRODUCT_ID');
-      return;
+      return reply.badRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'INVALID_PRODUCT_ID');
     }
 
     const validationResult = ProductIdZodSchema.safeParse({ id: productId });
     if (!validationResult.success) {
-      reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
-      return;
+      return reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
     }
 
     const validProductId = validationResult.data.id;
@@ -59,14 +55,12 @@ export class ProductController {
       const product = await this.productService.getProductById(validProductId);
 
       if (!product) {
-        reply.ok([]);
-        return;
+        return reply.ok([]);
       }
 
-      reply.ok(product);
+      return reply.ok(product);
     } catch (error) {
-      console.error(error);
-      reply.internalError(error.message || ProductErrorMessages.FETCH_PRODUCT_ERROR, 'FETCH_PRODUCT_ERROR');
+      return reply.internalError(error.message || ProductErrorMessages.FETCH_PRODUCT_ERROR, 'FETCH_PRODUCT_ERROR');
     }
   }
 
@@ -76,8 +70,7 @@ export class ProductController {
     const validationResult = ProductIdZodSchema.safeParse({ id: productId });
 
     if (!validationResult.success) {
-      reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
-      return;
+      return reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
     }
 
     const validProductId = validationResult.data.id;
@@ -86,8 +79,7 @@ export class ProductController {
       const productImages = await this.productService.getProductImagesByProductId(validProductId);
 
       if (!productImages || productImages.length === 0) {
-        reply.ok([]);
-        return;
+        return reply.ok([]);
       }
 
       const formattedImages = productImages.map((image) => ({
@@ -98,10 +90,9 @@ export class ProductController {
         displayOrder: image.displayOrder,
       }));
 
-      reply.ok(formattedImages);
+      return reply.ok(formattedImages);
     } catch (error) {
-      console.error(error);
-      reply.internalError(
+      return reply.internalError(
         error.message || ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR,
         'FETCH_PRODUCT_IMAGES_ERROR'
       );

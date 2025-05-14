@@ -3,15 +3,9 @@ import { z } from 'zod';
 import { ProductErrorMessages } from '@app/config/product.message';
 
 export const ProductIdZodSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, {
-      message: ProductErrorMessages.INVALID_PRODUCT_ID_FORMAT,
-    })
-    .transform(Number)
-    .refine((num) => num > 0, {
-      message: ProductErrorMessages.INVALID_PRODUCT_ID,
-    }),
+  id: z.coerce.number().int().positive({
+    message: ProductErrorMessages.INVALID_PRODUCT_ID,
+  }),
 });
 
 export const ProductQuerySchema = z.object({
