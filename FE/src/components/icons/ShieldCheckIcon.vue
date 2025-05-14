@@ -16,5 +16,5 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-@use '../../css/icon.scss' as *;
+@use '../../css/_icon.scss' as *;
 </style>

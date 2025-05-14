@@ -142,6 +142,51 @@ const messages = {
         title: '24/7 Support',
         desc: 'Always available'
       }
+    },
+    [TransEnum.Product]: {
+      pageTitle: 'Products',
+      showing: 'Showing {count} products',
+      filters: {
+        title: 'Filters',
+        categories: {
+          title: 'Categories',
+          phoneAccessories: 'Phone Accessories',
+          computerAccessories: 'Computer Accessories',
+          audio: 'Audio'
+        },
+        priceRange: {
+          title: 'Price Range',
+          under: 'Under',
+          between: 'Between',
+          above: 'Above'
+        },
+        brands: {
+          title: 'Brands'
+        },
+        rating: {
+          title: 'Rating',
+          andAbove: 'and above'
+        },
+        stock: {
+          title: 'Stock Status',
+          inStockOnly: 'Show in-stock products only'
+        },
+        promotion: {
+          title: 'Promotions',
+          onSaleOnly: 'Show products on sale only'
+        }
+      },
+      sort: {
+        title: 'Sort by',
+        newest: 'Newest',
+        priceLowToHigh: 'Price: Low to High',
+        priceHighToLow: 'Price: High to Low',
+        topRated: 'Top Rated'
+      },
+      search: {
+        placeholder: 'Search products...'
+      },
+      loadMore: 'Load More'
     }
   }
 }

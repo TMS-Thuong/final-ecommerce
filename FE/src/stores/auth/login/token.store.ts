@@ -1,5 +1,7 @@
-import { authApi } from '@/api/auth'
 import { defineStore } from 'pinia'
+import { authApi } from '@/api/auth'
+import type { Router } from 'vue-router'
+import { AuthRouterEnum } from '@/enums/router'
 
 interface AuthState {
   accessToken: string | null
@@ -13,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.accessToken,
+    isAuthenticated: (state): boolean => !!state.accessToken,
   },
 
   actions: {
@@ -23,12 +25,14 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('accessToken', accessToken)
       localStorage.setItem('refreshToken', refreshToken)
     },
+
     clearTokens() {
       this.accessToken = null
       this.refreshToken = null
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
     },
+
     async refreshAccessToken() {
       const refreshToken = this.refreshToken
       if (!refreshToken) {
@@ -47,6 +51,11 @@ export const useAuthStore = defineStore('auth', {
         this.clearTokens()
         return null
       }
+    },
+
+    logout(router: Router) {
+      this.clearTokens()
+      router.push({ name: AuthRouterEnum.Home })
     }
   },
 })

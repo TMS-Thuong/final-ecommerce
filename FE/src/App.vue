@@ -7,8 +7,8 @@ const toastStore = useToastMessageStore()
 </script>
 
 <template>
-  <HeaderComponent class="sticky top-0 left-0 right-0 z-50 bg-white" />
-  <RouterView class="bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-500" />
+  <HeaderComponent class="sticky top-0 left-0 right-0 z-50 bg-neutral-50 px-8 shadow-sm" />
+  <RouterView class="bg-neutral-50 " />
   <div class="fixed top-4 right-4 z-50">
     <Toast v-if="toastStore.isShowToast" :type="toastStore.toastType" :message="toastStore.toastMessage"
       @close="toastStore.isShowToast = false" />
