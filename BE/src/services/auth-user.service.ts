@@ -144,7 +144,7 @@ class AuthService {
     const [firstName = '', lastName = ''] = name?.split(' ') || [];
     const birthDate = googleUser.birthDate ? new Date(googleUser.birthDate) : new Date();
     if (isNaN(birthDate.getTime())) {
-      throw new Error('Ngày sinh không hợp lệ');
+      throw new Error('BirthDate is not a valid date');
     }
 
     const newUser = await this.prisma.user.create({

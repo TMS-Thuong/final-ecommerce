@@ -5,6 +5,7 @@ import AuthController from '@app/services/auth-user.service';
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
 
 import { authUserRoutes } from './routes/auth-user.routes';
+import { productRoutes } from './routes/product.routes';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -40,5 +41,6 @@ app.get('/', async () => {
   return { message: 'Fastify Blog API is running' };
 });
 app.register(authUserRoutes, { prefix: '/user/api' });
+app.register(productRoutes, { prefix: '/api' });
 
 export default app;
