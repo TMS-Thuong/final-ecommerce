@@ -64,7 +64,7 @@ const loadFeaturedProducts = async () => {
 
     const response = await productApi.getProducts(params)
 
-    products.value = response?.data || []
+    products.value = response ? response.data || [] : [];
   } catch (err) {
     error.value = 'Failed to load products. Please try again.'
     console.error('Error loading products:', err)

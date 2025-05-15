@@ -1,8 +1,6 @@
 <template>
   <div class="py-8 bg-neutral-50 w-full">
     <h1 class="text-4xl font-bold mb-4 text-neutral-800">{{ $t('product.pageTitle') }}</h1>
-    <p class="text-xl mb-8 text-neutral-600">{{ $t('product.showing', { count: totalProducts }) }}</p>
-
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/4">
         <div class="bg-neutral-50 p-6 rounded-lg shadow mb-6">
