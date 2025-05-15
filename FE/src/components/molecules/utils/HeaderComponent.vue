@@ -74,14 +74,17 @@
     </div>
 
     <div ref="searchBoxRef" class="w-full relative">
-      <SearchBox v-if="isSearchVisible" @search="handleSearch" placeholder="Search Name, Sku,.."
-        class="absolute right-0 w-full md:w-96 px-4 py-2 border border-gray-200 shadow-lg bg-white z-50" popup />
+      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" 
+        @search="handleSearch" 
+        :placeholder="$t('product.search.placeholder')"
+        class="absolute right-0 w-full md:w-96 bg-white z-50" />
     </div>
   </header>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Logo from '@/components/icons/Logo.vue'
 import CartIcon from '@/components/icons/CartIcon.vue'
 import HeartIcon from '@/components/icons/HeartIcon.vue'
@@ -93,16 +96,18 @@ import TelephoneIcon from '@/components/icons/TelephoneIcon.vue'
 import XIcon from '@/components/icons/XIcon.vue'
 import PersonIcon from '@/components/icons/PersonIcon.vue'
 import UserDropdown from '@/components/molecules/utils/UserDropdown.vue'
-import SearchBox from '@/components/molecules/utils/SearchInputComponent.vue'
+import SearchInputComponent from '@/components/molecules/utils/SearchInputComponent.vue'
 import HeaderSection from '@/components/molecules/utils/HeaderSelectionComponent.vue'
-
-import router from '@/router'
+import { useI18n } from 'vue-i18n'
 import { RouterEnum } from '@/enums/router'
 
+const { t } = useI18n()
+const router = useRouter()
 const imageSrc = new URL('@/assets/logo.png', import.meta.url).href
 const searchBoxRef = ref(null)
 const isSearchVisible = ref(false)
 const isMenuOpen = ref(false)
+const searchQuery = ref('')
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
@@ -166,8 +171,14 @@ onUnmounted(() => {
 })
 
 const handleSearch = (query) => {
-  console.log('Search query:', query)
   isSearchVisible.value = false
   isMenuOpen.value = false
+  
+  if (query) {
+    router.push({ 
+      name: RouterEnum.Products, 
+      query: { searchQuery: query }
+    })
+  }
 }
 </script>

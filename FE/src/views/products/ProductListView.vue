@@ -1,30 +1,23 @@
 <template>
   <div class="py-8 bg-neutral-50 w-full">
-    <h1 class="text-4xl font-bold mb-4 text-neutral-800">{{ $t('product.pageTitle') }}</h1>
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/4">
         <div class="bg-neutral-50 p-6 rounded-lg shadow mb-6">
-          <h2 class="text-2xl font-bold mb-6 text-neutral-800">{{ $t('product.filters.title') }}</h2>
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
+            <button @click="resetFilters" class="text-neutral-600 hover:text-neutral-800 text-lg font-medium">
+              {{ $t('product.filters.reset') || 'Đặt lại' }}
+            </button>
+          </div>
+          
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.categories.title') }}</h3>
-            <div class="space-y-3">
-              <div class="flex items-center">
-                <input type="checkbox" id="cat1" class="mr-3 w-4 h-4 accent-neutral-800" v-model="filters.categories"
-                  value="1">
-                <label for="cat1" class="text-neutral-700 text-xl">{{ $t('product.filters.categories.phoneAccessories')
-                }}</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="cat2" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.categories"
-                  value="2">
-                <label for="cat2" class="text-neutral-700 text-xl">{{             $t('product.filters.categories.computerAccessories') }}</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="cat3" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.categories"
-                  value="3">
-                <label for="cat3" class="text-neutral-700 text-xl">{{ $t('product.filters.categories.audio') }}</label>
-              </div>
-            </div>
+            <FilterDropdown
+              v-model="filters.categories"
+              :options="categoryOptions"
+              :title="$t('product.filters.categories.title')"
+              :loading="categoriesLoading"
+            />
           </div>
 
           <div class="mb-8">
@@ -38,142 +31,109 @@
               </div>
             </div>
             <div class="space-y-3">
-              <div class="flex items-center">
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setPriceRange('0-500000')">
                 <input type="radio" id="price1" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.priceRange" value="0-500000">
-                <label for="price1" class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }}
-                  500.000đ</label>
-              </div>
-              <div class="flex items-center">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }}
+                  500.000đ</span>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setPriceRange('500000-1000000')">
                 <input type="radio" id="price2" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.priceRange" value="500000-1000000">
-                <label for="price2" class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  500.000đ - 1.000.000đ</label>
-              </div>
-              <div class="flex items-center">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
+                  500.000đ - 1.000.000đ</span>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setPriceRange('1000000-2000000')">
                 <input type="radio" id="price3" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.priceRange" value="1000000-2000000">
-                <label for="price3" class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  1.000.000đ - 2.000.000đ</label>
-              </div>
-              <div class="flex items-center">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
+                  1.000.000đ - 2.000.000đ</span>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setPriceRange('2000000-5000000')">
                 <input type="radio" id="price4" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.priceRange" value="2000000-5000000">
-                <label for="price4" class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  2.000.000đ - 5.000.000đ</label>
-              </div>
-              <div class="flex items-center">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
+                  2.000.000đ - 5.000.000đ</span>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setPriceRange('5000000-')">
                 <input type="radio" id="price5" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.priceRange" value="5000000-">
-                <label for="price5" class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }}
-                  5.000.000đ</label>
-              </div>
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }}
+                  5.000.000đ</span>
+              </label>
             </div>
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.brands.title') }}</h3>
-            <div class="space-y-3">
-              <div class="flex items-center">
-                <input type="checkbox" id="brand1" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="1">
-                <label for="brand1" class="text-neutral-700 text-xl">Apple (2)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand2" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="2">
-                <label for="brand2" class="text-neutral-700 text-xl">Sony (2)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand3" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="3">
-                <label for="brand3" class="text-neutral-700 text-xl">Samsung (1)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand4" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="4">
-                <label for="brand4" class="text-neutral-700 text-xl">JBL (1)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand5" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="5">
-                <label for="brand5" class="text-neutral-700 text-xl">Anker (2)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand6" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="6">
-                <label for="brand6" class="text-neutral-700 text-xl">Logitech (3)</label>
-              </div>
-              <div class="flex items-center">
-                <input type="checkbox" id="brand7" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.brands"
-                  value="7">
-                <label for="brand7" class="text-neutral-700 text-xl">Razer (1)</label>
-              </div>
-            </div>
+            <FilterDropdown
+              v-model="filters.brands"
+              :options="brandOptions"
+              :title="$t('product.filters.brands.title')"
+              :loading="brandsLoading"
+            />
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.rating.title') }}</h3>
             <div class="space-y-3">
-              <div class="flex items-center">
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setRating('5')">
                 <input type="radio" id="rating5" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="5">
-                <label for="rating5" class="flex items-center">
+                <div class="flex items-center">
                   <StarRating :rating="5" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
-                </label>
-              </div>
-              <div class="flex items-center">
+                </div>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setRating('4')">
                 <input type="radio" id="rating4" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="4">
-                <label for="rating4" class="flex items-center">
+                <div class="flex items-center">
                   <StarRating :rating="4" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
-                </label>
-              </div>
-              <div class="flex items-center">
+                </div>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setRating('3')">
                 <input type="radio" id="rating3" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="3">
-                <label for="rating3" class="flex items-center">
+                <div class="flex items-center">
                   <StarRating :rating="3" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
-                </label>
-              </div>
-              <div class="flex items-center">
+                </div>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setRating('2')">
                 <input type="radio" id="rating2" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="2">
-                <label for="rating2" class="flex items-center">
+                <div class="flex items-center">
                   <StarRating :rating="2" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
-                </label>
-              </div>
-              <div class="flex items-center">
+                </div>
+              </label>
+              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer" @click="setRating('1')">
                 <input type="radio" id="rating1" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="1">
-                <label for="rating1" class="flex items-center">
+                <div class="flex items-center">
                   <StarRating :rating="1" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
-                </label>
-              </div>
+                </div>
+              </label>
             </div>
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
-            <div class="flex items-center">
+            <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
               <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.inStock">
-              <label for="inStock" class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly')
-              }}</label>
-            </div>
+              <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
+            </label>
           </div>
 
           <div>
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.promotion.title') }}</h3>
-            <div class="flex items-center">
+            <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
               <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.onSale">
-              <label for="onSale" class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly')
-              }}</label>
-            </div>
+              <span class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly') }}</span>
+            </label>
           </div>
         </div>
       </div>
@@ -197,14 +157,12 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" class="h-full" />
+          <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" class="product-card h-full" />
         </div>
 
-        <div v-if="!loading && filteredProducts.length > 0" class="mt-8 flex justify-center">
-          <button v-if="hasMorePages" @click="loadMore"
-            class="px-6 py-2 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors text-xl">
-            {{ $t('product.loadMore') }}
-          </button>
+        <!-- Hiển thị trạng thái loading khi cuộn xuống -->
+        <div v-if="loadingMore" class="mt-8 flex justify-center">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-neutral-800"></div>
         </div>
       </div>
     </div>
@@ -212,14 +170,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { productApi } from '@/api/product'
+import { categoryApi } from '@/api/category'
+import { brandApi } from '@/api/brand'
 import ProductCard from '@/components/products/ProductCardComponent.vue'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
 import SearchInputComponent from '@/components/molecules/utils/SearchInputComponent.vue'
+import FilterDropdown from '@/components/molecules/utils/FilterDropdownComponent.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const route = useRoute()
 const products = ref([])
 const loading = ref(false)
 const error = ref('')
@@ -228,11 +191,22 @@ const hasMorePages = ref(false)
 const pageSize = 8
 const totalProducts = ref(0)
 
+// Thêm biến để theo dõi và kiểm soát infinite scroll
+const loadingMore = ref(false)
+const observer = ref(null)
+const lastProductRef = ref(null)
+
+// Category and Brand options
+const categoryOptions = ref([])
+const brandOptions = ref([])
+const categoriesLoading = ref(false)
+const brandsLoading = ref(false)
+
 const filters = ref({
   categories: [],
   brands: [],
   priceRange: '',
-  maxPrice: 5000000,
+  maxPrice: 0,
   rating: '',
   inStock: false,
   onSale: false
@@ -241,30 +215,35 @@ const filters = ref({
 const searchQuery = ref('')
 const sortOption = ref('newest')
 
+// Hàm đặt khoảng giá
+const setPriceRange = (range) => {
+  filters.value.priceRange = range
+}
+
+// Hàm đặt rating
+const setRating = (rating) => {
+  filters.value.rating = rating
+}
+
+// Hàm đặt lại các bộ lọc
+const resetFilters = () => {
+  filters.value = {
+    categories: [],
+    brands: [],
+    priceRange: '',
+    maxPrice: 0,
+    rating: '',
+    inStock: false,
+    onSale: false
+  }
+  
+  // Reset các bộ lọc xong load lại dữ liệu
+  currentPage.value = 1
+  loadProducts()
+}
+
 const filteredProducts = computed(() => {
   let result = [...products.value]
-
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(product => product.name.toLowerCase().includes(query))
-  }
-
-  if (filters.value.categories.length > 0) {
-    result = result.filter(product => filters.value.categories.includes(String(product.categoryId)))
-  }
-
-  if (filters.value.brands.length > 0) {
-    result = result.filter(product => filters.value.brands.includes(String(product.brandId)))
-  }
-
-  if (filters.value.priceRange) {
-    const [min, max] = filters.value.priceRange.split('-').map(Number)
-    if (max) {
-      result = result.filter(product => product.basePrice >= min && product.basePrice <= max)
-    } else {
-      result = result.filter(product => product.basePrice >= min)
-    }
-  }
 
   if (filters.value.rating) {
     const minRating = Number(filters.value.rating)
@@ -304,53 +283,185 @@ const formatPrice = (price) => {
 const handleSearch = (query) => {
   searchQuery.value = query
   currentPage.value = 1
+  loadProducts()
+}
 
-  if (!query || query.trim() === '') {
-    loadProducts()
-  } else {
-    loadProducts()
+// Chuyển đổi từ categories sang categoryId
+const getCategoryId = () => {
+  if (filters.value.categories && filters.value.categories.length > 0) {
+    return Number(filters.value.categories[0])
+  }
+  return undefined
+}
+
+// Chuyển đổi từ brands sang brandId
+const getBrandId = () => {
+  if (filters.value.brands && filters.value.brands.length > 0) {
+    return Number(filters.value.brands[0])
+  }
+  return undefined
+}
+
+const loadCategories = async () => {
+  categoriesLoading.value = true
+  try {
+    const response = await categoryApi.getCategories()
+    const categories = response?.data || []
+    categoryOptions.value = categories.map(category => ({
+      value: String(category.id),
+      label: category.name,
+      count: category.productCount || 0
+    }))
+  } catch (err) {
+    console.error('Error loading categories:', err)
+  } finally {
+    categoriesLoading.value = false
+  }
+}
+
+const loadBrands = async () => {
+  brandsLoading.value = true
+  try {
+    const response = await brandApi.getBrands()
+    const brands = response?.data || []
+    brandOptions.value = brands.map(brand => ({
+      value: String(brand.id),
+      label: brand.name,
+      count: brand.productCount || 0
+    }))
+  } catch (err) {
+    console.error('Error loading brands:', err)
+  } finally {
+    brandsLoading.value = false
   }
 }
 
 const loadProducts = async (page = 1) => {
-  loading.value = true
+  if (page === 1) {
+    loading.value = true
+  } else {
+    loadingMore.value = true
+  }
+  
   error.value = ''
 
   try {
+    // Xử lý khoảng giá
+    let minPrice, maxPrice
+    if (filters.value.priceRange) {
+      const [min, max] = filters.value.priceRange.split('-').map(Number)
+      minPrice = min
+      maxPrice = max === 0 ? undefined : max
+    } else {
+      maxPrice = filters.value.maxPrice > 0 ? filters.value.maxPrice : undefined
+    }
+
+    // Xác định trạng thái tồn kho
+    let stockStatus
+    if (filters.value.inStock) {
+      stockStatus = 'inStock'
+    }
+
     const response = await productApi.getProducts({
       page,
-      pageSize
+      pageSize,
+      searchQuery: searchQuery.value,
+      minPrice,
+      maxPrice,
+      categoryId: getCategoryId(),
+      brandId: getBrandId(),
+      stockStatus
     })
 
     const newProducts = response?.data || []
-    totalProducts.value = newProducts.length + products.value.length
 
     if (page === 1) {
       products.value = newProducts
+      totalProducts.value = newProducts.length
     } else {
       products.value = [...products.value, ...newProducts]
+      totalProducts.value = products.value.length
     }
 
     hasMorePages.value = newProducts.length === pageSize
+
+    // Đợi DOM cập nhật, sau đó thiết lập lại observer cho phần tử cuối cùng
+    nextTick(() => {
+      setupIntersectionObserver()
+    })
   } catch (err) {
     error.value = 'Failed to load products. Please try again.'
     console.error('Error loading products:', err)
   } finally {
-    loading.value = false
+    if (page === 1) {
+      loading.value = false
+    } else {
+      loadingMore.value = false
+    }
   }
 }
 
+// Thiết lập Intersection Observer để theo dõi khi người dùng cuộn đến cuối danh sách
+const setupIntersectionObserver = () => {
+  // Hủy observer cũ nếu tồn tại
+  if (observer.value) {
+    observer.value.disconnect()
+  }
+
+  // Chỉ thiết lập observer nếu còn trang để tải
+  if (!hasMorePages.value || loading.value || loadingMore.value) {
+    return
+  }
+
+  // Tìm phần tử cuối cùng trong danh sách sản phẩm
+  const productElements = document.querySelectorAll('.product-card')
+  if (productElements.length === 0) return
+
+  const lastProduct = productElements[productElements.length - 1]
+  lastProductRef.value = lastProduct
+
+  observer.value = new IntersectionObserver((entries) => {
+    const entry = entries[0]
+    if (entry.isIntersecting && hasMorePages.value && !loading.value && !loadingMore.value) {
+      loadMore()
+    }
+  }, {
+    rootMargin: '0px 0px 200px 0px', // Tải trước khi cuộn đến 200px trước phần tử cuối
+    threshold: 0.1
+  })
+
+  observer.value.observe(lastProductRef.value)
+}
+
 const loadMore = () => {
+  if (loadingMore.value) return
   currentPage.value++
   loadProducts(currentPage.value)
 }
 
+// Theo dõi thay đổi các bộ lọc để tải lại dữ liệu
 watch([filters, sortOption], () => {
   currentPage.value = 1
   loadProducts()
 }, { deep: true })
 
+// Thiết lập observer khi component được mount
 onMounted(() => {
-  loadProducts()
+  if (route.query.searchQuery) {
+    searchQuery.value = route.query.searchQuery.toString()
+  }
+  
+  loadCategories()
+  loadBrands()
+  loadProducts().then(() => {
+    setupIntersectionObserver()
+  })
+})
+
+// Hủy observer khi component bị hủy
+onUnmounted(() => {
+  if (observer.value) {
+    observer.value.disconnect()
+  }
 })
 </script>

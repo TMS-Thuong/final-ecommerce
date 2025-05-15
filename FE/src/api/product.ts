@@ -2,9 +2,34 @@ import instanceAxios from '@/helpers/configAxios'
 
 const API_URL = '/api'
 
+export interface ProductQueryParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  categoryId?: number;
+  brandId?: number;
+  stockStatus?: string;
+  categories?: string[];
+  brands?: string[];
+}
+
 export const productApi = {
-  getProducts: (params = {}) => 
-    instanceAxios.get(`${API_URL}/products`, { params }),
+  getProducts: (params: ProductQueryParams = {}) => 
+    instanceAxios.get(`${API_URL}/products`, { 
+      params: {
+        ...params,
+        categoryId: params.categoryId || (params.categories && params.categories.length > 0 
+          ? Number(params.categories[0]) 
+          : undefined),
+        brandId: params.brandId || (params.brands && params.brands.length > 0 
+          ? Number(params.brands[0]) 
+          : undefined),
+        categories: undefined,
+        brands: undefined,
+      } 
+    }),
   
   getProductById: (id: number) => 
     instanceAxios.get(`${API_URL}/products/${id}`),
