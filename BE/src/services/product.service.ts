@@ -15,7 +15,7 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string
-  ): Promise<IProductBase[]> {
+  ): Promise<IProduct[]> {
     const filters: {
       isActive: boolean;
       OR?: {
@@ -64,11 +64,23 @@ export class ProductService {
         where: filters,
         select: {
           id: true,
+          sku: true,
           name: true,
+          slug: true,
+          description: true,
+          categoryId: true,
+          brandId: true,
           basePrice: true,
           salePrice: true,
+          stockQuantity: true,
           averageRating: true,
           ratingCount: true,
+          viewCount: true,
+          soldCount: true,
+          isActive: true,
+          isFeatured: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy: {
           id: 'desc',
@@ -108,6 +120,8 @@ export class ProductService {
           soldCount: true,
           isActive: true,
           isFeatured: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
     } catch (error) {
