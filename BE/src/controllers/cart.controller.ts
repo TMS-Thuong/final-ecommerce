@@ -4,6 +4,8 @@ import { CartErrorMessages } from '@app/config/cart.message';
 import { AddCartItemZodSchema, CartItemIdZodSchema, UpdateCartItemZodSchema } from '@app/schemas/cart.zod';
 import { CartService } from '@app/services/cart.service';
 
+import { getUserId, getOrCreateCart } from './cart.service.utils';
+
 export class CartController {
   private cartService: CartService;
 
@@ -13,24 +15,12 @@ export class CartController {
 
   async getCart(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const userId = req.user.id || req.user.userId;
+      const userId = getUserId(req, reply);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
 
-      const cart = await this.cartService.getCartByUserId(userId);
-
-      if (!cart) {
-        return reply.ok({
-          id: null,
-          userId: userId,
-          items: [],
-          totalAmount: 0,
-          totalItems: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      }
+      const cart = await getOrCreateCart(userId, this.cartService);
 
       return reply.ok(cart);
     } catch (error) {
@@ -43,28 +33,12 @@ export class CartController {
     const body = req.body as unknown;
 
     try {
-      const userId = req.user.id || req.user.userId;
+      const userId = getUserId(req, reply);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
 
-      const cart = await this.cartService.getCartByUserId(userId);
-
-      if (!cart) {
-        const newCart = await this.cartService.createCart(userId);
-        return reply.ok({
-          addedItem: null,
-          cart: {
-            id: newCart.id,
-            userId: newCart.userId,
-            items: [],
-            totalAmount: 0,
-            totalItems: 0,
-            createdAt: newCart.createdAt,
-            updatedAt: newCart.updatedAt,
-          },
-        });
-      }
+      const cart = await getOrCreateCart(userId, this.cartService);
 
       const bodyValidationResult = AddCartItemZodSchema.safeParse(body);
       if (!bodyValidationResult.success) {
@@ -93,7 +67,8 @@ export class CartController {
             cart: cart,
           });
         }
-        throw error;
+        const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
+        return reply.internalError(errorMessage, 'ADD_ITEM_ERROR');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
@@ -114,7 +89,7 @@ export class CartController {
       return reply.badRequest(idValidationResult.error.message, 'INVALID_CART_ITEM_ID');
     }
 
-    const validCartItemId = idValidationResult.data.id;
+    const cartItemId = idValidationResult.data.id;
 
     const bodyValidationResult = UpdateCartItemZodSchema.safeParse(body);
     if (!bodyValidationResult.success) {
@@ -124,8 +99,11 @@ export class CartController {
     const { quantity } = bodyValidationResult.data;
 
     try {
-      const updatedCartItem = await this.cartService.updateCartItem(validCartItemId, quantity);
-      const userId = req.user.id || req.user.userId;
+      const updatedCartItem = await this.cartService.updateCartItem(cartItemId, quantity);
+      const userId = getUserId(req, reply);
+      if (!userId) {
+        return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
+      }
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
@@ -150,12 +128,15 @@ export class CartController {
       return reply.badRequest(idValidationResult.error.message, 'INVALID_CART_ITEM_ID');
     }
 
-    const validCartItemId = idValidationResult.data.id;
+    const cartItemId = idValidationResult.data.id;
 
     try {
-      await this.cartService.removeCartItem(validCartItemId);
+      await this.cartService.removeCartItem(cartItemId);
 
-      const userId = req.user.id || req.user.userId;
+      const userId = getUserId(req, reply);
+      if (!userId) {
+        return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
+      }
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
