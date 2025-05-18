@@ -61,18 +61,20 @@ import { ref, onMounted, computed } from 'vue'
 import { productApi } from '@/api/product'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
 import ProductIcon from '@/components/icons/ProductIcon.vue'
+import { ProductSchema } from '@/validations/product'
 
 const props = defineProps({
   product: {
     type: Object,
     required: true,
     validator: (value) => {
-      return value &&
-        typeof value.id === 'number' &&
-        typeof value.name === 'string' &&
-        typeof value.basePrice === 'number' &&
-        typeof value.averageRating === 'number' &&
-        typeof value.ratingCount === 'number'
+      try {
+        ProductSchema.parse(value);
+        return true;
+      } catch (error) {
+        console.error("Product validation error:", error.errors);
+        return false;
+      }
     }
   }
 })

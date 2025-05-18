@@ -354,7 +354,7 @@ const loadProducts = async (page = 1) => {
       if (filters.value.priceRange.includes('-')) {
         const [min, max] = filters.value.priceRange.split('-').map(Number)
         minPrice = min
-        maxPrice = max === 0 ? undefined : (max === 0 ? undefined : max);
+        maxPrice = max === 0 ? undefined : max;
       }
     } else {
       maxPrice = filters.value.maxPrice > 0 ? filters.value.maxPrice : undefined
@@ -380,7 +380,7 @@ const loadProducts = async (page = 1) => {
 
     if (page === 1) {
       products.value = newProducts
-      totalProducts.value = response?.total || newProducts.length
+      totalProducts.value = (response?.total !== undefined && response?.total !== null) ? response.total : newProducts.length
     } else {
       products.value = [...products.value, ...newProducts]
       totalProducts.value = products.value.length
