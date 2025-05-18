@@ -8,7 +8,7 @@ export const verifyUserAuthentication = async (req: FastifyRequest, reply: Fasti
   }
 };
 
-export const optionalUserAuthentication = async (req: FastifyRequest): Promise<void> => {
+export const optionalUserAuthentication = async (req: FastifyRequest, reply: FastifyReply): Promise<void> => {
   try {
     await req.jwtVerify();
   } catch (err) {

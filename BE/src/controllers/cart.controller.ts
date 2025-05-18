@@ -13,17 +13,12 @@ export class CartController {
 
   async getCart(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const userId = req.user.id || req.user.userId;
-
+      const userId = req.user.id;
       if (!userId) {
-        return reply.badRequest('Invalid user ID in token', 'INVALID_USER_ID');
+        return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
 
-      let cart = await this.cartService.getCartByUserId(userId);
-
-      if (!cart) {
-        cart = await this.cartService.getCartByUserId(userId);
-      }
+      const cart = await this.cartService.getCartByUserId(userId);
 
       if (!cart) {
         return reply.ok({
@@ -47,17 +42,12 @@ export class CartController {
     const body = req.body as unknown;
 
     try {
-      const userId = req.user.id || req.user.userId;
-
+      const userId = req.user.id;
       if (!userId) {
-        return reply.badRequest('Invalid user ID in token', 'INVALID_USER_ID');
+        return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
 
-      let cart = await this.cartService.getCartByUserId(userId);
-
-      if (!cart) {
-        cart = await this.cartService.getCartByUserId(userId);
-      }
+      const cart = await this.cartService.getCartByUserId(userId);
 
       if (!cart) {
         return reply.internalError(CartErrorMessages.CART_NOT_FOUND, 'CART_NOT_FOUND');
@@ -107,7 +97,7 @@ export class CartController {
 
     try {
       const updatedCartItem = await this.cartService.updateCartItem(validCartItemId, quantity);
-      const userId = req.user.id || req.user.userId;
+      const userId = req.user.id;
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
@@ -136,7 +126,7 @@ export class CartController {
     try {
       await this.cartService.removeCartItem(validCartItemId);
 
-      const userId = req.user.id || req.user.userId;
+      const userId = req.user.id;
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({

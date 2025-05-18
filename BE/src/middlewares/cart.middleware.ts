@@ -62,7 +62,6 @@ export const verifyCartItemOwnership = async (req: FastifyRequest, reply: Fastif
       return reply.forbidden('You do not have permission to access this cart item', 'FORBIDDEN');
     }
   } catch (error) {
-    console.error('Error in verifyCartItemOwnership:', error);
     return reply.internalError('Error verifying cart item ownership', 'SERVER_ERROR');
   }
 };

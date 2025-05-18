@@ -1,9 +1,45 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 import { CartErrorMessages } from '@app/config/cart.message';
 import { ICart, ICartItem } from '@app/types/cart.type';
 
 const prisma = new PrismaClient();
+
+interface ProductImage {
+  imageUrl: string | null;
+}
+
+interface ProductWithImages {
+  id: number;
+  name: string;
+  basePrice: Prisma.Decimal;
+  salePrice: Prisma.Decimal | null;
+  stockQuantity: number;
+  images: ProductImage[];
+}
+
+interface CartItemWithProduct {
+  id: number;
+  cartId: string;
+  productId: number;
+  quantity: number;
+  addedAt: Date;
+  options: Prisma.JsonValue;
+  product: ProductWithImages;
+}
+
+/**
+ * Safely convert Prisma JsonValue to Record<string, unknown>
+ */
+function jsonValueToRecord(value: Prisma.JsonValue): Record<string, unknown> {
+  if (typeof value === 'object' && value !== null) {
+    return Object.entries(value as Record<string, unknown>).reduce(
+      (acc, [key, val]) => ({ ...acc, [key]: val }),
+      {} as Record<string, unknown>
+    );
+  }
+  return {};
+}
 
 export class CartService {
   async getCartById(cartId: string): Promise<ICart | null> {
@@ -27,31 +63,9 @@ export class CartService {
       });
 
       if (!cart) return null;
-      const cartItems = cart.items.map((item) => {
-        const price =
-          item.product.salePrice && parseFloat(item.product.salePrice.toString()) > 0
-            ? item.product.salePrice
-            : item.product.basePrice;
-        const subtotal = parseFloat(price.toString()) * item.quantity;
 
-        return {
-          id: item.id,
-          cartId: item.cartId,
-          productId: item.productId,
-          quantity: item.quantity,
-          addedAt: item.addedAt,
-          product: {
-            id: item.product.id,
-            name: item.product.name,
-            basePrice: parseFloat(item.product.basePrice.toString()),
-            salePrice: item.product.salePrice ? parseFloat(item.product.salePrice.toString()) : null,
-            stockQuantity: item.product.stockQuantity,
-            image: item.product.images[0]?.imageUrl || null,
-          },
-          price: parseFloat(price.toString()),
-          subtotal: subtotal,
-          options: item.options as Record<string, unknown>,
-        };
+      const cartItems = cart.items.map((item) => {
+        return this.mapCartItemToICartItem(item);
       });
 
       const totalAmount = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
@@ -66,6 +80,7 @@ export class CartService {
         updatedAt: cart.updatedAt,
       };
     } catch (error) {
+      console.error('Error fetching cart:', error);
       throw new Error(CartErrorMessages.FETCH_CART_ERROR);
     }
   }
@@ -93,7 +108,7 @@ export class CartService {
       return cart;
     } catch (error) {
       console.error('Error creating cart:', error);
-      throw new Error(CartErrorMessages.FETCH_CART_ERROR);
+      throw new Error(CartErrorMessages.CREATE_CART_ERROR);
     }
   }
 
@@ -138,7 +153,7 @@ export class CartService {
           productId: updatedItem.productId,
           quantity: updatedItem.quantity,
           addedAt: updatedItem.addedAt,
-          options: {},
+          options: jsonValueToRecord(updatedItem.options),
         };
       } else {
         const cartItem = await prisma.cartItem.create({
@@ -156,11 +171,13 @@ export class CartService {
           productId: cartItem.productId,
           quantity: cartItem.quantity,
           addedAt: cartItem.addedAt,
-          options: {},
+          options: jsonValueToRecord(cartItem.options),
         };
       }
     } catch (error) {
-      throw new Error(error.message || CartErrorMessages.ADD_ITEM_ERROR);
+      console.error('Error adding item to cart:', error);
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
+      throw new Error(errorMessage);
     }
   }
 
@@ -172,7 +189,7 @@ export class CartService {
       });
 
       if (!cartItem) {
-        throw new Error(CartErrorMessages.CART_NOT_FOUND);
+        throw new Error(CartErrorMessages.CART_ITEM_NOT_FOUND);
       }
 
       if (cartItem.product.stockQuantity < quantity) {
@@ -190,10 +207,12 @@ export class CartService {
         productId: updatedItem.productId,
         quantity: updatedItem.quantity,
         addedAt: updatedItem.addedAt,
-        options: updatedItem.options as Record<string, unknown>,
+        options: jsonValueToRecord(updatedItem.options),
       };
     } catch (error) {
-      throw new Error(error.message || CartErrorMessages.UPDATE_ITEM_ERROR);
+      console.error('Error updating cart item:', error);
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.UPDATE_ITEM_ERROR;
+      throw new Error(errorMessage);
     }
   }
 
@@ -204,7 +223,7 @@ export class CartService {
       });
 
       if (!cartItem) {
-        throw new Error(CartErrorMessages.CART_NOT_FOUND);
+        throw new Error(CartErrorMessages.CART_ITEM_NOT_FOUND);
       }
 
       await prisma.cartItem.delete({
@@ -213,6 +232,7 @@ export class CartService {
 
       return true;
     } catch (error) {
+      console.error('Error removing cart item:', error);
       throw new Error(CartErrorMessages.REMOVE_ITEM_ERROR);
     }
   }
@@ -243,30 +263,7 @@ export class CartService {
       if (!cart) return null;
 
       const cartItems = cart.items.map((item) => {
-        const price =
-          item.product.salePrice && parseFloat(item.product.salePrice.toString()) > 0
-            ? item.product.salePrice
-            : item.product.basePrice;
-        const subtotal = parseFloat(price.toString()) * item.quantity;
-
-        return {
-          id: item.id,
-          cartId: item.cartId,
-          productId: item.productId,
-          quantity: item.quantity,
-          addedAt: item.addedAt,
-          product: {
-            id: item.product.id,
-            name: item.product.name,
-            basePrice: parseFloat(item.product.basePrice.toString()),
-            salePrice: item.product.salePrice ? parseFloat(item.product.salePrice.toString()) : null,
-            stockQuantity: item.product.stockQuantity,
-            image: item.product.images[0]?.imageUrl || null,
-          },
-          price: parseFloat(price.toString()),
-          subtotal: subtotal,
-          options: {},
-        };
+        return this.mapCartItemToICartItem(item);
       });
 
       const totalAmount = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
@@ -286,5 +283,32 @@ export class CartService {
       console.error('Error fetching cart by userId:', error);
       throw new Error(CartErrorMessages.FETCH_CART_ERROR);
     }
+  }
+
+  private mapCartItemToICartItem(item: CartItemWithProduct): ICartItem {
+    const price =
+      item.product.salePrice && parseFloat(item.product.salePrice.toString()) > 0
+        ? item.product.salePrice
+        : item.product.basePrice;
+    const subtotal = parseFloat(price.toString()) * item.quantity;
+
+    return {
+      id: item.id,
+      cartId: item.cartId,
+      productId: item.productId,
+      quantity: item.quantity,
+      addedAt: item.addedAt,
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        basePrice: parseFloat(item.product.basePrice.toString()),
+        salePrice: item.product.salePrice ? parseFloat(item.product.salePrice.toString()) : null,
+        stockQuantity: item.product.stockQuantity,
+        image: item.product.images[0]?.imageUrl || null,
+      },
+      price: parseFloat(price.toString()),
+      subtotal: subtotal,
+      options: jsonValueToRecord(item.options),
+    };
   }
 }
