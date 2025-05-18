@@ -88,7 +88,6 @@ const onGoogleSignIn = () => {
 const onGoogleLogin = async (idToken: string) => {
   try {
     const response = await authApi.loginViaGoogle(idToken);
-    console.log('Google login response:', response);
     const responseData = response?.data
     if (!responseData || !responseData.accessToken || !responseData.refreshToken) {
       throw new Error(t('error.noResponseData'))
@@ -98,7 +97,6 @@ const onGoogleLogin = async (idToken: string) => {
     showToast(ToastEnum.Success, t('success.loginSuccess'))
     router.push({ name: RouterEnum.Home });
   } catch (error) {
-    console.error('Google login error:', error);
     const apiError = error as AxiosError<{ message: string; code: string }>
     if (apiError?.response?.data?.code) {
       errorMessage.value = t(`error.${apiError.response.data.code.toLowerCase()}`)

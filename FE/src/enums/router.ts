@@ -3,6 +3,7 @@ export enum RouterEnum {
   Login = "Login",
   ProductList = "ProductList",
   ProductDetail = "ProductDetail",
+  Cart = "Cart",
 }
 
 export enum AuthRouterEnum {
