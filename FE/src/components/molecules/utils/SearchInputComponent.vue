@@ -14,7 +14,7 @@
       </label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
-          <SearchIcon class="w-5 h-5 text-neutral-900 dark:text-gray-600" />
+          <SearchIcon class="w-6 h-6 text-neutral-900 dark:text-gray-600" />
         </div>
         <input
           type="search"
@@ -23,7 +23,7 @@
           :placeholder="placeholder"
           @focus="showResults = true"
           :class="[
-            'block w-full p-3 ps-12 text-lg border rounded-lg focus:ring-neutral-500 focus:border-neutral-500 hover:border-neutral-400',
+            'block w-full p-4 ps-14 text-lg border rounded-lg focus:ring-neutral-500 focus:border-neutral-500 hover:border-neutral-400',
             bgColor,
             textColor,
             placeholderColor,
@@ -34,7 +34,7 @@
     </form>
 
     <div v-if="showResults && (loading || searchResults.length > 0)" 
-      class="absolute top-full left-0 mt-2 p-4 bg-white shadow-lg rounded-lg w-full max-h-60 overflow-y-auto z-50">
+      class="absolute top-full right-0 mt-2 p-4 bg-white shadow-lg rounded-lg w-full max-h-60 overflow-y-auto z-50">
       <div v-if="loading" class="flex justify-center items-center p-4">
         <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-neutral-800"></div>
       </div>
@@ -127,17 +127,14 @@ watch(() => props.modelValue, (newValue) => {
   searchQuery.value = newValue
 })
 
-// Sử dụng watch để theo dõi searchQuery và thực hiện tìm kiếm với setTimeout
 watch(searchQuery, (newValue) => {
   emit('update:modelValue', newValue)
   
-  // Clear timeout trước đó nếu có
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value)
   }
   
   if (newValue) {
-    // Đặt timeout mới
     searchTimeout.value = setTimeout(() => {
       fetchSearchResults()
     }, 300)
@@ -158,8 +155,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
-  
-  // Clear timeout khi component bị hủy
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value)
   }

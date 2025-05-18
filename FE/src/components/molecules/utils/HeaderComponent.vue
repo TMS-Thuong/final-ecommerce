@@ -1,6 +1,5 @@
 <template>
   <header class="w-full bg-white shadow-md">
-    <!-- Mobile header -->
     <div class="md:hidden">
       <div class="flex items-center justify-between px-4 py-3">
         <button @click="isMenuOpen = !isMenuOpen" class="text-gray-700 focus:outline-none">
@@ -62,22 +61,23 @@
       </div>
 
       <div class="flex items-center space-x-4 lg:space-x-8 relative">
-        <SearchIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer"
+        <SearchIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer"
           @click.stop="inToggleSearch" />
-        <CartIcon size="9" class="text-gray-700 hover:text-black transition" @click="inCart" />
-        <HeartIcon size="9" class="text-gray-700 hover:text-black transition hidden sm:block" @click="inWishlist" />
+        <CartIcon size="8" class="text-gray-700 hover:text-black transition" @click="inCart"/>
+        <HeartIcon size="8" class="text-gray-700 hover:text-black transition" @click="inWishlist"/>
         <div class="flex items-center">
-          <PersonIcon size="9" class="text-gray-700 hover:text-black transition" @click="inAccount" />
+          <PersonIcon size="8" class="text-gray-700 hover:text-black transition" @click="inAccount"/>
           <UserDropdown />
         </div>
       </div>
     </div>
 
-    <div ref="searchBoxRef" class="w-full relative">
+    <div ref="searchBoxRef" class="w-full relative flex justify-end">
       <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" 
         @search="handleSearch" 
         :placeholder="$t('product.search.placeholder')"
-        class="absolute right-0 w-full md:w-96 bg-white z-50" />
+        :width="'max-w-2xl'"
+        class="absolute top-0 w-full md:w-[40rem] bg-white z-50 shadow-md" />
     </div>
   </header>
 </template>

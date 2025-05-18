@@ -4,11 +4,6 @@
       <GroupUserIcon size="8" class="text-gray-700 hover:text-black transition" />
       <p class="text-xl font-bold text-gray-700">About</p>
     </div>
-
-    <!-- <router-link :to="{ name: RouterEnum.ProductList }" class="icon-item flex items-center space-x-2 cursor-pointer">
-      <ProductIcon size="8" class="text-gray-700 hover:text-black transition" />
-      <p class="text-xl font-bold text-gray-700">Products</p>
-    </router-link> -->
     <div class="icon-item flex items-center space-x-2 cursor-pointer text-gray-700 hover:text-black transition"
       @click="inProducts" >
       <ProductIcon size="8" />

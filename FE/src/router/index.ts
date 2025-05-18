@@ -10,6 +10,7 @@ import LoginView from '@/views/auth/login/FormView.vue'
 import ForgotPWView from '@/views/auth/forgot-password/FormView.vue'
 import ResetPWView from '@/views/auth/reset-password/FormView.vue'
 import ProductListView from '@/views/products/ProductListView.vue'
+import ProductDetailView from '@/views/products/ProductDetailView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -22,6 +23,11 @@ const routes = [
     path: '/products',
     name: RouterEnum.ProductList,
     component: ProductListView,
+  },
+  {
+    path: '/products/:id',
+    name: RouterEnum.ProductDetail,
+    component: ProductDetailView,
   },
   {
     path: '/user',

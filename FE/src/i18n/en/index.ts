@@ -3,6 +3,12 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
   en: {
+    common: {
+      home: "Home",
+      products: "Products",
+      loading: "Loading...",
+      error: "An error occurred. Please try again."
+    },
     [TransEnum.Error]: {
       EmailRequired: 'Email is required.',
       emailInvalid: 'Invalid email address.',
@@ -148,6 +154,7 @@ const messages = {
       showing: 'Showing {count} products',
       filters: {
         title: 'Filters',
+        reset: 'Reset',
         categories: {
           title: 'Categories',
           phoneAccessories: 'Phone Accessories',
@@ -186,7 +193,28 @@ const messages = {
       search: {
         placeholder: 'Search products...'
       },
-      loadMore: 'Load More'
+      loadMore: 'Load More',
+      detail: {
+        stock: {
+          inStock: "In Stock",
+          outOfStock: "Out of Stock",
+          status: "Status"
+        },
+        brand: "Brand",
+        category: "Category",
+        quantity: "Quantity",
+        addToCart: "Add to Cart",
+        description: "Product Description",
+        features: "Key Features",
+        specifications: "Specifications",
+        reviews: "Reviews",
+        updating: "Updating..."
+      },
+      tabs: {
+        description: "Product Description",
+        specifications: "Specifications",
+        reviews: "Reviews"
+      }
     }
   }
 }

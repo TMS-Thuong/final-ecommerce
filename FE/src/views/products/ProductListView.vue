@@ -6,7 +6,7 @@
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
             <button @click="resetFilters" class="text-neutral-600 hover:text-neutral-800 text-lg font-medium">
-              {{ $t('product.filters.reset') || 'Đặt lại' }}
+              {{ $t('product.filters.reset')}}
             </button>
           </div>
           
