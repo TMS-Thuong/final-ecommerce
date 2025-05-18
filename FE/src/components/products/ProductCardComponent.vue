@@ -88,7 +88,15 @@ const discountPercent = computed(() => {
 })
 
 const isNewProduct = computed(() => {
-  return props.product.viewCount < 10
+  if (!props.product.createdAt) {
+    return props.product.viewCount < 10;
+  }
+  
+  const createdDate = new Date(props.product.createdAt);
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  return createdDate >= thirtyDaysAgo;
 })
 
 const formatPrice = (price) => {
