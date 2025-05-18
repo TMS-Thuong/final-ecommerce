@@ -81,7 +81,7 @@
                 <input type="radio" id="rating5" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="5">
                 <div class="flex items-center">
-                  <StarRating :rating="5" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
+                  <StarRating :rating="5" :showCount="false" :readonly="true" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
@@ -89,7 +89,7 @@
                 <input type="radio" id="rating4" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="4">
                 <div class="flex items-center">
-                  <StarRating :rating="4" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
+                  <StarRating :rating="4" :showCount="false" :readonly="true" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
@@ -97,7 +97,7 @@
                 <input type="radio" id="rating3" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="3">
                 <div class="flex items-center">
-                  <StarRating :rating="3" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
+                  <StarRating :rating="3" :showCount="false" :readonly="true" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
@@ -105,7 +105,7 @@
                 <input type="radio" id="rating2" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="2">
                 <div class="flex items-center">
-                  <StarRating :rating="2" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
+                  <StarRating :rating="2" :showCount="false" :readonly="true" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
@@ -113,7 +113,7 @@
                 <input type="radio" id="rating1" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
                   v-model="filters.rating" value="1">
                 <div class="flex items-center">
-                  <StarRating :rating="1" :showCount="false" /> <span class="ml-2 text-neutral-700 text-xl">{{
+                  <StarRating :rating="1" :showCount="false" :readonly="true" /> <span class="ml-2 text-neutral-700 text-xl">{{
                     $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
@@ -294,12 +294,14 @@ const getCategoryId = () => {
   return undefined
 }
 
-// Chuyển đổi từ brands sang brandId
 const getBrandId = () => {
   if (filters.value.brands && filters.value.brands.length > 0) {
-    return Number(filters.value.brands[0])
+    const brandId = Number(filters.value.brands[0]);
+    if (!isNaN(brandId)) {
+      return brandId;
+    }
   }
-  return undefined
+  return undefined;
 }
 
 const loadCategories = async () => {
@@ -349,9 +351,11 @@ const loadProducts = async (page = 1) => {
     // Xử lý khoảng giá
     let minPrice, maxPrice
     if (filters.value.priceRange) {
-      const [min, max] = filters.value.priceRange.split('-').map(Number)
-      minPrice = min
-      maxPrice = max === 0 ? undefined : max
+      if (filters.value.priceRange.includes('-')) {
+        const [min, max] = filters.value.priceRange.split('-').map(Number)
+        minPrice = min
+        maxPrice = max === 0 ? undefined : max
+      }
     } else {
       maxPrice = filters.value.maxPrice > 0 ? filters.value.maxPrice : undefined
     }

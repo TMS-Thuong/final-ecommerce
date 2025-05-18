@@ -6,7 +6,7 @@
     >
       <div class="text-lg text-neutral-700 truncate">
         <span v-if="selectedItems.length > 0">
-          {{ selectedItems.length }} {{ title.toLowerCase() }} {{ selectedItems.length === 1 ? 'selected' : 'selected' }}
+          {{ selectedItems.length }} {{ title.toLowerCase() }} selected
         </span>
         <span v-else>{{ placeholder || `Select ${title}` }}</span>
       </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="flex justify-between w-full">
               <span class="text-neutral-700">{{ option.label }}</span>
-              <span v-if="option.count" class="text-neutral-500 text-sm">({{ option.count }})</span>
+              <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
             </div>
           </div>
         </div>

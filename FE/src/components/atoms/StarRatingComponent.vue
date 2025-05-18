@@ -1,14 +1,15 @@
 <template>
   <div class="flex items-center">
     <div class="flex items-center">
-      <span 
-        v-for="i in 5" 
-        :key="i" 
-        class="text-xl mr-1 cursor-pointer" 
-        :class="{ 'text-yellow-500': i <= Math.round(rating), 'text-gray-300': i > Math.round(rating) }"
-        @click="$emit('update:rating', i)"
-      >
-        ★
+      <span v-for="i in 5" :key="i" :class="[
+          'mr-1', 
+          { 
+            'cursor-pointer': !readonly,
+            'cursor-default': readonly
+          }
+        ]"
+        @click="!readonly && $emit('update:rating', i)">
+        <StarIcon :size="size" :filled="i <= Math.round(rating)" :color="i <= Math.round(rating) ? 'rgb(234 179 8)' : 'rgb(209 213 219)'" />
       </span>
     </div>
     <span v-if="showCount" class="ml-1 text-lg text-neutral-600">({{ count }})</span>
@@ -16,6 +17,8 @@
 </template>
 
 <script setup>
+import StarIcon from '@/components/icons/StarIcon.vue'
+
 const props = defineProps({
   rating: {
     type: Number,
@@ -28,17 +31,16 @@ const props = defineProps({
   showCount: {
     type: Boolean,
     default: true
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  size: {
+    type: String,
+    default: '5'
   }
 })
 
 defineEmits(['update:rating'])
 </script>
-
-<style scoped>
-.flex span {
-  color: #d4d4d4;
-}
-.flex span:nth-child(-n+{{ Math.round(rating) }}) {
-  color: #737373;
-}
-</style>

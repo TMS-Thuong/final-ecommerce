@@ -48,9 +48,8 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-const inSignIn = () => { router.push({ name: AuthRouterEnum.Register }) }
-console.log('Sign In clicked')
-const inSignUp = () => { router.push({ name: AuthRouterEnum.Login }) }
+const inSignIn = () => { router.push({ name: AuthRouterEnum.Login }) }
+const inSignUp = () => { router.push({ name: AuthRouterEnum.Register }) }
 const inLogout = () => {
   useAuthStore.logout(router)
   showToast('Logout successfully', ToastEnum.SUCCESS)

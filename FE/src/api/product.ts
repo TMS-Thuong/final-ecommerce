@@ -20,14 +20,8 @@ export const productApi = {
     instanceAxios.get(`${API_URL}/products`, { 
       params: {
         ...params,
-        categoryId: params.categoryId || (params.categories && params.categories.length > 0 
-          ? Number(params.categories[0]) 
-          : undefined),
-        brandId: params.brandId || (params.brands && params.brands.length > 0 
-          ? Number(params.brands[0]) 
-          : undefined),
-        categories: undefined,
-        brands: undefined,
+        categoryId: params.categoryId || (params.categories && params.categories.length > 0 ? params.categories : undefined),
+        brandId: params.brandId || (params.brands && params.brands.length > 0 ? params.brands : undefined),
       } 
     }),
   

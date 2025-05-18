@@ -36,7 +36,7 @@
           <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ product.name }}</h1>
           
           <div class="flex items-center mb-4">
-            <StarRating size="8" :rating="product.averageRating || 0" :count="product.ratingCount || 0" />
+            <StarRating :size="8" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
             <span class="ml-2 text-gray-500">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
           </div>
 

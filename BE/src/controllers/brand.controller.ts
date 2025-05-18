@@ -38,7 +38,7 @@ export class BrandController {
       const brand = await this.brandService.getBrandById(validBrandId);
 
       if (!brand) {
-        return reply.ok(null);
+        return reply.notFound(BrandErrorMessages.BRAND_NOT_FOUND, 'BRAND_NOT_FOUND');
       }
 
       return reply.ok(brand);

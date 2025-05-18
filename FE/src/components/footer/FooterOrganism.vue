@@ -1,8 +1,8 @@
 <template>
   <footer class="bg-gray-900 text-gray-300 pt-10 pb-4">
     <div class="px-8 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-screen-2xl">
-      <div>
-        <div class="font-bold text-4xl text-white mb-2">H!TMDT</div>
+      <div v-if="companyName">
+        <div class="font-bold text-4xl text-white mb-2">{{ companyName }}</div>
         <p class="mb-4 text-xl">
           Bringing you an exceptional shopping experience with quality products and dedicated service.
         </p>
@@ -61,12 +61,15 @@
     </div>
 
     <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-400 text-xl">
-      ©2025 H!TMDT. All rights reserved.
+      ©2025 {{ companyName }}. All rights reserved.
     </div>
   </footer>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+const companyName = ref('H!TMDT');
+
 import FacebookIcon from '@/components/icons/FacebookIcon.vue'
 import InstagramIcon from '@/components/icons/InstagramIcon.vue'
 import TwitterIcon from '@/components/icons/TwitterIcon.vue'
