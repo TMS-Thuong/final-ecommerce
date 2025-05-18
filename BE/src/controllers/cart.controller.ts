@@ -13,7 +13,7 @@ export class CartController {
 
   async getCart(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const userId = req.user.id;
+      const userId = req.user.id || req.user.userId;
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
@@ -34,7 +34,8 @@ export class CartController {
 
       return reply.ok(cart);
     } catch (error) {
-      return reply.internalError(error.message || CartErrorMessages.FETCH_CART_ERROR, 'FETCH_CART_ERROR');
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.FETCH_CART_ERROR;
+      return reply.internalError(errorMessage, 'FETCH_CART_ERROR');
     }
   }
 
@@ -42,7 +43,7 @@ export class CartController {
     const body = req.body as unknown;
 
     try {
-      const userId = req.user.id;
+      const userId = req.user.id || req.user.userId;
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
@@ -50,7 +51,19 @@ export class CartController {
       const cart = await this.cartService.getCartByUserId(userId);
 
       if (!cart) {
-        return reply.internalError(CartErrorMessages.CART_NOT_FOUND, 'CART_NOT_FOUND');
+        const newCart = await this.cartService.createCart(userId);
+        return reply.ok({
+          addedItem: null,
+          cart: {
+            id: newCart.id,
+            userId: newCart.userId,
+            items: [],
+            totalAmount: 0,
+            totalItems: 0,
+            createdAt: newCart.createdAt,
+            updatedAt: newCart.updatedAt,
+          },
+        });
       }
 
       const bodyValidationResult = AddCartItemZodSchema.safeParse(body);
@@ -60,16 +73,31 @@ export class CartController {
 
       const { productId, quantity } = bodyValidationResult.data;
 
-      const cartItem = await this.cartService.addItemToCart(cart.id, productId, quantity);
+      try {
+        const cartItem = await this.cartService.addItemToCart(cart.id, productId, quantity);
+        const updatedCart = await this.cartService.getCartByUserId(userId);
 
-      const updatedCart = await this.cartService.getCartByUserId(userId);
-
-      return reply.ok({
-        addedItem: cartItem,
-        cart: updatedCart,
-      });
+        return reply.ok({
+          addedItem: cartItem,
+          cart: updatedCart,
+        });
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          (error.message === CartErrorMessages.PRODUCT_NOT_FOUND ||
+            error.message === CartErrorMessages.INSUFFICIENT_STOCK)
+        ) {
+          return reply.ok({
+            addedItem: null,
+            error: error.message,
+            cart: cart,
+          });
+        }
+        throw error;
+      }
     } catch (error) {
-      return reply.internalError(error.message || CartErrorMessages.ADD_ITEM_ERROR, 'ADD_ITEM_ERROR');
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
+      return reply.internalError(errorMessage, 'ADD_ITEM_ERROR');
     }
   }
 
@@ -97,7 +125,7 @@ export class CartController {
 
     try {
       const updatedCartItem = await this.cartService.updateCartItem(validCartItemId, quantity);
-      const userId = req.user.id;
+      const userId = req.user.id || req.user.userId;
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
@@ -105,7 +133,8 @@ export class CartController {
         cart: updatedCart,
       });
     } catch (error) {
-      return reply.internalError(error.message || CartErrorMessages.UPDATE_ITEM_ERROR, 'UPDATE_ITEM_ERROR');
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.UPDATE_ITEM_ERROR;
+      return reply.internalError(errorMessage, 'UPDATE_ITEM_ERROR');
     }
   }
 
@@ -126,7 +155,7 @@ export class CartController {
     try {
       await this.cartService.removeCartItem(validCartItemId);
 
-      const userId = req.user.id;
+      const userId = req.user.id || req.user.userId;
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
@@ -135,7 +164,8 @@ export class CartController {
         cart: updatedCart,
       });
     } catch (error) {
-      return reply.internalError(error.message || CartErrorMessages.REMOVE_ITEM_ERROR, 'REMOVE_ITEM_ERROR');
+      const errorMessage = error instanceof Error ? error.message : CartErrorMessages.REMOVE_ITEM_ERROR;
+      return reply.internalError(errorMessage, 'REMOVE_ITEM_ERROR');
     }
   }
 }

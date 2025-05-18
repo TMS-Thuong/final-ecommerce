@@ -13,7 +13,6 @@ import {
 const cartController = new CartController();
 
 export async function cartRoutes(fastify: FastifyInstance): Promise<void> {
-  // Get user's cart - requires authentication
   fastify.get(
     '/cart',
     {
@@ -23,7 +22,6 @@ export async function cartRoutes(fastify: FastifyInstance): Promise<void> {
     cartController.getCart.bind(cartController)
   );
 
-  // Add item to cart - requires authentication
   fastify.post(
     '/cart',
     {
@@ -33,7 +31,6 @@ export async function cartRoutes(fastify: FastifyInstance): Promise<void> {
     cartController.addItemToCart.bind(cartController)
   );
 
-  // Update cart item - requires authentication and ownership
   fastify.put(
     '/cart/:id',
     {
@@ -43,7 +40,6 @@ export async function cartRoutes(fastify: FastifyInstance): Promise<void> {
     cartController.updateCartItem.bind(cartController)
   );
 
-  // Remove item from cart - requires authentication and ownership
   fastify.delete(
     '/cart/:id',
     {
