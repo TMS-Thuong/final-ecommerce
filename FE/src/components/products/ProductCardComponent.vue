@@ -48,7 +48,7 @@
         <div class="mt-2">
           <span class="inline-block text-xl px-2 py-1 rounded"
             :class="product.salePrice ? 'bg-yellow-100 text-yellow-800' : 'bg-transparent text-transparent'">
-            {{ product.salePrice ? 'Discount' : 'Discount' }}
+            {{ product.salePrice ? 'Discount' : '' }}
           </span>
         </div>
       </div>
