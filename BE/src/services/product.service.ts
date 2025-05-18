@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 import { ProductErrorMessages } from '@app/config/product.message';
-import { IProduct, IProductBase, IProductImage } from '@app/types/product.type';
+import { IProduct, IProductImage } from '@app/types/product.type';
 
 const prisma = new PrismaClient();
 

@@ -1,0 +1,13 @@
+export const CartErrorMessages = {
+  FETCH_CART_ERROR: 'Failed to fetch cart',
+  CART_NOT_FOUND: 'Cart not found',
+  INVALID_CART_ID: 'Invalid cart ID',
+  ADD_ITEM_ERROR: 'Failed to add item to cart',
+  UPDATE_ITEM_ERROR: 'Failed to update cart item',
+  REMOVE_ITEM_ERROR: 'Failed to remove item from cart',
+  INVALID_PRODUCT_ID: 'Invalid product ID',
+  INVALID_QUANTITY: 'Invalid quantity',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  INSUFFICIENT_STOCK: 'Insufficient stock',
+  FETCH_CART_ITEMS_ERROR: 'Failed to fetch cart items',
+};

@@ -184,7 +184,6 @@ class AuthController {
         });
       }
     } catch (error) {
-      console.error('loginViaGoogle error:', error);
       return reply.internalError();
     }
   }
@@ -260,7 +259,6 @@ class AuthController {
       const user = await AuthService.checkEmail(email);
 
       if (!user) {
-        console.log(`No user found with email: ${email}`);
         return reply.badRequest(AuthErrorMessages.USER_NOT_FOUND, 'USER_NOT_FOUND');
       }
 
