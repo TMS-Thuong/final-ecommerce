@@ -4,11 +4,12 @@ import {
   type NavigationGuardNext,
   type RouteLocationNormalized,
 } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import HomeView from '@/views/home/HomeView.vue'
 import RegisterView from '@/views/auth/register/FormView.vue'
 import LoginView from '@/views/auth/login/FormView.vue'
 import ForgotPWView from '@/views/auth/forgot-password/FormView.vue'
 import ResetPWView from '@/views/auth/reset-password/FormView.vue'
+import ProductListView from '@/views/products/ProductListView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -16,6 +17,11 @@ const routes = [
     path: '/',
     name: RouterEnum.Home,
     component: HomeView,
+  },
+  {
+    path: '/products',
+    name: RouterEnum.ProductList,
+    component: ProductListView,
   },
   {
     path: '/user',

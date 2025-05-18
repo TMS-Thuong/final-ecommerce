@@ -15,7 +15,7 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string
-  ): Promise<IProductBase[]> {
+  ): Promise<IProduct[]> {
     const filters: {
       isActive: boolean;
       OR?: {
@@ -64,11 +64,23 @@ export class ProductService {
         where: filters,
         select: {
           id: true,
+          sku: true,
           name: true,
+          slug: true,
+          description: true,
+          categoryId: true,
+          brandId: true,
           basePrice: true,
           salePrice: true,
+          stockQuantity: true,
           averageRating: true,
           ratingCount: true,
+          viewCount: true,
+          soldCount: true,
+          isActive: true,
+          isFeatured: true,
+          createdAt: true,
+          updatedAt: true,
         },
         orderBy: {
           id: 'desc',
@@ -86,27 +98,35 @@ export class ProductService {
   }
 
   async getProductById(id: number): Promise<IProduct | null> {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        sku: true,
-        name: true,
-        slug: true,
-        description: true,
-        categoryId: true,
-        brandId: true,
-        basePrice: true,
-        salePrice: true,
-        stockQuantity: true,
-        averageRating: true,
-        ratingCount: true,
-        viewCount: true,
-        soldCount: true,
-        isActive: true,
-        isFeatured: true,
-      },
-    });
+    let product = null;
+
+    try {
+      product = await prisma.product.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          sku: true,
+          name: true,
+          slug: true,
+          description: true,
+          categoryId: true,
+          brandId: true,
+          basePrice: true,
+          salePrice: true,
+          stockQuantity: true,
+          averageRating: true,
+          ratingCount: true,
+          viewCount: true,
+          soldCount: true,
+          isActive: true,
+          isFeatured: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      throw new Error(ProductErrorMessages.FETCH_PRODUCT_ERROR);
+    }
 
     if (!product) return null;
 
@@ -130,7 +150,6 @@ export class ProductService {
           displayOrder: true,
         },
       });
-
       return productImages;
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR);

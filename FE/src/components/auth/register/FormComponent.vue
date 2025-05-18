@@ -47,20 +47,20 @@
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </div>
       </form>
-      <p class="mt-6 text-center text-gray-600 text-base">{{ $t('auth.register.emailVerifyText') }}
+      <p class="mt-6 text-center text-gray-600 text-lg">{{ $t('auth.register.emailVerifyText') }}
         <button class="text-blue-500 hover:underline" :disabled="isLoading" @click="onResentEmailVerify">{{
           $t('auth.register.resendButton') }}</button>
       </p>
       <div class="mt-6 text-center">
         <div class="flex items-center my-6">
           <div class="flex-grow border-t border-gray-200"></div>
-          <span class="mx-4 text-gray-400 text-base font-medium">{{ $t('auth.register.loginWith') }}</span>
+          <span class="mx-4 text-gray-400 text-lg font-medium">{{ $t('auth.register.loginWith') }}</span>
           <div class="flex-grow border-t border-gray-200"></div>
         </div>
         <div class="flex justify-center">
           <SocialLoginButton />
         </div>
-        <div class="mt-6 text-center text-gray-600 text-sm w-full max-w-md mx-auto">
+        <div class="mt-6 text-center text-gray-600 text-lg w-full max-w-md mx-auto">
           {{ $t('auth.register.alreadyHaveAccount') }}
           <Button @click="onLogin" class="text-blue-500 font-semibold hover:underline">Sign in</Button>
         </div>

@@ -1,6 +1,7 @@
 export enum RouterEnum {
   Home = 'Home',
   Login = "Login",
+  ProductList = "ProductList",
 }
 
 export enum AuthRouterEnum {
@@ -8,4 +9,5 @@ export enum AuthRouterEnum {
   Register = 'Register',
   ForgotPW = 'ForgotPW',
   ResetPW = 'ResetPW',
+  Home = "Home",
 }
