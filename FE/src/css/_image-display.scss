@@ -1,0 +1,39 @@
+$image-bg-color: #f1f5f9;
+$image-border-color: #f1f5f9;
+$image-radius: 1rem;
+$image-border-width: 2px;
+$image-margin-left: 2rem;
+$image-margin-top: 1rem;
+$image-padding-xs: 1rem;
+$image-padding-sm: 1.5rem;
+$image-padding-lg: 2rem;
+
+.image-container {
+  background-color: $image-bg-color;
+  border-radius: $image-radius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: $image-border-width dashed $image-border-color;
+  margin-left: $image-margin-left;
+  margin-top: $image-margin-top;
+  overflow: hidden;
+  padding-left: $image-padding-xs;
+  padding-right: $image-padding-xs;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (min-width: 640px) {
+    padding-left: $image-padding-sm;
+    padding-right: $image-padding-sm;
+  }
+
+  @media (min-width: 1024px) {
+    padding-left: $image-padding-lg;
+    padding-right: $image-padding-lg;
+  }
+}

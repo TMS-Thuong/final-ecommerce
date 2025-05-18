@@ -9,23 +9,37 @@ const errorResponseSchema = {
   },
 };
 
+const productResponseSchema = {
+  type: 'object',
+  properties: {
+    id: { type: 'integer' },
+    sku: { type: 'string' },
+    name: { type: 'string' },
+    slug: { type: 'string' },
+    description: { type: ['string', 'null'] },
+    categoryId: { type: 'integer' },
+    brandId: { type: 'integer' },
+    basePrice: { type: 'number' },
+    salePrice: { type: ['number', 'null'] },
+    stockQuantity: { type: 'integer' },
+    averageRating: { type: 'number' },
+    ratingCount: { type: 'integer' },
+    viewCount: { type: 'integer' },
+    soldCount: { type: 'integer' },
+    isActive: { type: 'boolean' },
+    isFeatured: { type: 'boolean' },
+    createdAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time' },
+  },
+};
+
 const successResponseSchema = {
   type: 'object',
   properties: {
     success: { type: 'boolean' },
     data: {
       type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'integer' },
-          name: { type: 'string' },
-          basePrice: { type: 'number' },
-          salePrice: { type: ['number', 'null'] },
-          averageRating: { type: 'number' },
-          ratingCount: { type: 'integer' },
-        },
-      },
+      items: productResponseSchema,
     },
   },
 };
@@ -36,24 +50,7 @@ const successResponseSchemaWithProduct = {
     success: { type: 'boolean' },
     data: {
       type: ['object', 'null'],
-      properties: {
-        id: { type: 'integer' },
-        sku: { type: 'string' },
-        name: { type: 'string' },
-        slug: { type: 'string' },
-        description: { type: ['string', 'null'] },
-        categoryId: { type: 'integer' },
-        brandId: { type: 'integer' },
-        basePrice: { type: 'number' },
-        salePrice: { type: ['number', 'null'] },
-        stockQuantity: { type: 'integer' },
-        averageRating: { type: 'number' },
-        ratingCount: { type: 'integer' },
-        viewCount: { type: 'integer' },
-        soldCount: { type: 'integer' },
-        isActive: { type: 'boolean' },
-        isFeatured: { type: 'boolean' },
-      },
+      properties: productResponseSchema.properties,
     },
   },
 };

@@ -38,13 +38,13 @@ export class ProductController {
   }
 
   async getProductById(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { productId } = req.params as { productId: string };
+    const { id } = req.params as { id: string };
 
-    if (!productId) {
+    if (!id) {
       return reply.badRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'INVALID_PRODUCT_ID');
     }
 
-    const validationResult = ProductIdZodSchema.safeParse({ id: productId });
+    const validationResult = ProductIdZodSchema.safeParse({ id });
     if (!validationResult.success) {
       return reply.badRequest(validationResult.error.message, 'INVALID_PRODUCT_ID');
     }
@@ -66,6 +66,10 @@ export class ProductController {
 
   async getProductImagesByProductId(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     const { productId } = req.params as { productId: string };
+
+    if (!productId) {
+      return reply.badRequest(ProductErrorMessages.INVALID_PRODUCT_ID, 'INVALID_PRODUCT_ID');
+    }
 
     const validationResult = ProductIdZodSchema.safeParse({ id: productId });
 

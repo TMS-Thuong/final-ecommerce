@@ -3,6 +3,12 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
   en: {
+    common: {
+      home: "Home",
+      products: "Products",
+      loading: "Loading...",
+      error: "An error occurred. Please try again."
+    },
     [TransEnum.Error]: {
       EmailRequired: 'Email is required.',
       emailInvalid: 'Invalid email address.',
@@ -125,6 +131,91 @@ const messages = {
       rewardPoints: 'Points to redeem for gifts',
       coupons: 'Many coupons for frequent members',
     },
+    [TransEnum.Feature]: {
+      freeShipping: {
+        title: 'Free Shipping',
+        desc: 'For orders over 500K'
+      },
+      warranty: {
+        title: '1-Year Warranty',
+        desc: 'Easy returns'
+      },
+      securePayment: {
+        title: 'Secure Payment',
+        desc: 'Multiple methods'
+      },
+      support: {
+        title: '24/7 Support',
+        desc: 'Always available'
+      }
+    },
+    [TransEnum.Product]: {
+      pageTitle: 'Products',
+      showing: 'Showing {count} products',
+      filters: {
+        title: 'Filters',
+        reset: 'Reset',
+        categories: {
+          title: 'Categories',
+          phoneAccessories: 'Phone Accessories',
+          computerAccessories: 'Computer Accessories',
+          audio: 'Audio'
+        },
+        priceRange: {
+          title: 'Price Range',
+          under: 'Under',
+          between: 'Between',
+          above: 'Above'
+        },
+        brands: {
+          title: 'Brands'
+        },
+        rating: {
+          title: 'Rating',
+          andAbove: 'and above'
+        },
+        stock: {
+          title: 'Stock Status',
+          inStockOnly: 'Show in-stock products only'
+        },
+        promotion: {
+          title: 'Promotions',
+          onSaleOnly: 'Show products on sale only'
+        }
+      },
+      sort: {
+        title: 'Sort by',
+        newest: 'Newest',
+        priceLowToHigh: 'Price: Low to High',
+        priceHighToLow: 'Price: High to Low',
+        topRated: 'Top Rated'
+      },
+      search: {
+        placeholder: 'Search products...'
+      },
+      loadMore: 'Load More',
+      detail: {
+        stock: {
+          inStock: "In Stock",
+          outOfStock: "Out of Stock",
+          status: "Status"
+        },
+        brand: "Brand",
+        category: "Category",
+        quantity: "Quantity",
+        addToCart: "Add to Cart",
+        description: "Product Description",
+        features: "Key Features",
+        specifications: "Specifications",
+        reviews: "Reviews",
+        updating: "Updating..."
+      },
+      tabs: {
+        description: "Product Description",
+        specifications: "Specifications",
+        reviews: "Reviews"
+      }
+    }
   }
 }
 

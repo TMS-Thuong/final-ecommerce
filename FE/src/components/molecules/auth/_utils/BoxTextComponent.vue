@@ -5,31 +5,31 @@
     <ul class="space-y-4 text-xl text-white font-medium mb-8">
       <li class="flex items-center gap-2">
         <div class="bg-white/20 p-2 rounded-lg">
-          <ShippingIcon />
+          <ShippingIcon size="8" />
         </div>
         {{ $t('benefits.shipping') }}
       </li>
       <li class="flex items-center gap-2">
         <div class="bg-white/20 p-2 rounded-lg">
-          <ProductVarietyIcon />
+          <ProductVarietyIcon size="8" />
         </div>
         {{ $t('benefits.productVariety') }}
       </li>
       <li class="flex items-center gap-2">
         <div class="bg-white/20 p-2 rounded-lg">
-          <EasyReturnsIcon />
+          <EasyReturnsIcon size="8" />
         </div>
         {{ $t('benefits.easyReturns') }}
       </li>
       <li class="flex items-center gap-2">
         <div class="bg-white/20 p-2 rounded-lg">
-          <GiftIcon />
+          <GiftIcon size="8" />
         </div>
         {{ $t('benefits.rewardPoints') }}
       </li>
       <li class="flex items-center gap-2">
         <div class="bg-white/20 p-2 rounded-lg">
-          <CouponIcon />
+          <CouponIcon size="8" />
         </div>
         {{ $t('benefits.coupons') }}
       </li>

@@ -18,6 +18,8 @@ export interface IProduct extends IProductBase {
   soldCount: number;
   isActive: boolean;
   isFeatured: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IProductImage {
