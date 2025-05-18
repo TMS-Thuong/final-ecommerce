@@ -61,14 +61,9 @@ export class CartController {
           (error.message === CartErrorMessages.PRODUCT_NOT_FOUND ||
             error.message === CartErrorMessages.INSUFFICIENT_STOCK)
         ) {
-          return reply.ok({
-            addedItem: null,
-            error: error.message,
-            cart: cart,
-          });
+          return reply.badRequest(error.message, 'PRODUCT_ERROR');
         }
-        const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
-        return reply.internalError(errorMessage, 'ADD_ITEM_ERROR');
+        throw error;
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : CartErrorMessages.ADD_ITEM_ERROR;
@@ -99,11 +94,12 @@ export class CartController {
     const { quantity } = bodyValidationResult.data;
 
     try {
-      const updatedCartItem = await this.cartService.updateCartItem(cartItemId, quantity);
       const userId = getUserId(req, reply);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
+
+      const updatedCartItem = await this.cartService.updateCartItem(cartItemId, quantity);
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
@@ -131,12 +127,12 @@ export class CartController {
     const cartItemId = idValidationResult.data.id;
 
     try {
-      await this.cartService.removeCartItem(cartItemId);
-
       const userId = getUserId(req, reply);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
+
+      await this.cartService.removeCartItem(cartItemId);
       const updatedCart = await this.cartService.getCartByUserId(userId);
 
       return reply.ok({
