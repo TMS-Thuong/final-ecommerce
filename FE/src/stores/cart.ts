@@ -36,6 +36,16 @@ export const useCartStore = defineStore('cart', () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  const defaultCartValue = (): Cart => ({
+    id: null,
+    userId: null,
+    items: [],
+    totalAmount: 0,
+    totalItems: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+
   const isEmpty = computed(() => !cart.value || !cart.value.items || cart.value.items.length === 0);
   const totalItems = computed(() => {
     if (!cart.value || !cart.value.items) {
@@ -55,36 +65,24 @@ export const useCartStore = defineStore('cart', () => {
       const response = await getCart();
       
       if (response) {
-        const oldItemsCount = cart.value?.items?.length || 0;
         cart.value = response;
       } else {
-        cart.value = {
-          id: null,
-          userId: null,
-          items: [],
-          totalAmount: 0,
-          totalItems: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
+        cart.value = defaultCartValue();
       }
     } catch (err) {
       error.value = 'Failed to fetch cart';
-      cart.value = {
-        id: null,
-        userId: null,
-        items: [],
-        totalAmount: 0,
-        totalItems: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
+      cart.value = defaultCartValue();
     } finally {
       isLoading.value = false;
     }
   };
 
   const addItem = async (productId: number, quantity: number) => {
+    if (!localStorage.getItem('accessToken')) {
+      error.value = 'authentication_required';
+      return false;
+    }
+    
     try {
       isLoading.value = true;
       error.value = null;
@@ -102,6 +100,11 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const updateItem = async (cartItemId: number, quantity: number) => {
+    if (!localStorage.getItem('accessToken')) {
+      error.value = 'authentication_required';
+      return false;
+    }
+    
     try {
       isLoading.value = true;
       error.value = null;
@@ -119,6 +122,11 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const removeItem = async (cartItemId: number) => {
+    if (!localStorage.getItem('accessToken')) {
+      error.value = 'authentication_required';
+      return false;
+    }
+    
     try {
       isLoading.value = true;
       error.value = null;
@@ -137,8 +145,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const initCart = async () => {
     if (localStorage.getItem('accessToken')) {
-      await fetchCart();
-      return true;
+      return await fetchCart();
     } else {
       return false;
     }

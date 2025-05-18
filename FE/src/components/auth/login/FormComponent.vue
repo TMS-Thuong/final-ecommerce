@@ -126,18 +126,18 @@ const onLogin = async () => {
 
     const { accessToken, refreshToken } = responseData
     useAuthStore().setTokens(accessToken, refreshToken)
-    
+
     showToast(ToastEnum.Success, t('success.loginSuccess'))
-    
+
     await cartStore.initCart()
-    
+
     const redirectPath = route.query.redirect as string | undefined
-    
+
     if (redirectPath) {
-      setTimeout(() => {
-        router.push(redirectPath)
-      }, 100)
+      await cartStore.initCart();
+      router.push(redirectPath)
     } else {
+      await cartStore.initCart();
       router.push({ name: RouterEnum.Home })
     }
   } catch (error: unknown) {

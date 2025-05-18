@@ -73,8 +73,8 @@
     </div>
 
     <div ref="searchBoxRef" class="w-full relative flex justify-end">
-      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" 
-        @search="handleSearch" 
+      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery"
+        @search="handleSearch"
         :placeholder="$t('product.search.placeholder')"
         :width="'max-w-2xl'"
         class="absolute top-0 w-full md:w-[40rem] bg-white z-50 shadow-md" />
@@ -114,9 +114,6 @@ const searchQuery = ref('')
 const cartItemsCount = computed(() => {
   return cartStore.totalItems;
 })
-
-watch(() => cartStore.totalItems, (newCount, oldCount) => {
-}, { immediate: true })
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
@@ -190,10 +187,10 @@ onUnmounted(() => {
 const handleSearch = (query) => {
   isSearchVisible.value = false
   isMenuOpen.value = false
-  
+
   if (query) {
-    router.push({ 
-      name: RouterEnum.Products, 
+    router.push({
+      name: RouterEnum.Products,
       query: { searchQuery: query }
     })
   }

@@ -216,14 +216,24 @@ const confirmRemoveAll = () => {
 
   if (confirm(t('cart.confirmRemoveAll'))) {
     const items = [...cartStore.cartItems]; 
-    items.forEach(async (item) => {
-      try {
-        await cartStore.removeItem(item.id);
-      } catch (error) {
-        showToast(ToastEnum.Error, t('cart.removeAllError'));
-      }
-    });
-    showToast(ToastEnum.Success, t('cart.removeAllSuccess'));
+    try {
+      Promise.all(
+        items.map(async (item) => {
+          try {
+            await cartStore.removeItem(item.id);
+          } catch (error) {
+            showToast(ToastEnum.Error, t('cart.removeAllError'));
+            throw error; 
+          }
+        })
+      ).then(() => {
+        showToast(ToastEnum.Success, t('cart.removeAllSuccess'));
+      }).catch((error) => {
+        console.error("Failed to remove all items", error);
+      });
+    } catch (error) {
+      console.error("Error initiating remove all operation", error);
+    }
   }
 };
 

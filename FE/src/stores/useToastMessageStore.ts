@@ -15,4 +15,26 @@ export const useToastMessageStore = defineStore('toastMessage', {
       toastMessage: 'Information',
     }
   },
+  actions: {
+    success(message: string) {
+      this.toastType = ToastEnum.Success;
+      this.toastMessage = message;
+      this.isShowToast = true;
+    },
+    error(message: string) {
+      this.toastType = ToastEnum.Error;
+      this.toastMessage = message;
+      this.isShowToast = true;
+    },
+    warning(message: string) {
+      this.toastType = ToastEnum.Warning;
+      this.toastMessage = message;
+      this.isShowToast = true;
+    },
+    info(message: string) {
+      this.toastType = ToastEnum.Info;
+      this.toastMessage = message;
+      this.isShowToast = true;
+    }
+  }
 })
