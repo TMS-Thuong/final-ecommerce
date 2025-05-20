@@ -86,8 +86,9 @@ class OrderService {
     }
 
     const couponDiscount = 0;
-    if (orderData.couponCode) {
-    }
+    // if (orderData.couponCode) {
+    // Logic to apply coupon discount
+    // }
 
     const subtotal = cart.items.reduce((total, item) => {
       const price = item.product.salePrice || item.product.basePrice;
@@ -260,7 +261,7 @@ class OrderService {
     return prisma.order.findFirst({
       where: {
         orderCode: code,
-        userId: parseInt(userId),
+        userId: !isNaN(parseInt(userId)) ? parseInt(userId) : undefined,
       },
       include: {
         address: true,
