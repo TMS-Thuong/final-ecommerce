@@ -20,7 +20,10 @@ const orderItemSchema = {
     price: { type: 'number' },
     subtotal: { type: 'number' },
     discountAmount: { type: 'number' },
-    status: { type: 'string' },
+    status: {
+      type: 'string',
+      enum: ['Pending', 'Processing', 'Shipping', 'Delivered', 'Cancelled', 'Failed', 'Completed'],
+    },
     createdAt: { type: 'string', format: 'date-time' },
     updatedAt: { type: 'string', format: 'date-time' },
   },

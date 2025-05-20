@@ -209,7 +209,7 @@ class OrderService {
     if (order.status !== OrderStatus.Pending && order.status !== OrderStatus.Processing) {
       return {
         success: false,
-        message: 'Order cannot be cancelled as it is already being shipped or delivered',
+        message: 'Order cannot be cancelled at this stage.',
       };
     }
 

@@ -124,7 +124,7 @@ class PaymentController {
       const paymentUrl = await VNPayService.createPaymentUrl(orderId);
 
       if (!paymentUrl) {
-        return reply.status(500).send({ message: 'Failed to create payment URL' });
+        return reply.internalError('Failed to create payment URL', ErrorCode.PAYMENT_URL_CREATION_FAILED);
       }
 
       return reply.send({
@@ -153,11 +153,9 @@ class PaymentController {
 
       const paymentMethods = await prisma.paymentMethod.findMany();
 
-      const methodsArray = Array.isArray(paymentMethods) ? paymentMethods : [];
-
       return reply.send({
         success: true,
-        data: methodsArray,
+        data: paymentMethods,
       });
     } catch (error) {
       console.error('Error getting payment methods:', error);
