@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
+import { ErrorCode } from '@app/constants/error.constants';
 import ShippingService from '@app/services/shipping.service';
 import { binding } from '@decorator/binding';
 
@@ -32,7 +33,7 @@ class ShippingController {
     try {
       const result = CalculateShippingFeeSchema.safeParse(request.body);
       if (!result.success) {
-        return reply.badRequest(result.error.errors[0]?.message || 'Invalid data', 'INVALID_SHIPPING_DATA');
+        return reply.badRequest(result.error.errors[0]?.message || 'Invalid data', ErrorCode.INVALID_SHIPPING_DATA);
       }
 
       const { shippingMethodId, totalAmount } = result.data;
@@ -45,7 +46,7 @@ class ShippingController {
     } catch (error) {
       console.error('Error calculating shipping fee:', error);
       if (error instanceof Error && error.message === 'Shipping method not found') {
-        return reply.notFound('Shipping method not found', 'SHIPPING_METHOD_NOT_FOUND');
+        return reply.notFound('Shipping method not found', ErrorCode.SHIPPING_METHOD_NOT_FOUND);
       }
       return reply.internalError();
     }

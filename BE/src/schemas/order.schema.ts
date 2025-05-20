@@ -90,8 +90,8 @@ export const createOrderSchema: FastifySchema = {
       addressId: { type: 'integer' },
       shippingMethodId: { type: 'integer' },
       paymentMethodId: { type: 'integer' },
-      customerNotes: { type: 'string' },
-      couponCode: { type: 'string' },
+      customerNotes: { type: 'string', nullable: true },
+      couponCode: { type: 'string', nullable: true },
     },
   },
   response: {

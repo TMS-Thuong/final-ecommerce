@@ -189,7 +189,6 @@ class OrderService {
   }
 
   async cancelOrder(orderId: number, userId: number): Promise<{ success: boolean; message?: string; order?: unknown }> {
-    // Find the order and make sure it belongs to this user
     const order = await prisma.order.findFirst({
       where: {
         id: orderId,
@@ -207,7 +206,6 @@ class OrderService {
       };
     }
 
-    // Only pending and processing orders can be cancelled
     if (order.status !== OrderStatus.Pending && order.status !== OrderStatus.Processing) {
       return {
         success: false,
@@ -217,7 +215,6 @@ class OrderService {
 
     try {
       const updatedOrder = await prisma.$transaction(async (tx) => {
-        // Cancel the order
         const updated = await tx.order.update({
           where: { id: orderId },
           data: {
@@ -232,7 +229,6 @@ class OrderService {
           },
         });
 
-        // Restore the stock quantities
         for (const item of order.items) {
           await tx.product.update({
             where: { id: item.productId },
@@ -258,6 +254,23 @@ class OrderService {
         message: 'An error occurred while cancelling the order',
       };
     }
+  }
+
+  async getOrderByCode(code: string, userId: string): Promise<unknown> {
+    return prisma.order.findFirst({
+      where: {
+        orderCode: code,
+        userId: parseInt(userId),
+      },
+      include: {
+        address: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
   }
 }
 

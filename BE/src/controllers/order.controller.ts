@@ -5,8 +5,6 @@ import { CreateOrderZodSchema, OrderIdZodSchema } from '@app/schemas/order.zod';
 import OrderService from '@app/services/order.service';
 import { binding } from '@decorator/binding';
 
-const prisma = new PrismaClient();
-
 class OrderController {
   @binding
   async createOrder(request: FastifyRequest, reply: FastifyReply): Promise<void> {
@@ -92,20 +90,7 @@ class OrderController {
       const { code } = request.params;
       const userId = request.user.userId;
 
-      const order = await prisma.order.findFirst({
-        where: {
-          orderCode: code,
-          userId,
-        },
-        include: {
-          address: true,
-          items: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      });
+      const order = await OrderService.getOrderByCode(code, userId.toString());
 
       if (!order) {
         return reply.notFound('Order not found', 'ORDER_NOT_FOUND');

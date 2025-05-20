@@ -1,6 +1,8 @@
 import { PrismaClient, OrderStatus, PaymentStatus } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { CLIENT_URL, ORDER_COMPLETE } from '@app/config/env';
+import { ErrorCode } from '@app/constants/error.constants';
 import { VNPayResponseCode } from '@app/constants/vnpay.constants';
 import VNPayService from '@app/services/vnpay.service';
 import { binding } from '@decorator/binding';
@@ -54,7 +56,7 @@ class PaymentController {
           },
         });
 
-        return reply.redirect(`http://localhost:5173/order-complete/${order.id}`);
+        return reply.redirect(`${ORDER_COMPLETE}/${order.id}`);
       } else if (result.responseCode === VNPayResponseCode.CUSTOMER_CANCEL) {
         await prisma.order.update({
           where: { id: result.orderId },
@@ -63,7 +65,7 @@ class PaymentController {
           },
         });
 
-        return reply.redirect(`http://localhost:5173/order-complete/${order.id}?status=cancelled`);
+        return reply.redirect(`${ORDER_COMPLETE}/${order.id}?status=cancelled`);
       } else {
         await prisma.order.update({
           where: { id: result.orderId },
@@ -72,11 +74,11 @@ class PaymentController {
           },
         });
 
-        return reply.redirect(`http://localhost:5173/order-complete/${order.id}?status=failed`);
+        return reply.redirect(`${ORDER_COMPLETE}/${order.id}?status=failed`);
       }
     } catch (error) {
       console.error('Error processing VNPay callback:', error);
-      return reply.redirect('http://localhost:5173');
+      return reply.redirect(CLIENT_URL);
     }
   }
 
@@ -87,11 +89,17 @@ class PaymentController {
   ): Promise<void> {
     try {
       console.log('VNPay IPN callback received:', request.query);
+
       const result = await VNPayService.processIpnCallback(request.query);
-      return reply.send(result);
+
+      if (!result || typeof result.RspCode !== 'string' || typeof result.Message !== 'string') {
+        return reply.status(200).send({ RspCode: '99', Message: 'Invalid response format' });
+      }
+
+      return reply.status(200).send(result);
     } catch (error) {
       console.error('Error processing VNPay IPN:', error);
-      return reply.send({ RspCode: '99', Message: 'Unknown error' });
+      return reply.status(200).send({ RspCode: '99', Message: 'Internal server error' });
     }
   }
 
@@ -102,10 +110,7 @@ class PaymentController {
       const orderId = parseInt(request.params.orderId, 10);
 
       if (isNaN(orderId)) {
-        return reply.status(400).send({
-          success: false,
-          message: 'Invalid order ID',
-        });
+        return reply.badRequest('Invalid order ID', ErrorCode.INVALID_ORDER_ID);
       }
 
       const order = await prisma.order.findUnique({
@@ -113,13 +118,14 @@ class PaymentController {
       });
 
       if (!order) {
-        return reply.status(404).send({
-          success: false,
-          message: 'Order not found',
-        });
+        return reply.notFound('Order not found', ErrorCode.ORDER_NOT_FOUND);
       }
 
       const paymentUrl = await VNPayService.createPaymentUrl(orderId);
+
+      if (!paymentUrl) {
+        return reply.status(500).send({ message: 'Failed to create payment URL' });
+      }
 
       return reply.send({
         success: true,
@@ -127,10 +133,7 @@ class PaymentController {
       });
     } catch (error) {
       console.error('Error creating payment URL:', error);
-      return reply.status(500).send({
-        success: false,
-        message: 'Server error',
-      });
+      return reply.internalError();
     }
   }
 
@@ -168,7 +171,7 @@ class PaymentController {
       const orderId = parseInt(request.params.orderId);
 
       if (isNaN(orderId)) {
-        return reply.badRequest('Invalid order ID', 'INVALID_ORDER_ID');
+        return reply.badRequest('Invalid order ID', ErrorCode.INVALID_ORDER_ID);
       }
 
       const order = await prisma.order.findUnique({
@@ -183,10 +186,10 @@ class PaymentController {
       });
 
       if (!order) {
-        return reply.notFound('Order not found', 'ORDER_NOT_FOUND');
+        return reply.notFound('Order not found', ErrorCode.ORDER_NOT_FOUND);
       }
 
-      return reply.send({
+      return reply.ok({
         success: true,
         data: {
           orderId: order.id,

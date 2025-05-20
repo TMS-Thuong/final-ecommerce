@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { ErrorCode } from '@app/constants/error.constants';
 import { AddressZodSchema, AddressIdZodSchema } from '@app/schemas/address.zod';
 import AddressService from '@app/services/address.service';
 import { binding } from '@decorator/binding';
@@ -13,10 +14,7 @@ class AddressController {
 
       const addressArray = Array.isArray(addresses) ? addresses : [];
 
-      return reply.send({
-        success: true,
-        data: addressArray,
-      });
+      return reply.ok(addressArray);
     } catch (error) {
       console.error('Error getting user addresses:', error);
       return reply.internalError();
@@ -28,12 +26,15 @@ class AddressController {
     try {
       const result = AddressZodSchema.safeParse(request.body);
       if (!result.success) {
-        return reply.badRequest(result.error.errors[0]?.message || 'Invalid address data', 'INVALID_ADDRESS_DATA');
+        return reply.badRequest(
+          result.error.errors[0]?.message || 'Invalid address data',
+          ErrorCode.INVALID_ADDRESS_DATA
+        );
       }
 
       const userId = request.user.userId;
       const address = await AddressService.createAddress(userId, result.data);
-      return reply.created({ data: address });
+      return reply.created(address);
     } catch (error) {
       console.error('Error creating address:', error);
       return reply.internalError();
@@ -45,22 +46,29 @@ class AddressController {
     try {
       const idResult = AddressIdZodSchema.safeParse({ id: parseInt(request.params.id) });
       if (!idResult.success) {
-        return reply.badRequest('Invalid address ID', 'INVALID_ADDRESS_ID');
+        return reply.badRequest('Invalid address ID', ErrorCode.INVALID_ADDRESS_ID);
       }
 
       const result = AddressZodSchema.partial().safeParse(request.body);
       if (!result.success) {
-        return reply.badRequest(result.error.errors[0]?.message || 'Invalid address data', 'INVALID_ADDRESS_DATA');
+        return reply.badRequest(
+          result.error.errors[0]?.message || 'Invalid address data',
+          ErrorCode.INVALID_ADDRESS_DATA
+        );
       }
 
       const userId = request.user.userId;
-      const address = await AddressService.updateAddress(idResult.data.id, userId, result.data);
-      return reply.ok({ data: address });
+      try {
+        const address = await AddressService.updateAddress(idResult.data.id, userId, result.data);
+        return reply.ok(address);
+      } catch (serviceError) {
+        if (serviceError instanceof Error && serviceError.message === 'Address not found') {
+          return reply.notFound('Address not found', ErrorCode.ADDRESS_NOT_FOUND);
+        }
+        throw serviceError;
+      }
     } catch (error) {
       console.error('Error updating address:', error);
-      if (error instanceof Error && error.message === 'Address not found') {
-        return reply.notFound('Address not found', 'ADDRESS_NOT_FOUND');
-      }
       return reply.internalError();
     }
   }
@@ -70,17 +78,21 @@ class AddressController {
     try {
       const idResult = AddressIdZodSchema.safeParse({ id: parseInt(request.params.id) });
       if (!idResult.success) {
-        return reply.badRequest('Invalid address ID', 'INVALID_ADDRESS_ID');
+        return reply.badRequest('Invalid address ID', ErrorCode.INVALID_ADDRESS_ID);
       }
 
       const userId = request.user.userId;
-      await AddressService.deleteAddress(idResult.data.id, userId);
-      return reply.ok({ message: 'Address deleted successfully' });
+      try {
+        await AddressService.deleteAddress(idResult.data.id, userId);
+        return reply.ok({ message: 'Address deleted successfully' });
+      } catch (serviceError) {
+        if (serviceError instanceof Error && serviceError.message === 'Address not found') {
+          return reply.notFound('Address not found', ErrorCode.ADDRESS_NOT_FOUND);
+        }
+        throw serviceError;
+      }
     } catch (error) {
       console.error('Error deleting address:', error);
-      if (error instanceof Error && error.message === 'Address not found') {
-        return reply.notFound('Address not found', 'ADDRESS_NOT_FOUND');
-      }
       return reply.internalError();
     }
   }
@@ -90,21 +102,21 @@ class AddressController {
     try {
       const idResult = AddressIdZodSchema.safeParse({ id: parseInt(request.params.id) });
       if (!idResult.success) {
-        return reply.badRequest('Invalid address ID', 'INVALID_ADDRESS_ID');
+        return reply.badRequest('Invalid address ID', ErrorCode.INVALID_ADDRESS_ID);
       }
 
       const userId = request.user.userId;
-      const address = await AddressService.getAddressById(idResult.data.id, userId);
-
-      return reply.send({
-        success: true,
-        data: address,
-      });
+      try {
+        const address = await AddressService.getAddressById(idResult.data.id, userId);
+        return reply.ok(address);
+      } catch (serviceError) {
+        if (serviceError instanceof Error && serviceError.message === 'Address not found') {
+          return reply.notFound('Address not found', ErrorCode.ADDRESS_NOT_FOUND);
+        }
+        throw serviceError;
+      }
     } catch (error) {
       console.error('Error getting address by ID:', error);
-      if (error instanceof Error && error.message === 'Address not found') {
-        return reply.notFound('Address not found', 'ADDRESS_NOT_FOUND');
-      }
       return reply.internalError();
     }
   }
