@@ -9,7 +9,7 @@
               {{ $t('product.filters.reset') }}
             </button>
           </div>
-
+          
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.categories.title') }}</h3>
             <FilterDropdown v-model="filters.categories" :options="categoryOptions"
@@ -81,7 +81,7 @@
                 <div class="flex items-center">
                   <StarRating :rating="5" :showCount="false" :readonly="true" /> <span
                     class="ml-2 text-neutral-700 text-xl">{{
-                      $t('product.filters.rating.andAbove') }}</span>
+                    $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
               <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
@@ -91,7 +91,7 @@
                 <div class="flex items-center">
                   <StarRating :rating="4" :showCount="false" :readonly="true" /> <span
                     class="ml-2 text-neutral-700 text-xl">{{
-                      $t('product.filters.rating.andAbove') }}</span>
+                    $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
               <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
@@ -101,7 +101,7 @@
                 <div class="flex items-center">
                   <StarRating :rating="3" :showCount="false" :readonly="true" /> <span
                     class="ml-2 text-neutral-700 text-xl">{{
-                      $t('product.filters.rating.andAbove') }}</span>
+                    $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
               <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
@@ -111,7 +111,7 @@
                 <div class="flex items-center">
                   <StarRating :rating="2" :showCount="false" :readonly="true" /> <span
                     class="ml-2 text-neutral-700 text-xl">{{
-                      $t('product.filters.rating.andAbove') }}</span>
+                    $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
               <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
@@ -121,7 +121,7 @@
                 <div class="flex items-center">
                   <StarRating :rating="1" :showCount="false" :readonly="true" /> <span
                     class="ml-2 text-neutral-700 text-xl">{{
-                      $t('product.filters.rating.andAbove') }}</span>
+                    $t('product.filters.rating.andAbove') }}</span>
                 </div>
               </label>
             </div>
@@ -239,7 +239,7 @@ const resetFilters = () => {
     inStock: false,
     onSale: false
   }
-
+  
   currentPage.value = 1
   loadProducts()
 }
@@ -345,15 +345,15 @@ const loadProducts = async (page = 1) => {
   } else {
     loadingMore.value = true
   }
-
+  
   error.value = ''
 
   try {
     let minPrice, maxPrice
     if (filters.value.priceRange) {
       if (filters.value.priceRange.includes('-')) {
-        const [min, max] = filters.value.priceRange.split('-').map(Number)
-        minPrice = min
+      const [min, max] = filters.value.priceRange.split('-').map(Number)
+      minPrice = min
         maxPrice = max === 0 ? undefined : max;
       }
     } else {
@@ -451,7 +451,7 @@ onMounted(() => {
   if (route.query.searchQuery) {
     searchQuery.value = route.query.searchQuery.toString()
   }
-
+  
   loadCategories()
   loadBrands()
   loadProducts().then(() => {

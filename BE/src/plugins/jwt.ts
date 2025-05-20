@@ -23,7 +23,6 @@ export default fp(async (fastify) => {
   fastify.decorate('authenticate', async (request, reply) => {
     try {
       await request.jwtVerify();
-      console.log('decoded', request.user);
     } catch {
       return reply.unauthorized();
     }

@@ -6,11 +6,24 @@ import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plu
 
 import { authUserRoutes } from './routes/auth-user.routes';
 import { brandRoutes } from './routes/brand.routes';
+import { cartRoutes } from './routes/cart.routes';
 import { categoryRoutes } from './routes/category.routes';
 import { productRoutes } from './routes/product.routes';
+
 declare module 'fastify' {
   interface FastifyInstance {
     verifyToken: (token: string) => Promise<{ success: boolean; message: string }>;
+  }
+}
+
+declare module '@fastify/jwt' {
+  interface FastifyJWT {
+    payload: { id: number; userId?: number; email?: string };
+    user: {
+      id: number;
+      userId?: number;
+      email?: string;
+    };
   }
 }
 
@@ -45,5 +58,6 @@ app.register(authUserRoutes, { prefix: '/user/api' });
 app.register(productRoutes, { prefix: '/api' });
 app.register(categoryRoutes, { prefix: '/api' });
 app.register(brandRoutes, { prefix: '/api' });
+app.register(cartRoutes, { prefix: '/api' });
 
 export default app;
