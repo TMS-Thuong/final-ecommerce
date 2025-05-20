@@ -4,7 +4,7 @@ import { CartErrorMessages } from '@app/config/cart.message';
 import { AddCartItemZodSchema, CartItemIdZodSchema, UpdateCartItemZodSchema } from '@app/schemas/cart.zod';
 import { CartService } from '@app/services/cart.service';
 
-import { getUserId, getOrCreateCart } from './cart.service.utils';
+import { getUserId, getOrCreateCart } from '../utils/cart.service.utils';
 
 export class CartController {
   private cartService: CartService;
@@ -15,7 +15,7 @@ export class CartController {
 
   async getCart(req: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const userId = getUserId(req, reply);
+      const userId = getUserId(req);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
@@ -33,7 +33,7 @@ export class CartController {
     const body = req.body as unknown;
 
     try {
-      const userId = getUserId(req, reply);
+      const userId = getUserId(req);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
@@ -94,7 +94,7 @@ export class CartController {
     const { quantity } = bodyValidationResult.data;
 
     try {
-      const userId = getUserId(req, reply);
+      const userId = getUserId(req);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }
@@ -127,7 +127,7 @@ export class CartController {
     const cartItemId = idValidationResult.data.id;
 
     try {
-      const userId = getUserId(req, reply);
+      const userId = getUserId(req);
       if (!userId) {
         return reply.unauthorized('Unauthorized', 'UNAUTHORIZED');
       }

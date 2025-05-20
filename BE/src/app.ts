@@ -4,11 +4,15 @@ import fastify from 'fastify';
 import AuthController from '@app/services/auth-user.service';
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
 
+import { addressRoutes } from './routes/address.routes';
 import { authUserRoutes } from './routes/auth-user.routes';
 import { brandRoutes } from './routes/brand.routes';
 import { cartRoutes } from './routes/cart.routes';
 import { categoryRoutes } from './routes/category.routes';
+import { orderRoutes } from './routes/order.routes';
+import { paymentRoutes } from './routes/payment.routes';
 import { productRoutes } from './routes/product.routes';
+import shippingRoutes from './routes/shipping.routes';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -54,7 +58,12 @@ app.decorate('verifyToken', AuthController.verifyToken);
 app.get('/', async () => {
   return { message: 'Fastify Blog API is running' };
 });
+
 app.register(authUserRoutes, { prefix: '/user/api' });
+app.register(addressRoutes, { prefix: '/user/api' });
+app.register(shippingRoutes, { prefix: '/api' });
+app.register(orderRoutes, { prefix: '/user/api' });
+app.register(paymentRoutes, { prefix: '/api' });
 app.register(productRoutes, { prefix: '/api' });
 app.register(categoryRoutes, { prefix: '/api' });
 app.register(brandRoutes, { prefix: '/api' });
