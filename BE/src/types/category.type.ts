@@ -1,5 +1,3 @@
-import { IProductBase } from './product.type';
-
 export interface ICategory {
   id: number;
   name: string;

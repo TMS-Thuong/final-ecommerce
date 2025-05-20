@@ -70,8 +70,12 @@ import { useAuthStore } from '@/stores/auth/login/token.store'
 import { toCamelCase } from '@/helpers/stringUtils'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
+import { useRoute } from 'vue-router'
+import { useCartStore } from '@/stores/cart'
 
 const { t } = useI18n()
+const route = useRoute()
+const cartStore = useCartStore()
 
 const formData = ref(DEFAULT_FORM_DATA)
 const errors = ref<{ [key: string]: string }>({})
@@ -122,8 +126,20 @@ const onLogin = async () => {
 
     const { accessToken, refreshToken } = responseData
     useAuthStore().setTokens(accessToken, refreshToken)
+
     showToast(ToastEnum.Success, t('success.loginSuccess'))
-    router.push({ name: RouterEnum.Home });
+
+    await cartStore.initCart()
+
+    const redirectPath = route.query.redirect as string | undefined
+
+    if (redirectPath) {
+      await cartStore.initCart();
+      router.push(redirectPath)
+    } else {
+      await cartStore.initCart();
+      router.push({ name: RouterEnum.Home })
+    }
   } catch (error: unknown) {
     const apiError = error as AxiosError
 

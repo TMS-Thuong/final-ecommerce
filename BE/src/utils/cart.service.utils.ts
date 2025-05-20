@@ -1,8 +1,9 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Cart } from '@prisma/client';
+import { FastifyRequest } from 'fastify';
 
 import { CartService } from '@app/services/cart.service';
 
-export const getUserId = (req: FastifyRequest, reply: FastifyReply): number | null => {
+export const getUserId = (req: FastifyRequest): number | null => {
   const userId = req.user.id || req.user.userId;
   if (!userId) {
     return null;
@@ -10,7 +11,7 @@ export const getUserId = (req: FastifyRequest, reply: FastifyReply): number | nu
   return userId;
 };
 
-export const getOrCreateCart = async (userId: number, cartService: CartService) => {
+export const getOrCreateCart = async (userId: number, cartService: CartService): Promise<Cart> => {
   const cart = await cartService.getCartByUserId(userId);
 
   if (!cart) {

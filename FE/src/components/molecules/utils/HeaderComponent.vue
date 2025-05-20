@@ -13,7 +13,7 @@
 
         <div class="flex items-center space-x-4">
           <SearchIcon size="8" class="text-gray-700" @click.stop="inToggleSearch" />
-          <CartIcon size="8" class="text-gray-700" @click="inCart" />
+          <CartIcon size="8" class="text-gray-700" @click="inCart" :item-count="cartItemsCount" />
         </div>
       </div>
 
@@ -63,7 +63,7 @@
       <div class="flex items-center space-x-4 lg:space-x-8 relative">
         <SearchIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer"
           @click.stop="inToggleSearch" />
-        <CartIcon size="8" class="text-gray-700 hover:text-black transition" @click="inCart"/>
+        <CartIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inCart" :item-count="cartItemsCount" />
         <HeartIcon size="8" class="text-gray-700 hover:text-black transition" @click="inWishlist"/>
         <div class="flex items-center">
           <PersonIcon size="8" class="text-gray-700 hover:text-black transition" @click="inAccount"/>
@@ -73,8 +73,8 @@
     </div>
 
     <div ref="searchBoxRef" class="w-full relative flex justify-end">
-      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" 
-        @search="handleSearch" 
+      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery"
+        @search="handleSearch"
         :placeholder="$t('product.search.placeholder')"
         :width="'max-w-2xl'"
         class="absolute top-0 w-full md:w-[40rem] bg-white z-50 shadow-md" />
@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Logo from '@/components/icons/Logo.vue'
 import CartIcon from '@/components/icons/CartIcon.vue'
@@ -100,14 +100,20 @@ import SearchInputComponent from '@/components/molecules/utils/SearchInputCompon
 import HeaderSection from '@/components/molecules/utils/HeaderSelectionComponent.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterEnum } from '@/enums/router'
+import { useCartStore } from '@/stores/cart'
 
 const { t } = useI18n()
 const router = useRouter()
+const cartStore = useCartStore()
 const imageSrc = new URL('@/assets/logo.png', import.meta.url).href
 const searchBoxRef = ref(null)
 const isSearchVisible = ref(false)
 const isMenuOpen = ref(false)
 const searchQuery = ref('')
+
+const cartItemsCount = computed(() => {
+  return cartStore.totalItems;
+})
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
@@ -131,6 +137,9 @@ onMounted(() => {
       isMenuOpen.value = false
     }
   })
+  if (localStorage.getItem('accessToken')) {
+    cartStore.initCart()
+  }
 })
 
 const inHome = () => {
@@ -154,7 +163,12 @@ const inContact = () => {
 }
 
 const inCart = () => {
-  isMenuOpen.value = false
+  if (localStorage.getItem('accessToken')) {
+    router.push('/cart');
+  } else {
+    router.push({ name: RouterEnum.Login, query: { redirect: '/cart' } });
+  }
+  isMenuOpen.value = false;
 }
 
 const inWishlist = () => {
@@ -173,10 +187,10 @@ onUnmounted(() => {
 const handleSearch = (query) => {
   isSearchVisible.value = false
   isMenuOpen.value = false
-  
+
   if (query) {
-    router.push({ 
-      name: RouterEnum.Products, 
+    router.push({
+      name: RouterEnum.Products,
       query: { searchQuery: query }
     })
   }

@@ -36,7 +36,6 @@ export const useAuthStore = defineStore('auth', {
     async refreshAccessToken() {
       const refreshToken = this.refreshToken
       if (!refreshToken) {
-        console.error('No refresh token found')
         return
       }
 
@@ -44,10 +43,8 @@ export const useAuthStore = defineStore('auth', {
         const response = await authApi.refreshAccessToken(refreshToken)
         const { accessToken, refreshToken: newRefreshToken } = response.data
         this.setTokens(accessToken, newRefreshToken)
-        console.log('Access token refreshed successfully:', accessToken)
         return accessToken
       } catch (error) {
-        console.error('Error refreshing token:', error)
         this.clearTokens()
         return null
       }

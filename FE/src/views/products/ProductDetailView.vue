@@ -36,7 +36,7 @@
           <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ product.name }}</h1>
           
           <div class="flex items-center mb-4">
-            <StarRating :size="8" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
+            <StarRating :size="'8'" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
             <span class="ml-2 text-gray-500">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
           </div>
 
@@ -45,7 +45,7 @@
               <span class="text-2xl font-bold text-red-600">{{ formatPrice(product.salePrice || product.basePrice) }}</span>
               <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{ formatPrice(product.basePrice) }}</span>
               <span v-if="discountPercent > 0" class="ml-3 bg-red-100 text-red-800 text-lg font-semibold px-2 py-1 rounded">
-                Giảm {{ discountPercent }}%
+                {{ $t('product.detail.discount', { percent: discountPercent }) }}
               </span>
             </div>
           </div>
@@ -148,12 +148,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { productApi } from '@/api/product'
 import { categoryApi } from '@/api/category'
 import { brandApi } from '@/api/brand'
+import { useCartStore } from '@/stores/cart'
+import { useToast } from '@/hooks/useToast'
+import { ToastEnum } from '@/enums/toast'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
 import ProductImageGallery from '@/components/products/ProductImageGalleryComponent.vue'
 import CartIcon from '@/components/icons/CartIcon.vue'
@@ -161,7 +164,10 @@ import HeartIcon from '@/components/icons/HeartIcon.vue'
 import ShareIcon from '@/components/icons/ShareIcon.vue'
 
 const route = useRoute()
+const router = useRouter()
 const { t } = useI18n()
+const { showToast } = useToast()
+const cartStore = useCartStore()
 const productId = computed(() => Number(route.params.id))
 
 const product = ref(null)
@@ -209,11 +215,34 @@ const prevImage = () => {
   currentImageIndex.value = (currentImageIndex.value - 1 + productImages.value.length) % productImages.value.length
 }
 
-const addToCart = () => {
-  console.log('Add to cart:', {
-    productId: product.value.id,
-    quantity: quantity.value
-  })
+const addToCart = async () => {
+  if (!product.value || product.value.stockQuantity <= 0) {
+    return
+  }
+
+  try {
+    loading.value = true
+    
+    if (!localStorage.getItem('accessToken')) {
+      router.push({ name: 'Login', query: { redirect: route.fullPath } });
+      return;
+    }
+    
+    await cartStore.addItem(product.value.id, quantity.value);
+    
+    showToast(ToastEnum.Success, t('product.detail.addedToCart', { quantity: quantity.value, name: product.value.name }));
+    quantity.value = 1;
+  } catch (err) {
+    if (err.response?.data?.message === 'PRODUCT_NOT_FOUND') {
+      showToast(ToastEnum.Error, t('product.detail.productNotFound'));
+    } else if (err.response?.data?.message === 'INSUFFICIENT_STOCK') {
+      showToast(ToastEnum.Error, t('product.detail.insufficientStock'));
+    } else {
+      showToast(ToastEnum.Error, t('product.detail.addToCartError'));
+    }
+  } finally {
+    loading.value = false;
+  }
 }
 
 const loadCategoryData = async (categoryId) => {
@@ -223,7 +252,7 @@ const loadCategoryData = async (categoryId) => {
     const response = await categoryApi.getCategoryById(categoryId)
     categoryData.value = response.data
   } catch (err) {
-    console.error('Error loading category data:', err)
+    error.value = t('common.error')
   }
 }
 
@@ -234,7 +263,7 @@ const loadBrandData = async (brandId) => {
     const response = await brandApi.getBrandById(brandId)
     brandData.value = response.data
   } catch (err) {
-    console.error('Error loading brand data:', err)
+    error.value = t('common.error')
   }
 }
 
@@ -258,12 +287,14 @@ const loadProductData = async () => {
     }
     
   } catch (err) {
-    console.error('Error loading product:', err)
     error.value = t('common.error')
   } finally {
     loading.value = false
   }
 }
+
+watch(() => cartStore.totalItems, (newCount, oldCount) => { 
+})
 
 onMounted(() => {
   loadProductData()

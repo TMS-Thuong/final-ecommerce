@@ -9,6 +9,32 @@ const messages = {
       loading: "Loading...",
       error: "An error occurred. Please try again."
     },
+    cart: {
+      yourCart: "Your Cart",
+      emptyCart: "Cart is Empty",
+      noProducts: "You don't have any products in your cart yet",
+      continueShopping: "Continue Shopping",
+      products: "Products",
+      removeAll: "Remove All",
+      orderSummary: "Order Summary",
+      subtotal: "Subtotal",
+      shippingFee: "Shipping Fee",
+      total: "Total",
+      couponCode: "Coupon Code",
+      enterCouponCode: "Enter coupon code",
+      apply: "Apply",
+      checkout: "Checkout",
+      loadError: "Unable to load cart",
+      updateSuccess: "Successfully updated quantity",
+      updateError: "Unable to update quantity",
+      removeSuccess: "Product removed from cart",
+      removeError: "Unable to remove product",
+      confirmRemoveAll: "Are you sure you want to remove all products from your cart?",
+      removeAllSuccess: "All products removed from cart",
+      enterCouponCodeWarning: "Please enter a coupon code",
+      couponFeatureInDevelopment: "Coupon feature is under development",
+      checkoutFeatureInDevelopment: "Checkout feature is under development"
+    },
     [TransEnum.Error]: {
       EmailRequired: 'Email is required.',
       emailInvalid: 'Invalid email address.',
@@ -208,7 +234,12 @@ const messages = {
         features: "Key Features",
         specifications: "Specifications",
         reviews: "Reviews",
-        updating: "Updating..."
+        updating: "Updating...",
+        discount: "Save {percent}%",
+        addedToCart: "Added {quantity} {name} to cart!",
+        productNotFound: "Product not found",
+        insufficientStock: "Insufficient stock",
+        addToCartError: "Failed to add item to cart"
       },
       tabs: {
         description: "Product Description",
