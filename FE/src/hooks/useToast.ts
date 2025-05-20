@@ -7,7 +7,6 @@ export const useToast = () => {
   const toastType = ref<ToastEnum>(toastMessageStore.toastType)
   const toastMessage = ref<string>(toastMessageStore.toastMessage)
 
-  // Sync refs with store
   watch(() => toastMessageStore.toastType, (newType) => {
     toastType.value = newType
   })

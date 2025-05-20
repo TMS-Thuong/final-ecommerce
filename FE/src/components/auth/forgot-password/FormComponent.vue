@@ -87,11 +87,7 @@ const onForgotPW = async (event: Event) => {
     isLoading.value = true
     const response = await authApi.forgotPassword(formData.value.email)
 
-    console.log('Forgot Password Response:', response)
-
     showToast(ToastEnum.Success, t('success.resetEmailSent'))
-
-    console.log('Toast Show - Success:', t('success.resetEmailSent'))
 
     router.push({ name: AuthRouterEnum.Login })
   } catch (error: unknown) {
@@ -100,9 +96,7 @@ const onForgotPW = async (event: Event) => {
     if (apiError?.message) {
       errorMessage.value = t(`error.${toCamelCase(apiError.message)}`)
     } else if (apiError?.code) {
-      console.error(apiError.code)
       errorMessage.value = t(`error.${toCamelCase(apiError.code)}`)
-      console.error(errorMessage.value)
     } else {
       errorMessage.value = t('error.unexpectedError')
     }
