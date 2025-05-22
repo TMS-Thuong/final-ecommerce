@@ -14,7 +14,7 @@
     </div>
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
       <router-link :to="{ name: RouterEnum.ProductList }"
-        class="px-6 py-2 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
+        class="px-6 py-2 text-xl bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
         View All Products
       </router-link>
     </div>

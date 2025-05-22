@@ -1,9 +1,12 @@
 {
-  "script": {
+  "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "precommit": "lint-staged",
-    "prepush": "echo Running prepush hook..."
+    "prepush": "echo Running prepush hook...",
+    "dev:fe": "cd FE && npm run dev",
+    "dev:be": "cd BE && npm run dev",
+    "dev": "npm-run-all --parallel dev:fe dev:be"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -11,6 +14,7 @@
     "eslint": "^9.26.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.5.3"
   }
 }

@@ -11,11 +11,11 @@ const props = defineProps({
     default: 'src/assets/no-img.png',
   },
   minWidth: {
-    type: Number,
+    type: [Number, String],
     default: 150,
   },
   height: {
-    type: Number,
+    type: [Number, String],
     default: 100,
   },
 })

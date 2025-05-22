@@ -18,6 +18,7 @@ export interface Product extends ProductBase {
   soldCount: number;
   isActive: boolean;
   isFeatured: boolean;
+  images?: ProductImage[];
 }
 
 export interface ProductImage {

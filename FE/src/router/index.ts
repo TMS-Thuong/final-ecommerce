@@ -12,6 +12,13 @@ import ResetPWView from '@/views/auth/reset-password/FormView.vue'
 import ProductListView from '@/views/products/ProductListView.vue'
 import ProductDetailView from '@/views/products/ProductDetailView.vue'
 import CartView from '@/views/cart/CartView.vue'
+import CheckoutView from '@/views/checkout/CheckoutView.vue'
+import OrderCompleteView from '@/views/checkout/OrderCompleteView.vue'
+import PaymentCallbackView from '@/views/checkout/PaymentCallbackView.vue'
+import MyOrdersView from '@/views/account/MyOrdersView.vue'
+import AddressListView from '@/views/account/AddressListView.vue'
+import AddAddressView from '@/views/account/AddAddressView.vue'
+import EditAddressView from '@/views/account/EditAddressView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -34,6 +41,47 @@ const routes = [
     path: '/cart',
     name: RouterEnum.Cart,
     component: CartView,
+  },
+  {
+    path: '/checkout',
+    name: RouterEnum.Checkout,
+    component: CheckoutView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/order-complete/:orderId',
+    name: RouterEnum.OrderComplete,
+    component: OrderCompleteView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/payment/vnpay_return',
+    name: RouterEnum.PaymentCallback,
+    component: PaymentCallbackView,
+  },
+  {
+    path: '/account/orders',
+    name: RouterEnum.MyOrders,
+    component: MyOrdersView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/account/addresses',
+    name: RouterEnum.AddressList,
+    component: AddressListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/account/addresses/add',
+    name: RouterEnum.AddAddress,
+    component: AddAddressView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/account/addresses/edit/:id',
+    name: RouterEnum.EditAddress,
+    component: EditAddressView,
+    meta: { requiresAuth: true }
   },
   {
     path: '/user',
@@ -74,5 +122,19 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const token = localStorage.getItem('accessToken');
+
+  if (requiresAuth && !token) {
+    next({
+      name: AuthRouterEnum.Login,
+      query: { redirect: to.fullPath }
+    });
+  } else {
+    next();
+  }
+});
 
 export default router

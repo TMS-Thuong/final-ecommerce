@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
-    <div class="flex-1 p-6 md:p-8">
+    <div class="flex-1 p-6 md:p-8 text-lg">
       <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ $t('auth.register.title') }}</h1>
       <p class="mb-6 text-gray-500 text-lg">{{ $t('auth.register.registerDescription') }}</p>
       <form @submit.prevent="onRegister" class="space-y-4">
@@ -42,10 +42,13 @@
           <RadioButtonGroup :label="$t('auth.register.gender')" :options="genderOptions" name="gender"
             v-model="formData.gender" :error="errors.gender" />
         </div>
-        <div class="relative">
-          <SubmitButton :text="$t('auth.register.submitButton')" :disabled="isLoading" class="w-full" />
+        <SubmitButton
+          :text="$t('auth.register.submitButton')"
+          :disabled="isLoading"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
+        >
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-        </div>
+        </SubmitButton>
       </form>
       <p class="mt-6 text-center text-gray-600 text-lg">{{ $t('auth.register.emailVerifyText') }}
         <button class="text-blue-500 hover:underline" :disabled="isLoading" @click="onResentEmailVerify">{{

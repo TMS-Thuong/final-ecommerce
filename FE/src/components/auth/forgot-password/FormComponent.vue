@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
-    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
+    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center text-lg">
       <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center text-black">{{ $t('auth.forgotPassword.title') }}</h1>
       <form class="mb-6 space-y-4 w-full max-w-sm" @submit.prevent="onForgotPW">
         <p class="text-lg font-medium mb-6 text-left text-black">{{ $t('auth.forgotPassword.description') }}</p>
@@ -8,14 +8,23 @@
         <InputText id="email" :label="$t('auth.forgotPassword.email')" v-model="formData.email"
           placeholder="name@example.com" type="email" :error="errors.email" @input="onClearError('email')"
           class="w-full" />
-
-        <div class="relative">
-          <SubmitButton :text="$t('auth.forgotPassword.submitButton')" :disabled="isLoading || !isValidEmail"
-            class="w-full bg-neutral-800" />
+        <SubmitButton
+          :text="$t('auth.forgotPassword.submitButton')"
+          :disabled="isLoading"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
+        >
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-        </div>
-        <SubmitButton :text="$t('auth.forgotPassword.cancelButton')" :disabled="isLoading" class="w-full bg-neutral-800"
-          @click="onCancel" />
+        </SubmitButton>
+        <SubmitButton
+          :text="$t('auth.forgotPassword.cancelButton')"
+          :disabled="isLoading"
+          type="button"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
+          @click="onCancel"
+        >
+          <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+        </SubmitButton>
+
       </form>
     </div>
 
@@ -54,6 +63,7 @@ const errors = ref<{ [key: string]: string }>({})
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 const imageSrc = new URL('@/assets/nen.jpg', import.meta.url).href
+
 const onClearError = (field: string) => {
   delete errors.value[field]
 }

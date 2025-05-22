@@ -1,54 +1,55 @@
 <template>
   <router-link :to="`/products/${product.id}`" class="block">
-    <div
-      class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-    <div class="relative h-[25rem] overflow-hidden">
-      <div class="h-full w-full flex items-center justify-center">
-          <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-[80%] h-[80%] object-cover" />
-        <ProductIcon v-else size="15" class="text-gray-400" />
-      </div>
-      
-        <div v-if="product.stockQuantity === 0"
-          class="absolute inset-0 bg-white bg-opacity-20 flex items-center justify-center">
-        <span class="bg-white text-red-600 text-xl font-bold px-4 py-2 rounded-full border-2 border-red-500 z-20">
-          Sold out
-        </span>
-      </div>
-      
-        <div v-if="discountPercent > 0"
-          class="absolute top-2 left-2 bg-red-500 text-white text-lg font-bold px-2 py-1 rounded z-10">
-        -{{ discountPercent }}%
-      </div>
-      
-        <div v-if="isNewProduct" :class="[
-          'absolute bg-green-500 text-white text-lg font-bold px-2 py-1 rounded z-10',
-          discountPercent > 0 ? 'top-14 left-2' : 'top-2 left-2'
-        ]">
-        New
-      </div>
+    <div class="product-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
+        <div :class="{ 'filter blur-[1.5px]': product.stockQuantity === 0 }" class="relative h-full w-full">
+          <div class="h-full w-full flex items-center justify-center">
+            <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
+              loading="lazy" />
+            <ProductIcon v-else size="10" class="text-gray-400" />
+          </div>
+          <div v-if="discountPercent > 0"
+            class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
+            -{{ discountPercent }}%
+          </div>
 
-        <div v-if="product.soldCount > 50"
-          class="absolute top-2 right-2 bg-blue-500 text-white text-lg font-bold px-2 py-1 rounded z-10">
-        Best Seller
-      </div>
-    </div>
-    <div class="p-4">
-      <h3 class="text-xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
+          <div v-if="isNewProduct"
+            :class="['absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 ? 'top-10' : 'top-1']">
+            {{ $t('product.new') }}
+          </div>
 
-      <div class="mt-1 flex items-center">
-        <span class="text-xl font-bold text-red-500">{{ formatPrice(product.salePrice || product.basePrice) }}</span>
+          <div v-if="isBestSeller"
+            :class="['absolute left-2 bg-yellow-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 && isNewProduct ? 'top-14' : discountPercent > 0 ? 'top-10' : isNewProduct ? 'top-10' : 'top-1']">
+            {{ $t('product.bestSeller') }}
+          </div>
+        </div>
+
+        <div v-if="product.stockQuantity === 0" class="absolute inset-0 flex items-center justify-center">
+          <span class="bg-white text-red-600 text-base font-bold px-4 py-2 rounded-full border-2 border-red-500 z-20">
+            {{ $t('product.soldOut') }}
+          </span>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
+
+        <div class="mt-1 flex items-center">
+          <span class="text-xl font-bold text-red-500">{{
+            formatPrice(product.salePrice || product.basePrice)
+          }}</span>
           <span v-if="product.salePrice" class="ml-2 text-base text-gray-500 line-through">{{
             formatPrice(product.basePrice) }}</span>
-      </div>
-
-      <div class="mt-2">
-          <StarRating :rating="product.averageRating" :count="product.ratingCount" :readonly="true" />
-      </div>
+        </div>
 
         <div class="mt-2">
-          <span class="inline-block text-xl px-2 py-1 rounded"
-            :class="product.salePrice ? 'bg-yellow-100 text-yellow-800' : 'bg-transparent text-transparent'">
-            {{ product.salePrice ? 'Discount' : '' }}
+          <StarRating :rating="product.averageRating" :count="product.ratingCount" :readonly="true" />
+        </div>
+
+        <div class="mt-2">
+          <span class="inline-block text-base px-3 py-1 rounded-full border-1" :class="product.salePrice
+            ? 'bg-white text-green-500 border-green-500'
+            : 'bg-transparent text-transparent border-transparent'">
+            {{ product.salePrice ? $t('product.discount') : '' }}
           </span>
         </div>
       </div>
@@ -58,7 +59,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { productApi } from '@/api/product'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
 import ProductIcon from '@/components/icons/ProductIcon.vue'
 import { ProductSchema } from '@/validations/product'
@@ -69,11 +69,11 @@ const props = defineProps({
     required: true,
     validator: (value) => {
       try {
-        ProductSchema.parse(value);
-        return true;
+        ProductSchema.parse(value)
+        return true
       } catch (error) {
-        console.error("Product validation error:", error.errors);
-        return false;
+        console.error('Product validation error:', error.errors)
+        return false
       }
     }
   }
@@ -89,30 +89,30 @@ const discountPercent = computed(() => {
 
 const isNewProduct = computed(() => {
   if (!props.product.createdAt) {
-    return props.product.viewCount < 10;
+    return props.product.viewCount < 10
   }
-  
-  const createdDate = new Date(props.product.createdAt);
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  
-  return createdDate >= thirtyDaysAgo;
+
+  const createdDate = new Date(props.product.createdAt)
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  return createdDate >= thirtyDaysAgo
 })
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
 }
 
-onMounted(async () => {
-  try {
-    const response = await productApi.getProductImages(props.product.id)
-    const images = response?.data || []
-    const thumbnail = images.find(img => img.isThumbnail) || images[0]
-    if (thumbnail) {
+onMounted(() => {
+  if (props.product.images && props.product.images.length > 0) {
+    const thumbnail = props.product.images.find(img => img.isThumbnail) || props.product.images[0]
+    if (thumbnail && thumbnail.imageUrl) {
       thumbnailUrl.value = thumbnail.imageUrl
     }
-  } catch (error) {
-    console.error('Failed to load product image:', error)
   }
 })
 </script>
+
+<style scoped lang="scss">
+@use '../../css/_product-card.scss' as *;
+</style>

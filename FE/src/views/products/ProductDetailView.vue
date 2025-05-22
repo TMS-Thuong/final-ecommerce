@@ -23,8 +23,8 @@
     <div v-else-if="product" class="mx-auto px-[16rem]">
       <div class="flex flex-col lg:flex-row gap-8">
         <div class="w-full lg:w-1/2">
-          <ProductImageGallery 
-            :images="productImages"
+          <ProductImageGallery
+            :images="product.images || []"
             :thumbnailIndex="currentImageIndex"
             @select-image="selectImage"
             @next-image="nextImage"
@@ -34,7 +34,7 @@
 
         <div class="w-full lg:w-1/2">
           <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ product.name }}</h1>
-          
+
           <div class="flex items-center mb-4">
             <StarRating :size="'8'" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
             <span class="ml-2 text-gray-500">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
@@ -51,8 +51,13 @@
           </div>
 
           <div class="mb-4 text-xl">
+            <span class="font-semibold text-gray-700">{{ $t('product.detail.sku') }}:</span>
+            <span class="ml-2 text-gray-900">{{ product.sku }}</span>
+          </div>
+
+          <div class="mb-4 text-xl">
             <span class="font-semibold text-gray-700">{{ $t('product.detail.brand') }}:</span>
-            <span v-if="brandData" class="ml-2 text-blue-600">{{ brandData.name }}</span>
+            <span v-if="brandData" class="ml-2 text-blue-600">{{ brandData.name.toUpperCase() }}</span>
             <span v-else class="ml-2 text-blue-600">{{ product.brand?.name }}</span>
           </div>
 
@@ -74,7 +79,7 @@
             <div class="flex items-center">
               <span class="mr-4 font-semibold text-gray-700">{{ $t('product.detail.quantity') }}:</span>
               <div class="flex items-center border border-gray-300 rounded-md">
-                <button 
+                <button
                   @click="decrementQuantity"
                   class="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
                   :disabled="quantity <= 1 || product.stockQuantity <= 0"
@@ -84,7 +89,7 @@
                 <div class="w-12 py-1 text-center border-x border-gray-300">
                   {{ quantity }}
                 </div>
-                <button 
+                <button
                   @click="incrementQuantity"
                   class="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
                   :disabled="quantity >= product.stockQuantity || product.stockQuantity <= 0"
@@ -96,7 +101,7 @@
           </div>
 
           <div class="flex space-x-4 mb-8">
-            <button 
+            <button
               @click="addToCart"
               class="px-6 py-3 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition w-full flex items-center justify-center"
               :disabled="product.stockQuantity <= 0"
@@ -129,7 +134,7 @@
             </button>
           </nav>
         </div>
-        
+
         <div class="py-6 prose max-w-none text-gray-700 text-lg">
           <div v-if="product.description" class="text-justify" v-html="product.description"></div>
           <div v-else class="text-justify text-gray-500">{{ $t('product.detail.updating') }}</div>
@@ -171,7 +176,6 @@ const cartStore = useCartStore()
 const productId = computed(() => Number(route.params.id))
 
 const product = ref(null)
-const productImages = ref([])
 const loading = ref(true)
 const error = ref('')
 const quantity = ref(1)
@@ -206,13 +210,13 @@ const selectImage = (index) => {
 }
 
 const nextImage = () => {
-  if (productImages.value.length <= 1) return
-  currentImageIndex.value = (currentImageIndex.value + 1) % productImages.value.length
+  if (product.value.images && product.value.images.length <= 1) return
+  currentImageIndex.value = (currentImageIndex.value + 1) % product.value.images.length
 }
 
 const prevImage = () => {
-  if (productImages.value.length <= 1) return
-  currentImageIndex.value = (currentImageIndex.value - 1 + productImages.value.length) % productImages.value.length
+  if (product.value.images && product.value.images.length <= 1) return
+  currentImageIndex.value = (currentImageIndex.value - 1 + product.value.images.length) % product.value.images.length
 }
 
 const addToCart = async () => {
@@ -222,14 +226,14 @@ const addToCart = async () => {
 
   try {
     loading.value = true
-    
+
     if (!localStorage.getItem('accessToken')) {
       router.push({ name: 'Login', query: { redirect: route.fullPath } });
       return;
     }
-    
+
     await cartStore.addItem(product.value.id, quantity.value);
-    
+
     showToast(ToastEnum.Success, t('product.detail.addedToCart', { quantity: quantity.value, name: product.value.name }));
     quantity.value = 1;
   } catch (err) {
@@ -247,7 +251,7 @@ const addToCart = async () => {
 
 const loadCategoryData = async (categoryId) => {
   if (!categoryId) return
-  
+
   try {
     const response = await categoryApi.getCategoryById(categoryId)
     categoryData.value = response.data
@@ -258,7 +262,7 @@ const loadCategoryData = async (categoryId) => {
 
 const loadBrandData = async (brandId) => {
   if (!brandId) return
-  
+
   try {
     const response = await brandApi.getBrandById(brandId)
     brandData.value = response.data
@@ -275,17 +279,14 @@ const loadProductData = async () => {
     const productResponse = await productApi.getProductById(productId.value)
     product.value = productResponse.data
 
-    const imagesResponse = await productApi.getProductImages(productId.value)
-    productImages.value = imagesResponse.data || []
-    
     if (product.value.categoryId) {
       loadCategoryData(product.value.categoryId)
     }
-    
+
     if (product.value.brandId) {
       loadBrandData(product.value.brandId)
     }
-    
+
   } catch (err) {
     error.value = t('common.error')
   } finally {
@@ -293,7 +294,7 @@ const loadProductData = async () => {
   }
 }
 
-watch(() => cartStore.totalItems, (newCount, oldCount) => { 
+watch(() => cartStore.totalItems, (newCount, oldCount) => {
 })
 
 onMounted(() => {
