@@ -2,10 +2,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center">
-        <button 
-          @click="goBack" 
-          class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4"
-        >
+        <button @click="goBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
           <BackIcon size="8" />
         </button>
         <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
@@ -107,7 +104,7 @@
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button type="button"
               class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-              @click="deleteAddress(addressToDeleteId.value)" :disabled="isDeleting">
+              @click="() => deleteAddress(addressToDeleteId.value)" :disabled="isDeleting">
               <span v-if="isDeleting" class="mr-2">
                 <LoadingSpinnerIcon class="text-white" />
               </span>
