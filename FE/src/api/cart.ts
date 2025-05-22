@@ -82,6 +82,6 @@ export const removeCartItem = async (cartItemId: number) => {
     const responseData = response.data.data || response.data;
     return responseData;
   } catch (error) {
-    return { success: true, message: 'Item removal skipped' };
+    return { success: false, message: 'Failed to remove item from cart', error: error };
   }
 };

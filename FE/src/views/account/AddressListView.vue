@@ -1,7 +1,15 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center">
+        <button 
+          @click="goBack" 
+          class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4"
+        >
+          <BackIcon size="8" />
+        </button>
+        <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
+      </div>
       <RouterLink :to="{ name: RouterEnum.AddAddress }"
         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-neutral-800 hover:bg-neutral-700">
         <PlusIcon />
@@ -56,10 +64,6 @@
                 <button @click="handleEditAddress(address.id)" class="text-neutral-600 hover:text-neutral-800"
                   title="Edit">
                   <EditIcon size="6" />
-                </button>
-                <button v-if="!address.isDefaultShipping && !address.isDefault" @click="setAsDefault(address.id)"
-                  class="text-neutral-600 hover:text-neutral-800" title="Set as Default">
-                  <StarIcon size="6" />
                 </button>
                 <button v-if="!address.isDefaultShipping && !address.isDefault" @click="deleteAddress(address.id)"
                   class="text-red-600 hover:text-red-800" title="Delete">
@@ -138,6 +142,7 @@ import TrashIcon from '@/components/icons/TrashIcon.vue';
 import MapPinIcon from '@/components/icons/MapPinIcon.vue';
 import WarningIcon from '@/components/icons/WarningIcon.vue';
 import LoadingSpinnerIcon from '@/components/icons/LoadingSpinnerIcon.vue';
+import BackIcon from '@/components/icons/BackIcon.vue';
 
 const { t } = useI18n();
 const { showToast } = useToast();
@@ -188,6 +193,10 @@ const toggleAddressModal = (show) => {
 };
 
 const handleEditAddress = (addressId) => {
+  if (!addressId) {
+    showToast(ToastEnum.Error, t('address.idMissing'));
+    return;
+  }
   router.push({ name: RouterEnum.EditAddress, params: { id: addressId } });
 };
 
@@ -202,16 +211,6 @@ const handleAddressSelection = (addressId) => {
   if (route.query.from === 'checkout') {
     checkoutStore.selectedAddressId = addressId;
     router.push({ name: RouterEnum.Checkout });
-  }
-};
-
-const setAsDefault = async (addressId) => {
-  try {
-    await addressApi.setDefaultShippingAddress(addressId);
-    showToast(ToastEnum.Success, t('address.saveSuccess'));
-    await fetchAddresses();
-  } catch (error) {
-    showToast(ToastEnum.Error, t('address.saveError'));
   }
 };
 
@@ -237,6 +236,14 @@ const deleteAddress = async (addressId) => {
     showToast(ToastEnum.Error, t('address.deleteError'));
   } finally {
     isDeleting.value = false;
+  }
+};
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    router.push({ name: RouterEnum.Account });
   }
 };
 

@@ -151,6 +151,7 @@ const districts = ref<District[]>([]);
 const wards = ref<Ward[]>([]);
 const selectedProvinceCode = ref<number | null>(null);
 const selectedDistrictCode = ref<number | null>(null);
+const isInitializing = ref(true);
 
 const addressId = ref<number | null>(null);
 const isLoading = ref(true);
@@ -235,6 +236,10 @@ const fetchProvinces = async () => {
   }
 };
 
+function normalize(str: string): string {
+  return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ /g, '');
+}
+
 const fetchAddress = async (id: number) => {
   isLoading.value = true;
   loadError.value = null;
@@ -255,14 +260,14 @@ const fetchAddress = async (id: number) => {
       
       // Set province code and fetch districts
       if (form.province) {
-        const province = provinces.value.find(p => p.name === form.province);
+        const province = provinces.value.find(p => normalize(p.name) === normalize(form.province));
         if (province) {
           selectedProvinceCode.value = province.code;
           districts.value = await provinceApi.getDistrictsByProvinceCode(province.code);
           
           // Set district code and fetch wards
           if (form.district) {
-            const district = districts.value.find(d => d.name === form.district);
+            const district = districts.value.find(d => normalize(d.name) === normalize(form.district));
             if (district) {
               selectedDistrictCode.value = district.code;
               wards.value = await provinceApi.getWardsByDistrictCode(district.code);
@@ -270,6 +275,7 @@ const fetchAddress = async (id: number) => {
           }
         }
       }
+      isInitializing.value = false;
     } else {
       throw new Error('Address not found');
     }
@@ -281,9 +287,8 @@ const fetchAddress = async (id: number) => {
   }
 };
 
-// Add watchers for cascading selection
-watch(() => form.province, async (newProvince) => {
-  if (newProvince) {
+watch(() => form.province, async (newProvince, oldProvince) => {
+  if (!isInitializing.value && newProvince && newProvince !== oldProvince) {
     const province = provinces.value.find(p => p.name === newProvince);
     if (province) {
       selectedProvinceCode.value = province.code;
@@ -296,8 +301,8 @@ watch(() => form.province, async (newProvince) => {
   }
 });
 
-watch(() => form.district, async (newDistrict) => {
-  if (newDistrict) {
+watch(() => form.district, async (newDistrict, oldDistrict) => {
+  if (!isInitializing.value && newDistrict && newDistrict !== oldDistrict) {
     const district = districts.value.find(d => d.name === newDistrict);
     if (district) {
       selectedDistrictCode.value = district.code;
@@ -319,7 +324,7 @@ onMounted(async () => {
     const parsedId = parseInt(id);
     if (!isNaN(parsedId)) {
       addressId.value = parsedId;
-      fetchAddress(parsedId);
+      await fetchAddress(parsedId);
     } else {
       loadError.value = t('address.invalidId');
       isLoading.value = false;

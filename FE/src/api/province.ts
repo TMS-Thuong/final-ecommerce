@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PROVINCES_API_URL = import.meta.env.PROVINCES_API_URL;
+const PROVINCES_API_URL = import.meta.env.VITE_PROVINCES_API_URL;
 
 export interface Province {
   name: string;

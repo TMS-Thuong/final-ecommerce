@@ -8,23 +8,24 @@
         <InputText id="email" :label="$t('auth.forgotPassword.email')" v-model="formData.email"
           placeholder="name@example.com" type="email" :error="errors.email" @input="onClearError('email')"
           class="w-full" />
-        <SubmitButton
-          :text="$t('auth.forgotPassword.submitButton')"
-          :disabled="isLoading"
-          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
-        >
-          <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-        </SubmitButton>
-        <SubmitButton
-          :text="$t('auth.forgotPassword.cancelButton')"
-          :disabled="isLoading"
-          type="button"
-          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
-          @click="onCancel"
-        >
-          <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-        </SubmitButton>
-
+        <div class="relative">
+          <SubmitButton
+            :text="$t('auth.forgotPassword.submitButton')"
+            :disabled="isLoading"
+            class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
+            <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+          </SubmitButton>
+        </div>  
+        <div class="relative">
+          <SubmitButton
+            :text="$t('auth.forgotPassword.cancelButton')"
+            :disabled="isLoading"
+            type="button"
+            class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
+            @click="onCancel">
+            <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+          </SubmitButton>
+        </div>          
       </form>
     </div>
 

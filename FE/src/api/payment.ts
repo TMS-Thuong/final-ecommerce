@@ -85,7 +85,7 @@ export const createPaymentUrl = async (orderId: number): Promise<{paymentUrl: st
   const response = await axios.get(`${BASE_URL}/api/payment/create-url/${orderId}`, {
     headers: getAuthHeader()
   });
-  return response.data;
+  return { paymentUrl: response.data.paymentUrl };
 };
 
 export default {
