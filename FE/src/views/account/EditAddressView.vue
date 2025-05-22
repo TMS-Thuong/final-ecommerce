@@ -248,8 +248,8 @@ const fetchAddress = async (id: number) => {
 
     if (response && response.data) {
       const addressData = response.data;
-      form.recipientName = addressData.recipientName ?? addressData.fullName ?? '';
-      form.phoneNumber = addressData.phoneNumber ?? addressData.phone ?? '';
+      form.recipientName = addressData.recipientName ?? addressData.fullName ?? "";
+      form.phoneNumber = addressData.phoneNumber ?? addressData.phone ?? "";
       form.province = addressData.province || '';
       form.district = addressData.district || '';
       form.ward = addressData.ward || '';
@@ -258,13 +258,15 @@ const fetchAddress = async (id: number) => {
       form.isDefaultBilling = addressData.isDefaultBilling || false;
 
       if (form.province) {
-        const province = provinces.value.find(p => normalize(p.name) === normalize(form.province));
+        const normalizedProvince = normalize(form.province);
+        const province = provinces.value.find(p => normalize(p.name) === normalizedProvince);
         if (province) {
           selectedProvinceCode.value = province.code;
           districts.value = await provinceApi.getDistrictsByProvinceCode(province.code);
 
           if (form.district) {
-            const district = districts.value.find(d => normalize(d.name) === normalize(form.district));
+            const normalizedDistrict = normalize(form.district);
+            const district = districts.value.find(d => normalize(d.name) === normalizedDistrict);
             if (district) {
               selectedDistrictCode.value = district.code;
               wards.value = await provinceApi.getWardsByDistrictCode(district.code);

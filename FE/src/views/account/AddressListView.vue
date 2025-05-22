@@ -31,7 +31,7 @@
     <div v-else class="space-y-4">
       <div v-for="address in addresses" :key="address.id"
         class="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
-        :class="{ 'border-neutral-500': selectedAddressId === address.id }">
+        :class="{ 'border-neutral-500': selectedAddressId == address.id }">
         <div class="flex">
           <div class="mr-4 flex items-center">
             <div class="relative flex items-center justify-center w-6 h-6">
