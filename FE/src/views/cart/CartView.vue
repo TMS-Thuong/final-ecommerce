@@ -71,10 +71,10 @@
                     </button>
                   </div>
                   <div class="mt-4 sm:flex sm:items-center sm:justify-between">
-                    <div class="flex items-center border border-gray-300 rounded">
+                    <div class="flex items-center border border-gray-300 rounded w-28">
                       <button
                         @click="updateItemQuantity(item.id, item.quantity - 1)"
-                        class="px-3 py-1 text-gray-500 hover:text-gray-700 border-r border-gray-300"
+                        class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-r border-gray-300"
                         :disabled="item.quantity <= 1"
                         :class="{'opacity-50 cursor-not-allowed': item.quantity <= 1}"
                       >
@@ -86,14 +86,14 @@
                         v-model.number="item.quantity"
                         min="1"
                         :max="item.product.stockQuantity"
-                        class="w-12 text-center border-none py-1 text-gray-700 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        class="w-10 text-center border-none py-1 text-gray-700 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         @blur="handleQuantityInput(item.id, item.quantity)"
                         @keyup.enter="handleQuantityInput(item.id, item.quantity)"
                       />
 
                       <button
                         @click="updateItemQuantity(item.id, item.quantity + 1)"
-                        class="px-3 py-1 text-gray-500 hover:text-gray-700 border-l border-gray-300"
+                        class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-l border-gray-300"
                         :disabled="item.quantity >= item.product.stockQuantity"
                         :class="{'opacity-50 cursor-not-allowed': item.quantity >= item.product.stockQuantity}"
                       >

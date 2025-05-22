@@ -2,6 +2,15 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8  bg-gray-50">
     <h1 class="text-4xl font-bold text-gray-900 mb-6">{{ $t('account.myOrders') }}</h1>
 
+    <div class="mb-6 max-w-md">
+      <SearchInputComponent
+        v-model="searchOrderCode"
+        :placeholder="$t('orders.orderCode') + '... eg: ORD123456'"
+        @search="onSearchOrderCode"
+        :width="'w-full'"
+      />
+    </div>
+
     <div v-if="isLoading" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
       <div class="flex justify-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -33,8 +42,8 @@
     </div>
 
     <div v-else class="space-y-6">
-      <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
+      <div>
+        <div class="hidden md:block overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50 text-xl font-bold">
               <tr>
@@ -86,6 +95,29 @@
             </tbody>
           </table>
         </div>
+        <div class="md:hidden space-y-4 p-1">
+          <div v-for="order in orders" :key="order.id" class="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-1">
+            <div class="flex items-center justify-between mb-1">
+              <div class="font-semibold text-xl text-gray-700">#{{ order.orderCode || order.id }}</div>
+              <span class="px-2 py-1 text-lg font-medium rounded-full"
+                :class="{
+                  'text-yellow-500 bg-yellow-50': order.status === 'Pending',
+                  'text-blue-500 bg-blue-50': order.status === 'Processing',
+                  'text-green-500 bg-green-50': order.status === 'Completed',
+                  'text-red-500 bg-red-50': order.status === 'Cancelled'
+                }">
+                {{ order.status }}
+              </span>
+            </div>
+            <div class="text-base text-gray-500 mb-1">{{ formatDate(order.createdAt) }}</div>
+            <div class="text-lg text-gray-700 mb-2">{{ $t('orders.total') }}: <span class="font-semibold">{{ formatPrice(order.totalAmount) }}</span></div>
+            <div class="flex justify-end">
+              <router-link :to="`/order-complete/${order.id}`" class="text-blue-600 hover:text-blue-900 text-lg font-medium">
+                {{ $t('orders.viewDetails') }}
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -98,6 +130,8 @@ import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import orderApi from '@/api/order';
+import SearchInputComponent from '@/components/molecules/utils/SearchInputComponent.vue'
+import axios from 'axios'
 
 const { t } = useI18n();
 const router = useRouter();
@@ -160,6 +194,36 @@ const formatDate = (dateString) => {
     day: '2-digit',
   }).format(date);
 };
+
+const searchOrderCode = ref('')
+
+const onSearchOrderCode = async (code) => {
+  const searchCode = code || searchOrderCode.value
+  if (!searchCode) {
+    fetchOrders()
+    return
+  }
+  try {
+    isLoading.value = true
+    error.value = null
+    const baseURL = import.meta.env ? import.meta.env.VITE_API_BASE_URL : process.env.VUE_APP_API_BASE_URL;
+    const response = await axios.get(`${baseURL}/api/orders/by-code/${searchCode}`)
+    if (response.data && response.data.data) {
+      orders.value = [response.data.data]
+      totalOrders.value = 1
+    } else {
+      orders.value = []
+      totalOrders.value = 0
+      error.value = t('orders.noOrders')
+    }
+  } catch (err) {
+    orders.value = []
+    totalOrders.value = 0
+    error.value = t('orders.noOrders')
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const fetchOrders = async () => {
   try {

@@ -1,7 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex justify-between items-center mb-6">
-      <BackIcon size="8" @click="inBack" />
       <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
       <RouterLink :to="{ name: RouterEnum.AddAddress }"
         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-neutral-800 hover:bg-neutral-700">
@@ -138,7 +137,6 @@ import StarIcon from '@/components/icons/StarIcon.vue';
 import TrashIcon from '@/components/icons/TrashIcon.vue';
 import MapPinIcon from '@/components/icons/MapPinIcon.vue';
 import WarningIcon from '@/components/icons/WarningIcon.vue';
-import BackIcon from '@/components/icons/BackIcon.vue';
 import LoadingSpinnerIcon from '@/components/icons/LoadingSpinnerIcon.vue';
 
 const { t } = useI18n();
@@ -160,14 +158,6 @@ const fromCheckout = ref(false);
 const showSaveButton = computed(() => {
   return route.query.from === 'checkout' || fromCheckout.value;
 });
-
-const inBack = () => {
-  if (route.query.from === 'checkout') {
-    router.push({ name: RouterEnum.Checkout });
-  } else {
-    router.back()
-  }
-};
 
 const fetchAddresses = async () => {
   isLoading.value = true;

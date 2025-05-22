@@ -164,7 +164,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
           <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
             class="product-card h-full" />
         </div>
