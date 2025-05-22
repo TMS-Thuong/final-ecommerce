@@ -130,6 +130,7 @@ import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import addressApi from '@/api/address';
+import { normalize } from '@/utils/string'
 import {
   validateAddressForm,
   hasAddressFormErrors
@@ -237,10 +238,6 @@ const fetchProvinces = async () => {
     console.error('Error fetching provinces:', error);
   }
 };
-
-function normalize(str: string): string {
-  return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ /g, '');
-}
 
 const fetchAddress = async (id: number) => {
   isLoading.value = true;

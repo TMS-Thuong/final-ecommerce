@@ -2,7 +2,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center">
-        <button @click="goBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
+        <button @click="inBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
           <BackIcon size="8" />
         </button>
         <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
@@ -62,7 +62,7 @@
                   title="Edit">
                   <EditIcon size="6" />
                 </button>
-                <button v-if="!address.isDefaultShipping && !address.isDefault" @click="deleteAddress(address.id)"
+                <button v-if="!(address.isDefaultShipping || address.isDefault)" @click="deleteAddress(address.id)"
                   class="text-red-600 hover:text-red-800" title="Delete">
                   <TrashIcon size="6" />
                 </button>
@@ -236,12 +236,8 @@ const deleteAddress = async (addressId) => {
   }
 };
 
-const goBack = () => {
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    router.push({ name: RouterEnum.Account });
-  }
+const inBack = () => {
+  router.back();
 };
 
 onMounted(async () => {
