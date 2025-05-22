@@ -33,24 +33,24 @@ const productResponseSchema = {
   },
 };
 
-const successResponseSchema = {
+const productImageSchema = {
   type: 'object',
   properties: {
-    success: { type: 'boolean' },
-    data: {
-      type: 'array',
-      items: productResponseSchema,
-    },
+    id: { type: 'integer' },
+    productId: { type: 'integer' },
+    imageUrl: { type: 'string' },
+    isThumbnail: { type: 'boolean' },
+    displayOrder: { type: 'integer' },
   },
 };
 
-const successResponseSchemaWithProduct = {
+const productWithImagesResponseSchema = {
   type: 'object',
   properties: {
-    success: { type: 'boolean' },
-    data: {
-      type: ['object', 'null'],
-      properties: productResponseSchema.properties,
+    ...productResponseSchema.properties,
+    images: {
+      type: 'array',
+      items: productImageSchema,
     },
   },
 };
@@ -73,7 +73,16 @@ export const getProductsSchema: FastifySchema = {
     required: [],
   },
   response: {
-    200: successResponseSchema,
+    200: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        data: {
+          type: 'array',
+          items: productWithImagesResponseSchema,
+        },
+      },
+    },
     500: errorResponseSchema,
   },
 };
@@ -89,7 +98,16 @@ export const getProductByIdSchema: FastifySchema = {
     required: ['id'],
   },
   response: {
-    200: successResponseSchemaWithProduct,
+    200: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        data: {
+          type: ['object', 'null'],
+          properties: productWithImagesResponseSchema.properties,
+        },
+      },
+    },
     500: errorResponseSchema,
   },
 };

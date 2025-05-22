@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ProductErrorMessages } from '@app/config/product.message';
+import { ProductErrorMessages } from '@app/constants/product.message';
 
 export const ProductIdZodSchema = z.object({
   id: z.coerce.number().int().positive({

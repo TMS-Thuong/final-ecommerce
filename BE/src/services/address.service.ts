@@ -1,6 +1,6 @@
 import { PrismaClient, Address } from '@prisma/client';
 
-import { AddressZodSchema } from '@app/schemas/address.zod';
+import { AddressZodSchema } from '@app/validations/address.zod';
 
 const prisma = new PrismaClient();
 

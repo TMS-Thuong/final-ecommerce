@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { BrandErrorMessages } from '@app/config/brand.message';
+import { BrandErrorMessages } from '@app/constants/brand.message';
 
 export const BrandIdZodSchema = z.object({
   id: z.coerce.number().int().positive({

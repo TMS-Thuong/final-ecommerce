@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { ErrorCode } from '@app/constants/error.constants';
-import { AddressZodSchema, AddressIdZodSchema } from '@app/schemas/address.zod';
 import AddressService from '@app/services/address.service';
+import { AddressZodSchema, AddressIdZodSchema } from '@app/validations/address.zod';
 import { binding } from '@decorator/binding';
 
 class AddressController {

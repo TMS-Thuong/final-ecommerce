@@ -1,11 +1,42 @@
 import { PrismaClient } from '@prisma/client';
 
-import { ProductErrorMessages } from '@app/config/product.message';
-import { IProduct, IProductImage } from '@app/types/product.type';
+import { ProductErrorMessages } from '@app/constants/product.message';
+import {
+  IProductImage,
+  IProductWithImages,
+  PrismaProductResult,
+  PrismaProductWithImages,
+} from '@app/types/product.type';
 
 const prisma = new PrismaClient();
 
 export class ProductService {
+  private imageCache: { [productId: number]: IProductImage[] } = {};
+  private cacheTTL = 5 * 60 * 1000;
+  private lastCacheCleanup = Date.now();
+
+  constructor() {
+    setInterval(() => this.cleanupCache(), 60 * 1000);
+  }
+
+  private cleanupCache(): void {
+    const now = Date.now();
+    if (now - this.lastCacheCleanup > this.cacheTTL) {
+      this.imageCache = {};
+      this.lastCacheCleanup = now;
+    }
+  }
+
+  public invalidateProductCache(productId: number): void {
+    if (this.imageCache[productId]) {
+      delete this.imageCache[productId];
+    }
+  }
+
+  public clearImageCache(): void {
+    this.imageCache = {};
+  }
+
   async getProducts(
     page = 1,
     pageSize = 10,
@@ -15,7 +46,7 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string
-  ): Promise<IProduct[]> {
+  ): Promise<IProductWithImages[]> {
     const filters: {
       isActive: boolean;
       OR?: {
@@ -29,6 +60,7 @@ export class ProductService {
       stockQuantity?: { gt?: number; equals?: number };
     } = { isActive: true };
 
+    // Tìm kiếm theo từ khóa
     if (searchQuery && searchQuery.trim() !== '') {
       filters.OR = [
         { name: { contains: searchQuery.trim(), mode: 'insensitive' } },
@@ -36,19 +68,23 @@ export class ProductService {
       ];
     }
 
+    // Lọc theo thương hiệu
     if (brandId) {
       filters.brandId = brandId;
     }
+    // Lọc theo danh mục
     if (categoryId) {
       filters.categoryId = categoryId;
     }
 
+    // Lọc theo khoảng giá
     if (minPrice !== undefined || maxPrice !== undefined) {
       filters.basePrice = {};
       if (minPrice !== undefined) filters.basePrice.gte = minPrice;
       if (maxPrice !== undefined) filters.basePrice.lte = maxPrice;
     }
 
+    // Lọc theo tình trạng tồn kho
     if (stockStatus) {
       if (stockStatus === 'inStock') {
         filters.stockQuantity = { gt: 0 };
@@ -86,18 +122,14 @@ export class ProductService {
           id: 'desc',
         },
       });
-      return products.map((product) => ({
-        ...product,
-        basePrice: product.basePrice.toNumber(),
-        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
-      }));
+
+      return await this.addImagesToProducts(products);
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }
 
-  async getProductById(id: number): Promise<IProduct | null> {
+  async getProductById(id: number): Promise<IProductWithImages | null> {
     let product = null;
 
     try {
@@ -130,15 +162,15 @@ export class ProductService {
 
     if (!product) return null;
 
-    return {
-      ...product,
-      basePrice: product.basePrice.toNumber(),
-      salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-      averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
-    };
+    const productsWithImages = await this.addImagesToProducts([product]);
+    return productsWithImages[0];
   }
 
   async getProductImagesByProductId(productId: number): Promise<IProductImage[]> {
+    if (this.imageCache[productId]) {
+      return this.imageCache[productId];
+    }
+
     try {
       const productImages = await prisma.productImage.findMany({
         where: { productId },
@@ -149,10 +181,73 @@ export class ProductService {
           isThumbnail: true,
           displayOrder: true,
         },
+        orderBy: {
+          displayOrder: 'asc',
+        },
       });
+      this.imageCache[productId] = productImages;
       return productImages;
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR);
     }
+  }
+
+  private async addImagesToProducts(products: PrismaProductResult[]): Promise<IProductWithImages[]> {
+    if (!products.length) return [];
+
+    const hasImages =
+      products[0] && 'images' in products[0] && Array.isArray((products[0] as PrismaProductWithImages).images);
+
+    if (hasImages) {
+      return products.map((product) => ({
+        ...product,
+        basePrice: product.basePrice.toNumber(),
+        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
+        images: ((product as PrismaProductWithImages).images as IProductImage[]) || [],
+      }));
+    }
+    const productIds: number[] = products.map((product) => product.id);
+    const uncachedProductIds = productIds.filter((id) => !this.imageCache[id]);
+
+    if (uncachedProductIds.length > 0) {
+      const newImages = await prisma.productImage.findMany({
+        where: {
+          productId: {
+            in: uncachedProductIds,
+          },
+        },
+        select: {
+          id: true,
+          productId: true,
+          imageUrl: true,
+          isThumbnail: true,
+          displayOrder: true,
+        },
+        orderBy: {
+          displayOrder: 'asc',
+        },
+      });
+
+      // Group images by product ID and update cache
+      for (const image of newImages) {
+        const productId = image.productId;
+        if (!this.imageCache[productId]) {
+          this.imageCache[productId] = [];
+        }
+        this.imageCache[productId].push(image);
+      }
+    }
+
+    // Create the result using cached images
+    return products.map((product) => {
+      return {
+        ...product,
+        basePrice: product.basePrice.toNumber(),
+        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
+        images: this.imageCache[product.id] || [],
+      } as IProductWithImages;
+    });
   }
 }

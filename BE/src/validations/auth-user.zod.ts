@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { Gender } from '@app/types/auth.type';
 
-import { AuthErrorMessages } from '../config/auth.message';
+import { AuthErrorMessages } from '../constants/auth.message';
 const minString = (minLength: number, errorMessage: string): z.ZodString => z.string().min(minLength, errorMessage);
 
 export const registerUserZobSchema = z.object({

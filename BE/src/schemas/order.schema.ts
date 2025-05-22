@@ -39,6 +39,8 @@ const orderResponseSchema = {
     discountAmount: { type: 'number' },
     totalAmount: { type: 'number' },
     addressId: { type: 'integer' },
+    paymentId: { type: 'integer' },
+    shippingId: { type: 'integer' },
     status: {
       type: 'string',
       enum: ['Pending', 'Processing', 'Shipping', 'Delivered', 'Cancelled', 'Failed', 'Completed'],

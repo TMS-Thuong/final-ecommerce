@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { ProductErrorMessages } from '@app/config/product.message';
-import { ProductIdZodSchema, ProductQuerySchema } from '@app/schemas/product.zod';
+import { ProductErrorMessages } from '@app/constants/product.message';
 import { ProductService } from '@app/services/product.service';
+import { ProductIdZodSchema, ProductQuerySchema } from '@app/validations/product.zod';
 
 export class ProductController {
   private productService: ProductService;
@@ -55,9 +55,8 @@ export class ProductController {
       const product = await this.productService.getProductById(validProductId);
 
       if (!product) {
-        return reply.ok([]);
+        return reply.notFound(ProductErrorMessages.PRODUCT_NOT_FOUND, 'PRODUCT_NOT_FOUND');
       }
-
       return reply.ok(product);
     } catch (error) {
       return reply.internalError(error.message || ProductErrorMessages.FETCH_PRODUCT_ERROR, 'FETCH_PRODUCT_ERROR');
@@ -80,6 +79,7 @@ export class ProductController {
     const validProductId = validationResult.data.id;
 
     try {
+      // Lấy danh sách hình ảnh của sản phẩm
       const productImages = await this.productService.getProductImagesByProductId(validProductId);
 
       if (!productImages || productImages.length === 0) {
@@ -93,7 +93,6 @@ export class ProductController {
         isThumbnail: image.isThumbnail,
         displayOrder: image.displayOrder,
       }));
-
       return reply.ok(formattedImages);
     } catch (error) {
       return reply.internalError(

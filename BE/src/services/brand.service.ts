@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { BrandErrorMessages } from '@app/config/brand.message';
+import { BrandErrorMessages } from '@app/constants/brand.message';
 import { IBrand } from '@app/types/brand.type';
 
 const prisma = new PrismaClient();

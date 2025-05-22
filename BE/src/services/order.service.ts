@@ -1,7 +1,7 @@
 import { PrismaClient, OrderStatus, PaymentStatus } from '@prisma/client';
 
-import { CreateOrderZodSchema } from '@app/schemas/order.zod';
 import ShippingService from '@app/services/shipping.service';
+import { CreateOrderZodSchema } from '@app/validations/order.zod';
 
 import VNPayService from './vnpay.service';
 
@@ -49,8 +49,18 @@ class OrderService {
       throw new Error('Cart is empty');
     }
 
+    // Filter cart items if cartItemIds is provided
+    const cartItems =
+      orderData.cartItemIds && orderData.cartItemIds.length > 0
+        ? cart.items.filter((item) => orderData.cartItemIds?.includes(item.id))
+        : cart.items;
+
+    if (cartItems.length === 0) {
+      throw new Error('No valid items selected for checkout');
+    }
+
     // Kiểm tra xem sản phẩm có đủ số lượng trong kho không
-    for (const item of cart.items) {
+    for (const item of cartItems) {
       if (item.quantity > item.product.stockQuantity) {
         throw new Error(
           `Không đủ số lượng sản phẩm "${item.product.name}" trong kho. Chỉ còn ${item.product.stockQuantity} sản phẩm.`
@@ -90,7 +100,7 @@ class OrderService {
     // Logic to apply coupon discount
     // }
 
-    const subtotal = cart.items.reduce((total, item) => {
+    const subtotal = cartItems.reduce((total, item) => {
       const price = item.product.salePrice || item.product.basePrice;
       return total + Number(price) * item.quantity;
     }, 0);
@@ -119,7 +129,7 @@ class OrderService {
           paymentStatus: PaymentStatus.Pending,
           customerNotes: orderData.customerNotes,
           items: {
-            create: cart.items.map((item) => ({
+            create: cartItems.map((item) => ({
               productId: item.productId,
               productName: item.product.name,
               quantity: item.quantity,
@@ -134,19 +144,30 @@ class OrderService {
       });
 
       // Cập nhật số lượng sản phẩm trong kho sau khi đặt hàng
-      for (const item of cart.items) {
+      for (const item of cartItems) {
         await tx.product.update({
           where: { id: item.productId },
           data: {
             stockQuantity: {
               decrement: item.quantity,
             },
+            soldCount: {
+              increment: item.quantity, // Tăng số lượng đã bán
+            },
           },
         });
       }
 
-      // Xóa giỏ hàng sau khi đặt hàng thành công
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      // Chỉ xóa các sản phẩm đã đặt khỏi giỏ hàng, không xóa toàn bộ giỏ hàng
+      const productIdsInOrder = cartItems.map((item) => item.id);
+      await tx.cartItem.deleteMany({
+        where: {
+          cartId: cart.id,
+          id: {
+            in: productIdsInOrder,
+          },
+        },
+      });
     });
 
     // Tạo URL VNPay
@@ -230,12 +251,16 @@ class OrderService {
           },
         });
 
+        // Cập nhật lại số lượng sản phẩm trong kho khi hủy đơn hàng
         for (const item of order.items) {
           await tx.product.update({
             where: { id: item.productId },
             data: {
               stockQuantity: {
                 increment: item.quantity,
+              },
+              soldCount: {
+                decrement: item.quantity,
               },
             },
           });
@@ -270,6 +295,8 @@ class OrderService {
             product: true,
           },
         },
+        paymentMethod: true,
+        shippingMethod: true,
       },
     });
   }

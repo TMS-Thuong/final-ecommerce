@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { BrandErrorMessages } from '@app/config/brand.message';
-import { BrandIdZodSchema } from '@app/schemas/brand.zod';
+import { BrandErrorMessages } from '@app/constants/brand.message';
 import { BrandService } from '@app/services/brand.service';
+import { BrandIdZodSchema } from '@app/validations/brand.zod';
 
 export class BrandController {
   private brandService: BrandService;

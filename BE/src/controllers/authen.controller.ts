@@ -1,6 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { AuthErrorMessages, AuthMessages } from '@app/config/auth.message';
+import { AuthErrorMessages, AuthMessages } from '@app/constants/auth.message';
+import AuthService from '@app/services/auth-user.service';
+import { createResetPasswordToken } from '@app/utils/jwt-token.util';
+import { generateEmailVerificationToken } from '@app/utils/mail-verification-token.util';
+import { getResetPasswordEmail, getVerificationEmail } from '@app/utils/text-email.util';
 import {
   forgotPasswordZodSchema,
   loginViaGoogleZobSchema,
@@ -10,11 +14,7 @@ import {
   resendVerifyEmailZobSchema,
   resetPasswordZodSchema,
   verifyEmailZobSchema,
-} from '@app/schemas/auth-user.zod';
-import AuthService from '@app/services/auth-user.service';
-import { createResetPasswordToken } from '@app/utils/jwt-token.util';
-import { generateEmailVerificationToken } from '@app/utils/mail-verification-token.util';
-import { getResetPasswordEmail, getVerificationEmail } from '@app/utils/text-email.util';
+} from '@app/validations/auth-user.zod';
 import { binding } from '@decorator/binding';
 import EmailService from '@services/email.service';
 

@@ -1,3 +1,5 @@
+import { Prisma, Product } from '@prisma/client';
+
 export interface IProductBase {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export interface IProductBase {
 }
 
 export interface IProduct extends IProductBase {
+  [x: string]: unknown;
   sku: string;
   slug: string;
   description: string | null;
@@ -28,4 +31,18 @@ export interface IProductImage {
   imageUrl: string;
   isThumbnail: boolean;
   displayOrder: number;
+}
+
+export interface IProductWithImages extends IProduct {
+  images: IProductImage[];
+}
+
+export type PrismaProductResult = Omit<Product, 'basePrice' | 'salePrice' | 'averageRating'> & {
+  basePrice: Prisma.Decimal;
+  salePrice: Prisma.Decimal | null;
+  averageRating: Prisma.Decimal;
+};
+
+export interface PrismaProductWithImages extends PrismaProductResult {
+  images: IProductImage[];
 }

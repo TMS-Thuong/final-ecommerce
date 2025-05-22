@@ -16,4 +16,4 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 export const VNP_TMN_CODE = process.env.VNP_TMN_CODE || '';
 export const VNP_HASH_SECRET = process.env.VNP_HASH_SECRET || '';
 export const VNP_URL = process.env.VNP_URL || '';
-export const VNP_RETURN_URL = process.env.VNP_RETURN_URL || '';
+export const VNP_RETURN_URL = process.env.VNP_RETURN_URL || `${BASE_URL}/payment/vnpay_return`;

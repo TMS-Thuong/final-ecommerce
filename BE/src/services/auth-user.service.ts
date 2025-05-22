@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-import { AuthErrorMessages, AuthMessages } from '@app/config/auth.message';
+import { AuthErrorMessages, AuthMessages } from '@app/constants/auth.message';
 import {
   ILoginData,
   UserData,
