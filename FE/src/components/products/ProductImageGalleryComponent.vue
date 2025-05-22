@@ -3,7 +3,7 @@
     <div class="main-image-container bg-white border border-gray-200 rounded-lg p-4 mb-4 flex items-center justify-center relative h-[400px]">
       <img
         v-if="currentImage"
-        :src="currentImage.imageUrl"
+        :src="getCachedImageUrl(currentImage.imageUrl)"
         :alt="currentImage.altText || 'Product image'"
         class="h-auto max-h-[350px] w-auto max-w-full object-contain"
       />
@@ -49,7 +49,7 @@
         :class="{ 'border-blue-500': index === thumbnailIndex, 'border-gray-200': index !== thumbnailIndex }"
       >
         <img
-          :src="image.imageUrl"
+          :src="getCachedImageUrl(image.imageUrl)"
           :alt="image.altText || `Thumbnail ${index + 1}`"
           class="max-h-full max-w-full object-contain"
         />
@@ -60,7 +60,7 @@
       <div class="relative max-w-4xl max-h-[90vh] bg-white rounded-lg p-4 w-full">
         <img 
           v-if="modalImage"
-          :src="modalImage.imageUrl" 
+          :src="getCachedImageUrl(modalImage.imageUrl)" 
           :alt="modalImage.altText || 'Product image'" 
           class="w-full h-auto max-h-[80vh] object-contain"
         />
@@ -96,7 +96,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { getCachedImageUrl, preloadImages } from '@/utils/imageCache'
 
 const props = defineProps({
   images: {
@@ -144,4 +145,12 @@ const prevImageInModal = () => {
   if (props.images.length <= 1) return
   modalImageIndex.value = (modalImageIndex.value - 1 + props.images.length) % props.images.length
 }
+
+onMounted(() => {
+  // Tải trước tất cả hình ảnh để cải thiện hiệu suất
+  if (props.images && props.images.length > 0) {
+    const imageUrls = props.images.map(img => img.imageUrl)
+    preloadImages(imageUrls)
+  }
+})
 </script>

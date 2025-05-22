@@ -4,6 +4,13 @@ export enum RouterEnum {
   ProductList = "ProductList",
   ProductDetail = "ProductDetail",
   Cart = "Cart",
+  Checkout = "Checkout",
+  OrderComplete = "OrderComplete",
+  PaymentCallback = "PaymentCallback",
+  MyOrders = "MyOrders",
+  AddressList = "AddressList",
+  AddAddress = "AddAddress",
+  EditAddress = "EditAddress",
 }
 
 export enum AuthRouterEnum {

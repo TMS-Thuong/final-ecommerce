@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { authApi } from '@/api/auth'
 import type { Router } from 'vue-router'
 import { AuthRouterEnum } from '@/enums/router'
+import { useCartStore } from '@/stores/cart'
 
 interface AuthState {
   accessToken: string | null
@@ -52,6 +53,9 @@ export const useAuthStore = defineStore('auth', {
 
     logout(router: Router) {
       this.clearTokens()
+      localStorage.removeItem('ecommerce_cart_data')
+      const cartStore = useCartStore()
+      cartStore.clearCart()
       router.push({ name: AuthRouterEnum.Home })
     }
   },

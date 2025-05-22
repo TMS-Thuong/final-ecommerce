@@ -32,7 +32,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { productApi } from '@/api/product'
-import ProductCard from '@/components/molecules/product/ProductCardComponent.vue'
+import ProductCard from '@/components/products/ProductCardComponent.vue'
+import { preloadImages } from '@/utils/imageCache'
 
 const products = ref([])
 const loading = ref(false)
@@ -60,6 +61,17 @@ const loadProducts = async (page = 1) => {
     }
     
     hasMorePages.value = newProducts.length === pageSize
+    
+    // Tải trước và cache tất cả ảnh sản phẩm
+    const imageUrls = newProducts
+      .filter(product => product.images && product.images.length > 0)
+      .map(product => {
+        const thumbnail = product.images.find(img => img.isThumbnail) || product.images[0]
+        return thumbnail?.imageUrl
+      })
+      .filter(Boolean)
+    
+    preloadImages(imageUrls)
   } catch (err) {
     error.value = 'Failed to load products. Please try again.'
     console.error('Error loading products:', err)

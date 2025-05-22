@@ -9,12 +9,12 @@
     <div v-else-if="products.length === 0" class="text-center py-8 text-gray-500">
       No products found
     </div>
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-10">
+    <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-4 sm:px-0">
       <ProductCard v-for="product in products" :key="product.id" :product="product" class="h-full" />
     </div>
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
       <router-link :to="{ name: RouterEnum.ProductList }"
-        class="px-6 py-2 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
+        class="px-6 py-2 text-xl bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
         View All Products
       </router-link>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
-    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
+    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center text-lg">
       <h1 class="text-3xl md:text-5xl font-bold mb-2 text-black text-center">{{ $t('auth.login.welcomeBack') }}</h1>
       <p class="mb-8 text-gray-600 text-lg text-center">{{ $t('auth.login.enterDetails') }}</p>
       <form @submit.prevent="onLogin" class="space-y-4 w-full max-w-md text-center">
@@ -20,16 +20,13 @@
           <PasswordInput id="password" v-model="formData.password" :error="errors.password"
             @input="onClearError('password')" class="w-full" />
         </div>
-        <button type="submit" :disabled="isLoading"
-          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2  bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
-          <span>{{ $t('auth.login.submitButton') }}</span>
+        <SubmitButton
+          :text="$t('auth.login.submitButton')"
+          :disabled="isLoading"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
+        >
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
-          <svg v-if="isLoading" class="animate-spin h-5 w-5 ml-2 text-white" xmlns="http://www.w3.org/2000/svg"
-            fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-        </button>
+        </SubmitButton>
       </form>
       <div class="flex items-center my-6 w-full max-w-md">
         <div class="flex-grow border-t border-gray-200"></div>
@@ -72,6 +69,7 @@ import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
 
 const { t } = useI18n()
 const route = useRoute()

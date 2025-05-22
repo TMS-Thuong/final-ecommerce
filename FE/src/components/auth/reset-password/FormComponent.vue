@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
-    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center">
+    <div class="flex-1 text-lg p-6 md:p-10 flex flex-col justify-center items-center">
       <h1 class="text-3xl md:text-2xl font-bold mb-6 text-center text-black">{{ $t('auth.resetPassword.title') }}</h1>
       <form class="space-y-4 w-full max-w-sm" @submit.prevent="onResetPW">
         <div class="text-left">
@@ -19,17 +19,17 @@
 
         <div class="relative">
           <SubmitButton @click="onResetPW" :text="$t('auth.resetPassword.submitButton')" :disabled="isLoading"
-            class="w-full bg-neutral-800" />
+            class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60" />
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </div>
       </form>
 
-      <div class="mt-6 text-center">
-        <p class="text-lg font-medium text-black mb-3">{{ $t('auth.resetPassword.orLogin') }}</p>
-        <div class="flex justify-center">
-          <SocialLoginButton />
-        </div>
+      <div class="flex items-center my-6 w-full max-w-sm">
+        <div class="flex-grow border-t border-gray-200"></div>
+        <span class="mx-4 text-gray-400 text-lg">{{ $t('auth.login.loginWith') }}</span>
+        <div class="flex-grow border-t border-gray-200"></div>
       </div>
+      <SocialLoginButton class="w-full max-w-sm mx-auto" />
     </div>
 
     <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
