@@ -27,40 +27,40 @@
               </div>
             </div>
             <div class="space-y-3">
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('0-500000')">
-                <input type="radio" id="price1" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="0-500000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }}
-                  500.000đ</span>
+              <label
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === '0-500000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange('0-500000')"
+              >
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }} 500.000đ</span>
               </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('500000-1000000')">
-                <input type="radio" id="price2" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="500000-1000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  500.000đ - 1.000.000đ</span>
+              <label
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === '500000-1000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange('500000-1000000')"
+              >
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 500.000đ - 1.000.000đ</span>
               </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('1000000-2000000')">
-                <input type="radio" id="price3" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="1000000-2000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  1.000.000đ - 2.000.000đ</span>
+              <label
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === '1000000-2000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange('1000000-2000000')"
+              >
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 1.000.000đ - 2.000.000đ</span>
               </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('2000000-5000000')">
-                <input type="radio" id="price4" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="2000000-5000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  2.000.000đ - 5.000.000đ</span>
+              <label
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === '2000000-5000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange('2000000-5000000')"
+              >
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 2.000.000đ - 5.000.000đ</span>
               </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('5000000-')">
-                <input type="radio" id="price5" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="5000000-">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }}
-                  5.000.000đ</span>
+              <label
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === '5000000-' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange('5000000-')"
+              >
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }} 5.000.000đ</span>
               </label>
             </div>
           </div>
@@ -74,48 +74,15 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.rating.title') }}</h3>
             <div class="space-y-3">
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('5')">
-                <input type="radio" id="rating5" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="5">
+              <label
+                v-for="n in [5,4,3,2,1]"
+                :key="n"
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.rating === String(n) ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setRating(String(n))"
+              >
                 <div class="flex items-center">
-                  <StarRating :rating="5" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('4')">
-                <input type="radio" id="rating4" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="4">
-                <div class="flex items-center">
-                  <StarRating :rating="4" :showCount="false" :readonly="true" />
-                  <span class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('3')">
-                <input type="radio" id="rating3" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="3">
-                <div class="flex items-center">
-                  <StarRating :rating="3" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('2')">
-                <input type="radio" id="rating2" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="2">
-                <div class="flex items-center">
-                  <StarRating :rating="2" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('1')">
-                <input type="radio" id="rating1" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="1">
-                <div class="flex items-center">
-                  <StarRating :rating="1" :showCount="false" :readonly="true" />
+                  <StarRating :rating="n" :showCount="false" :readonly="true" />
                   <span class="ml-2 text-neutral-700 text-xl">and above</span>
                 </div>
               </label>
@@ -125,7 +92,7 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-600" v-model="tempFilters.inStock">
+              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800" v-model="tempFilters.inStock">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
             </label>
           </div>
@@ -133,7 +100,7 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.promotion.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-600" v-model="tempFilters.onSale">
+              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800" v-model="tempFilters.onSale">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly') }}</span>
             </label>
           </div>
@@ -387,6 +354,7 @@ const loadProducts = async (page = 1) => {
       categoryId: getCategoryId(),
       brandId: getBrandId(),
       stockStatus: filters.value.inStock ? 'inStock' : undefined,
+      averageRating: filters.value.rating ? Number(filters.value.rating) : undefined,
     });
 
     const newProducts = response?.data || [];
@@ -457,6 +425,18 @@ const setupIntersectionObserver = () => {
 
 watch(() => tempFilters.value.maxPrice, () => {
   debouncedLoadProducts();
+});
+
+watch(() => tempFilters.value.categories, () => {
+  filters.value.categories = [...tempFilters.value.categories];
+  currentPage.value = 1;
+  applyFilters();
+});
+
+watch(() => tempFilters.value.brands, () => {
+  filters.value.brands = [...tempFilters.value.brands];
+  currentPage.value = 1;
+  applyFilters();
 });
 
 watch([() => filters.value.categories, () => filters.value.brands, () => filters.value.priceRange, () => filters.value.rating, () => filters.value.inStock, () => filters.value.onSale, sortOption], () => {

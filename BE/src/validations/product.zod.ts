@@ -17,4 +17,5 @@ export const ProductQuerySchema = z.object({
   categoryId: z.coerce.number().optional().nullable(),
   stockStatus: z.string().optional().nullable(),
   searchQuery: z.string().optional().default(''),
+  averageRating: z.coerce.number().optional().nullable(),
 });

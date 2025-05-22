@@ -5,8 +5,8 @@
       class="flex items-center justify-between w-full p-3 text-left border border-neutral-300 rounded-lg bg-white cursor-pointer hover:border-neutral-400 focus:outline-none"
     >
       <div class="text-lg text-neutral-700 truncate">
-        <span v-if="selectedItems.length > 0">
-          {{ selectedItems.length }} {{ title.toLowerCase() }} selected
+        <span v-if="selectedItems.length === 1">
+          {{ selectedItems[0].label }}
         </span>
         <span v-else>{{ placeholder || `Select ${title}` }}</span>
       </div>
@@ -35,24 +35,15 @@
         <div
           v-for="option in options"
           :key="option.value"
-          class="px-4 py-2 hover:bg-neutral-100 cursor-pointer"
+          :class="['px-4 py-2 cursor-pointer', isSelected(option.value) ? 'bg-neutral-100 font-semibold text-neutral-900' : 'hover:bg-neutral-100']"
           @click="toggleOption(option.value)"
         >
-          <div class="flex items-center">
-            <div class="flex-shrink-0 w-5 h-5 mr-3">
-              <div class="w-5 h-5 border rounded border-neutral-400" :class="{ 'bg-neutral-600': isSelected(option.value) }">
-                <svg v-if="isSelected(option.value)" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex justify-between w-full items-center">
-              <div class="flex items-center">
-                <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-6 h-6 mr-2 object-contain" />
+          <div class="flex justify-between w-full items-center">
+            <div class="flex items-center">
+              <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-6 h-6 mr-2 object-contain" />
               <span class="text-neutral-700" style="text-transform: uppercase;">{{ option.label }}</span>
-              </div>
-              <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
             </div>
+            <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
           </div>
         </div>
       </template>
@@ -109,12 +100,12 @@ const toggleDropdown = () => {
 }
 
 const toggleOption = (value) => {
-  const index = selectedValues.value.indexOf(value)
-  if (index === -1) {
-    selectedValues.value.push(value)
+  if (!isSelected(value)) {
+    selectedValues.value = [value];
   } else {
-    selectedValues.value.splice(index, 1)
+    selectedValues.value = [];
   }
+  isOpen.value = false;
 }
 
 const isSelected = (value) => {

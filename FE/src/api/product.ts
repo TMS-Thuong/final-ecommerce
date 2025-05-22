@@ -13,6 +13,7 @@ export interface ProductQueryParams {
   stockStatus?: string;
   categories?: string[];
   brands?: string[];
+  averageRating?: number;
 }
 
 export const productApi = {

@@ -1,39 +1,65 @@
-# FE
+# Hướng dẫn build & chạy Frontend (FE)
 
-This template should help get you started developing with Vue 3 in Vite.
+## 1. Chuẩn bị môi trường
 
-## Recommended IDE Setup
+- **Yêu cầu:** Node.js >= 18, npm >= 9
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 2. Cài đặt dependencies
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## 3. Cấu hình biến môi trường
 
-```sh
-npm run dev
+Tạo file `.env` tại thư mục `FE/` (nếu chưa có). Ví dụ:
+
+```env
+# Địa chỉ API backend
+VITE_API_BASE_URL=http://localhost:3000/api
+
+# Địa chỉ API lấy tỉnh/thành (nếu có)
+VITE_PROVINCES_API_URL=https://provinces.open-api.vn/api/
 ```
 
-### Type-Check, Compile and Minify for Production
+> **Lưu ý:**  
+> - Nếu backend chạy ở cổng khác, hãy sửa lại `VITE_API_BASE_URL` cho phù hợp.  
+> - Các biến môi trường bắt đầu bằng `VITE_` mới được Vite sử dụng.
 
-```sh
-npm run build
-```
+## 4. Các lệnh phát triển & build
 
-### Lint with [ESLint](https://eslint.org/)
+- **Chạy dev (hot reload):**
+  ```bash
+  npm run dev
+  ```
+  FE sẽ chạy ở [http://localhost:3001](http://localhost:3001) (hoặc cổng do Vite chỉ định).
 
-```sh
-npm run lint
-```
+- **Build production:**
+  ```bash
+  npm run build
+  ```
+
+- **Preview production build:**
+  ```bash
+  npm run preview
+  ```
+
+- **Kiểm tra type (TypeScript):**
+  ```bash
+  npm run type-check
+  ```
+
+- **Kiểm tra & sửa code với ESLint:**
+  ```bash
+  npm run lint
+  ```
+
+- **Format code với Prettier:**
+  ```bash
+  npm run format
+  ```
+
+## 5. Một số lưu ý
+
+- **IDE khuyến nghị:** [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+- **Cấu hình thêm:** Xem chi tiết tại [Vite Configuration Reference](https://vite.dev/config/).

@@ -18,7 +18,8 @@ export class ProductController {
       return reply.badRequest(validationResult.error.message, 'INVALID_QUERY_PARAMETERS');
     }
 
-    const { page, pageSize, minPrice, maxPrice, brandId, categoryId, stockStatus, searchQuery } = validationResult.data;
+    const { page, pageSize, minPrice, maxPrice, brandId, categoryId, stockStatus, searchQuery, averageRating } =
+      validationResult.data;
 
     try {
       const products = await this.productService.getProducts(
@@ -29,7 +30,8 @@ export class ProductController {
         minPrice,
         maxPrice,
         stockStatus,
-        searchQuery
+        searchQuery,
+        averageRating
       );
       return reply.ok(products);
     } catch (error) {
