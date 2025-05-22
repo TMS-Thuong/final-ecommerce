@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { CartErrorMessages } from '@app/config/cart.message';
+import { CartErrorMessages } from '@app/constants/cart.message';
 
 const prisma = new PrismaClient();
 

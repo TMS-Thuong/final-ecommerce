@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { CategoryErrorMessages } from '@app/config/category.message';
-import { CategoryIdZodSchema } from '@app/schemas/category.zod';
+import { CategoryErrorMessages } from '@app/constants/category.message';
 import { CategoryService } from '@app/services/category.service';
+import { CategoryIdZodSchema } from '@app/validations/category.zod';
 
 export class CategoryController {
   private categoryService: CategoryService;

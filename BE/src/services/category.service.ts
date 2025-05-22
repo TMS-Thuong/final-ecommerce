@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { CategoryErrorMessages } from '@app/config/category.message';
+import { CategoryErrorMessages } from '@app/constants/category.message';
 import { ICategory } from '@app/types/category.type';
 
 const prisma = new PrismaClient();

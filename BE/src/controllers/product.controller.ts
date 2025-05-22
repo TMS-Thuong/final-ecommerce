@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { ProductErrorMessages } from '@app/config/product.message';
-import { ProductIdZodSchema, ProductQuerySchema } from '@app/schemas/product.zod';
+import { ProductErrorMessages } from '@app/constants/product.message';
 import { ProductService } from '@app/services/product.service';
+import { ProductIdZodSchema, ProductQuerySchema } from '@app/validations/product.zod';
 
 export class ProductController {
   private productService: ProductService;

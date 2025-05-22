@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
-import { ProductErrorMessages } from '@app/config/product.message';
-import { IProduct, IProductImage } from '@app/types/product.type';
+import { ProductErrorMessages } from '@app/constants/product.message';
+import {
+  IProductImage,
+  IProductWithImages,
+  PrismaProductResult,
+  PrismaProductWithImages,
+} from '@app/types/product.type';
 
 const prisma = new PrismaClient();
 
@@ -15,7 +20,7 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string
-  ): Promise<IProduct[]> {
+  ): Promise<IProductWithImages[]> {
     const filters: {
       isActive: boolean;
       OR?: {
@@ -29,6 +34,7 @@ export class ProductService {
       stockQuantity?: { gt?: number; equals?: number };
     } = { isActive: true };
 
+    // Tìm kiếm theo từ khóa
     if (searchQuery && searchQuery.trim() !== '') {
       filters.OR = [
         { name: { contains: searchQuery.trim(), mode: 'insensitive' } },
@@ -36,19 +42,23 @@ export class ProductService {
       ];
     }
 
+    // Lọc theo thương hiệu
     if (brandId) {
       filters.brandId = brandId;
     }
+    // Lọc theo danh mục
     if (categoryId) {
       filters.categoryId = categoryId;
     }
 
+    // Lọc theo khoảng giá
     if (minPrice !== undefined || maxPrice !== undefined) {
       filters.basePrice = {};
       if (minPrice !== undefined) filters.basePrice.gte = minPrice;
       if (maxPrice !== undefined) filters.basePrice.lte = maxPrice;
     }
 
+    // Lọc theo tình trạng tồn kho
     if (stockStatus) {
       if (stockStatus === 'inStock') {
         filters.stockQuantity = { gt: 0 };
@@ -86,18 +96,14 @@ export class ProductService {
           id: 'desc',
         },
       });
-      return products.map((product) => ({
-        ...product,
-        basePrice: product.basePrice.toNumber(),
-        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
-      }));
+
+      return await this.addImagesToProducts(products);
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }
 
-  async getProductById(id: number): Promise<IProduct | null> {
+  async getProductById(id: number): Promise<IProductWithImages | null> {
     let product = null;
 
     try {
@@ -130,12 +136,8 @@ export class ProductService {
 
     if (!product) return null;
 
-    return {
-      ...product,
-      basePrice: product.basePrice.toNumber(),
-      salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-      averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
-    };
+    const productsWithImages = await this.addImagesToProducts([product]);
+    return productsWithImages[0];
   }
 
   async getProductImagesByProductId(productId: number): Promise<IProductImage[]> {
@@ -149,10 +151,72 @@ export class ProductService {
           isThumbnail: true,
           displayOrder: true,
         },
+        orderBy: {
+          displayOrder: 'asc',
+        },
       });
       return productImages;
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR);
     }
+  }
+
+  private async addImagesToProducts(products: PrismaProductResult[]): Promise<IProductWithImages[]> {
+    if (!products.length) return [];
+
+    const hasImages =
+      products[0] && 'images' in products[0] && Array.isArray((products[0] as PrismaProductWithImages).images);
+
+    if (hasImages) {
+      return products.map((product) => {
+        return {
+          ...product,
+          basePrice: product.basePrice.toNumber(),
+          salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+          averageRating: product.averageRating.toNumber(),
+          images: (product as PrismaProductWithImages).images || [],
+        } as IProductWithImages;
+      });
+    }
+
+    const productIds: number[] = products.map((product) => product.id);
+
+    const allImages = await prisma.productImage.findMany({
+      where: {
+        productId: {
+          in: productIds,
+        },
+      },
+      select: {
+        id: true,
+        productId: true,
+        imageUrl: true,
+        isThumbnail: true,
+        displayOrder: true,
+      },
+      orderBy: {
+        displayOrder: 'asc',
+      },
+    });
+
+    const imagesByProductId: { [key: number]: IProductImage[] } = {};
+
+    for (const image of allImages) {
+      const productId = image.productId;
+      if (!imagesByProductId[productId]) {
+        imagesByProductId[productId] = [];
+      }
+      imagesByProductId[productId].push(image);
+    }
+
+    return products.map((product) => {
+      return {
+        ...product,
+        basePrice: product.basePrice.toNumber(),
+        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+        averageRating: product.averageRating.toNumber(),
+        images: imagesByProductId[product.id] || [],
+      } as IProductWithImages;
+    });
   }
 }

@@ -7,4 +7,5 @@ export const ProductErrorMessages = {
   INVALID_PRODUCT_ID_FORMAT: 'Product ID must be a valid positive number',
   ERROR_FETCHING_PRODUCT_IMAGES: 'Failed to fetch product images',
   ERROR_FETCHING_PRODUCT: 'Failed to fetch product',
+  INVALID_PRODUCT_ID_MESSAGE: 'Product ID must be a valid positive number',
 };

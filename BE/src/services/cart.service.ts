@@ -1,6 +1,6 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 
-import { CartErrorMessages } from '@app/config/cart.message';
+import { CartErrorMessages } from '@app/constants/cart.message';
 import { ICart, ICartItem } from '@app/types/cart.type';
 
 const prisma = new PrismaClient();

@@ -16,10 +16,7 @@ class PaymentController {
     reply: FastifyReply
   ): Promise<void> {
     try {
-      console.log('VNPay return callback:', request.query);
       const result = await VNPayService.verifyReturnUrl(request.query);
-
-      console.log('VNPay verification result:', result);
 
       if (!result.isValid) {
         console.error('Invalid VNPay signature:', request.query);
@@ -88,8 +85,6 @@ class PaymentController {
     reply: FastifyReply
   ): Promise<void> {
     try {
-      console.log('VNPay IPN callback received:', request.query);
-
       const result = await VNPayService.processIpnCallback(request.query);
 
       if (!result || typeof result.RspCode !== 'string' || typeof result.Message !== 'string') {

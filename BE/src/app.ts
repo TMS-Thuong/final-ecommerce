@@ -12,6 +12,7 @@ import { categoryRoutes } from './routes/category.routes';
 import { orderRoutes } from './routes/order.routes';
 import { paymentRoutes } from './routes/payment.routes';
 import { productRoutes } from './routes/product.routes';
+import publicPaymentRoutes from './routes/public-payment.routes';
 import shippingRoutes from './routes/shipping.routes';
 
 declare module 'fastify' {
@@ -34,15 +35,15 @@ declare module '@fastify/jwt' {
 const app = fastify({ logger: true });
 
 app.addHook('onSend', async (request, reply) => {
-  reply.header('Cross-Origin-Opener-Policy', 'unsafe-none');
-  reply.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  reply.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  reply.header('Cross-Origin-Embedder-Policy', 'require-corp');
 });
 
 app.register(cors, {
   origin: ['*'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Cross-Origin-Opener-Policy'],
+  exposedHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Embedder-Policy'],
   credentials: true,
 });
 
@@ -62,11 +63,12 @@ app.get('/', async () => {
 app.register(authUserRoutes, { prefix: '/user/api' });
 app.register(addressRoutes, { prefix: '/user/api' });
 app.register(shippingRoutes, { prefix: '/api' });
-app.register(orderRoutes, { prefix: '/user/api' });
+app.register(orderRoutes, { prefix: '/api' });
 app.register(paymentRoutes, { prefix: '/api' });
 app.register(productRoutes, { prefix: '/api' });
 app.register(categoryRoutes, { prefix: '/api' });
 app.register(brandRoutes, { prefix: '/api' });
 app.register(cartRoutes, { prefix: '/api' });
+app.register(publicPaymentRoutes);
 
 export default app;

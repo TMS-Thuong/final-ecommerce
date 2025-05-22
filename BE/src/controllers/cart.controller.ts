@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { CartErrorMessages } from '@app/config/cart.message';
-import { AddCartItemZodSchema, CartItemIdZodSchema, UpdateCartItemZodSchema } from '@app/schemas/cart.zod';
+import { CartErrorMessages } from '@app/constants/cart.message';
 import { CartService } from '@app/services/cart.service';
+import { AddCartItemZodSchema, CartItemIdZodSchema, UpdateCartItemZodSchema } from '@app/validations/cart.zod';
 
 import { getUserId, getOrCreateCart } from '../utils/cart.service.utils';
 

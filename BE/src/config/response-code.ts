@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { AuthErrorMessages } from '@app/config/auth.message';
+import { AuthErrorMessages } from '@app/constants/auth.message';
 
 export default fp(async (fastify: FastifyInstance) => {
   fastify.decorateReply('badRequest', function (this: FastifyReply, message: string, code: string) {

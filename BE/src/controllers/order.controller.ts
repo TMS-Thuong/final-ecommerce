@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { CreateOrderZodSchema, OrderIdZodSchema } from '@app/schemas/order.zod';
 import OrderService from '@app/services/order.service';
+import { CreateOrderZodSchema, OrderIdZodSchema } from '@app/validations/order.zod';
 import { binding } from '@decorator/binding';
 
 class OrderController {
