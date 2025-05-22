@@ -11,6 +11,32 @@ import {
 const prisma = new PrismaClient();
 
 export class ProductService {
+  private imageCache: { [productId: number]: IProductImage[] } = {};
+  private cacheTTL = 5 * 60 * 1000;
+  private lastCacheCleanup = Date.now();
+
+  constructor() {
+    setInterval(() => this.cleanupCache(), 60 * 1000);
+  }
+
+  private cleanupCache(): void {
+    const now = Date.now();
+    if (now - this.lastCacheCleanup > this.cacheTTL) {
+      this.imageCache = {};
+      this.lastCacheCleanup = now;
+    }
+  }
+
+  public invalidateProductCache(productId: number): void {
+    if (this.imageCache[productId]) {
+      delete this.imageCache[productId];
+    }
+  }
+
+  public clearImageCache(): void {
+    this.imageCache = {};
+  }
+
   async getProducts(
     page = 1,
     pageSize = 10,
@@ -141,6 +167,10 @@ export class ProductService {
   }
 
   async getProductImagesByProductId(productId: number): Promise<IProductImage[]> {
+    if (this.imageCache[productId]) {
+      return this.imageCache[productId];
+    }
+
     try {
       const productImages = await prisma.productImage.findMany({
         where: { productId },
@@ -155,6 +185,7 @@ export class ProductService {
           displayOrder: 'asc',
         },
       });
+      this.imageCache[productId] = productImages;
       return productImages;
     } catch (error) {
       throw new Error(ProductErrorMessages.FETCH_PRODUCT_IMAGES_ERROR);
@@ -168,54 +199,54 @@ export class ProductService {
       products[0] && 'images' in products[0] && Array.isArray((products[0] as PrismaProductWithImages).images);
 
     if (hasImages) {
-      return products.map((product) => {
-        return {
-          ...product,
-          basePrice: product.basePrice.toNumber(),
-          salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-          averageRating: product.averageRating.toNumber(),
-          images: (product as PrismaProductWithImages).images || [],
-        } as IProductWithImages;
-      });
+      return products.map((product) => ({
+        ...product,
+        basePrice: product.basePrice.toNumber(),
+        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
+        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
+        images: ((product as PrismaProductWithImages).images as IProductImage[]) || [],
+      }));
     }
-
     const productIds: number[] = products.map((product) => product.id);
+    const uncachedProductIds = productIds.filter((id) => !this.imageCache[id]);
 
-    const allImages = await prisma.productImage.findMany({
-      where: {
-        productId: {
-          in: productIds,
+    if (uncachedProductIds.length > 0) {
+      const newImages = await prisma.productImage.findMany({
+        where: {
+          productId: {
+            in: uncachedProductIds,
+          },
         },
-      },
-      select: {
-        id: true,
-        productId: true,
-        imageUrl: true,
-        isThumbnail: true,
-        displayOrder: true,
-      },
-      orderBy: {
-        displayOrder: 'asc',
-      },
-    });
+        select: {
+          id: true,
+          productId: true,
+          imageUrl: true,
+          isThumbnail: true,
+          displayOrder: true,
+        },
+        orderBy: {
+          displayOrder: 'asc',
+        },
+      });
 
-    const imagesByProductId: { [key: number]: IProductImage[] } = {};
-
-    for (const image of allImages) {
-      const productId = image.productId;
-      if (!imagesByProductId[productId]) {
-        imagesByProductId[productId] = [];
+      // Group images by product ID and update cache
+      for (const image of newImages) {
+        const productId = image.productId;
+        if (!this.imageCache[productId]) {
+          this.imageCache[productId] = [];
+        }
+        this.imageCache[productId].push(image);
       }
-      imagesByProductId[productId].push(image);
     }
 
+    // Create the result using cached images
     return products.map((product) => {
       return {
         ...product,
         basePrice: product.basePrice.toNumber(),
         salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-        averageRating: product.averageRating.toNumber(),
-        images: imagesByProductId[product.id] || [],
+        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
+        images: this.imageCache[product.id] || [],
       } as IProductWithImages;
     });
   }
