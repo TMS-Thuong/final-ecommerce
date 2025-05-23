@@ -29,7 +29,7 @@ export default fp(async (fastify) => {
     try {
       await request.jwtVerify();
     } catch {
-      return reply.unauthorized('Authentication required', 'UNAUTHORIZED');
+      return reply.unauthorized('Invalid token or authentication required', 'UNAUTHORIZED');
     }
   });
 });

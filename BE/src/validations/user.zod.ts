@@ -9,18 +9,11 @@ export const updateUserZodSchema = z.object({
     required_error: 'Birth date is required',
     invalid_type_error: 'Invalid birth date format',
   }),
-  gender: z
-    .string()
-    .toLowerCase()
-    .refine((val) => ['male', 'female', 'other'].includes(val), {
-      message: 'Invalid gender value',
-    })
-    .transform((val) => {
-      if (val === 'male') return 1;
-      if (val === 'female') return 2;
-      return 0;
-    }),
-  phoneNumber: z.string().optional(),
+  gender: z.enum(['male', 'female', 'other']).transform((val) => {
+    if (val === 'male') return 1;
+    if (val === 'female') return 2;
+    return 0;
+  }),
 });
 
 export const updatePasswordZodSchema = z.object({
