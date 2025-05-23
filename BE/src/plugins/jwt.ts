@@ -6,9 +6,14 @@ import 'fastify';
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    id: number;
-    email: string;
-    isAdmin: boolean;
+    payload: {
+      email: string;
+      userId: number;
+    };
+    user: {
+      email: string;
+      userId: number;
+    };
   }
 }
 
@@ -24,7 +29,7 @@ export default fp(async (fastify) => {
     try {
       await request.jwtVerify();
     } catch {
-      return reply.unauthorized();
+      return reply.unauthorized('Authentication required', 'UNAUTHORIZED');
     }
   });
 });

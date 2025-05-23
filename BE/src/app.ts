@@ -3,6 +3,8 @@ import fastify from 'fastify';
 
 import AuthController from '@app/services/auth-user.service';
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
+import multipartPlugin from '@plugins/multipart.plugin';
+import staticPlugin from '@plugins/static.plugin';
 
 import { addressRoutes } from './routes/address.routes';
 import { authUserRoutes } from './routes/auth-user.routes';
@@ -14,6 +16,7 @@ import { paymentRoutes } from './routes/payment.routes';
 import { productRoutes } from './routes/product.routes';
 import publicPaymentRoutes from './routes/public-payment.routes';
 import shippingRoutes from './routes/shipping.routes';
+import userRoutes from './routes/user.route';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -23,12 +26,8 @@ declare module 'fastify' {
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { id: number; userId?: number; email?: string };
-    user: {
-      id: number;
-      userId?: number;
-      email?: string;
-    };
+    payload: { email: string; userId: number };
+    user: { email: string; userId: number };
   }
 }
 
@@ -51,6 +50,8 @@ app.register(prismaPlugin);
 app.register(errorHandler);
 app.register(fastifyJwt);
 app.register(zodPlugin);
+app.register(multipartPlugin);
+app.register(staticPlugin);
 
 swagger(app);
 
@@ -70,5 +71,6 @@ app.register(categoryRoutes, { prefix: '/api' });
 app.register(brandRoutes, { prefix: '/api' });
 app.register(cartRoutes, { prefix: '/api' });
 app.register(publicPaymentRoutes);
+app.register(userRoutes);
 
 export default app;
