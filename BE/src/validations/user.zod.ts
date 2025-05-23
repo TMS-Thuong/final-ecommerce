@@ -9,11 +9,7 @@ export const updateUserZodSchema = z.object({
     required_error: 'Birth date is required',
     invalid_type_error: 'Invalid birth date format',
   }),
-  gender: z.enum(['male', 'female', 'other']).transform((val) => {
-    if (val === 'male') return 1;
-    if (val === 'female') return 2;
-    return 0;
-  }),
+  gender: z.enum(['male', 'female', 'other']).transform((val) => ({ male: 1, female: 2, other: 0 }[val])),
 });
 
 export const updatePasswordZodSchema = z.object({
