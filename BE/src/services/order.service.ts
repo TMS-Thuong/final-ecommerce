@@ -49,7 +49,6 @@ class OrderService {
       throw new Error('Cart is empty');
     }
 
-    // Filter cart items if cartItemIds is provided
     const cartItems =
       orderData.cartItemIds && orderData.cartItemIds.length > 0
         ? cart.items.filter((item) => orderData.cartItemIds?.includes(item.id))

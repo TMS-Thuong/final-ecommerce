@@ -1,6 +1,7 @@
 <template>
   <router-link :to="`/products/${product.id}`" class="block">
-    <div class="product-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div class="product-card bg-white rounded-lg">
+
       <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
         <div :class="{ 'filter blur-[1px]': product.stockQuantity === 0 }" class="w-full h-full relative">
           <div v-if="discountPercent > 0"
@@ -41,11 +42,11 @@
         </div>
       </div>
       <div class="p-4">
-        <h3 class="text-xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
+        <h3 class="text-2xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
         <div class="mt-1 flex items-center">
           <span class="text-2xl font-bold text-red-500">{{
             formatPrice(product.salePrice || product.basePrice)
-          }}</span>
+            }}</span>
           <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{
             formatPrice(product.basePrice) }}</span>
         </div>
@@ -54,12 +55,12 @@
           <StarRating :size="'6'" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
             :readonly="true" />
           <span class="ml-2 text-neutral-600 text-xl">
-            {{ Math.round(product.averageRating || 0) }}
+            {{ (product.averageRating || 0).toFixed(1) }}
           </span>
         </div>
 
         <div class="mt-2">
-          <span class="inline-block text-base px-3 py-1 rounded-full border-1" :class="product.salePrice
+          <span class="inline-block text-lg px-3 py-1 rounded-full border-1" :class="product.salePrice
             ? 'bg-white text-green-500 border-green-500'
             : 'bg-transparent text-transparent border-transparent'">
             {{ product.salePrice ? $t('product.discount') : '' }}

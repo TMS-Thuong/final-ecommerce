@@ -1,8 +1,8 @@
 <template>
-  <div class="py-8 bg-while w-full">
+  <div class="py-8 bg-gray-50 w-full">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/5">
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <div class="bg-white p-6 rounded-lg shadow-xl mb-6">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
             <button @click="resetFilters" class="text-blue-600 hover:text-neutral-800 text-lg font-medium">
@@ -18,7 +18,7 @@
           </div>
 
           <div class="mb-8">
-            <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.priceRange.title') }}</h3>
+            <h3 class="font-semibold mb-4 text-2xl text-neutral-700">{{ $t('product.filters.priceRange.title') }}</h3>
             <div class="space-y-3">
               <label v-for="range in priceRanges" :key="range.value"
                 class="flex items-center p-2 rounded-md cursor-pointer"
@@ -79,7 +79,7 @@
       </div>
 
       <div class="w-full md:w-4/5 mr-6">
-        <div class="bg-white p-4 rounded-lg shadow mb-6 flex justify-between items-center flex-wrap gap-4">
+        <div class="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center flex-wrap gap-4">
           <div class="flex items-center">
             <span class="mr-4 text-xl text-neutral-700">{{ $t('product.sort.title') }}:</span>
             <select v-model="sortOption" ref="selectRef" @change="adjustWidth"
@@ -162,7 +162,6 @@ const filters = ref({
 const tempFilters = ref({ ...filters.value });
 const searchQuery = ref('');
 const sortOption = ref('newest');
-const isApplyingFilters = ref(false);
 
 const filteredProducts = computed(() => {
   const sortedProducts = [...products.value];
@@ -285,7 +284,6 @@ const handleScroll = () => {
 };
 
 const handleFilterChange = () => {
-  // Debounce the filter change to avoid too many API calls
   debouncedLoadProducts();
 };
 
