@@ -1,13 +1,6 @@
 import { FastifySchema } from 'fastify';
 
-const errorResponseSchema = {
-  type: 'object',
-  properties: {
-    code: { type: 'string' },
-    error: { type: 'string' },
-    message: { type: 'string' },
-  },
-};
+import { errorResponseSchema } from './error.schema';
 
 export const registerUserSchema: FastifySchema = {
   summary: 'User registration',

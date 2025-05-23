@@ -35,9 +35,9 @@
         <div class="w-full lg:w-1/2">
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{{ product.name }}</h1>
 
-          <div class="flex flex-wrap items-center mb-2 sm:mb-4">
+          <div class="flex flex-wrap items-center mb-2 text-xl">
             <StarRating :size="'8'" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
-            <span class="ml-1 sm:ml-2 text-gray-500 text-sm sm:text-base">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
+            <span class="ml-1 sm:ml-2 text-gray-500 ">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
           </div>
 
           <div class="mb-4 sm:mb-6">

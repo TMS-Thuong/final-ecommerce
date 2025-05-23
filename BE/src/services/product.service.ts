@@ -45,7 +45,8 @@ export class ProductService {
     minPrice?: number,
     maxPrice?: number,
     stockStatus?: string,
-    searchQuery?: string
+    searchQuery?: string,
+    averageRating?: number
   ): Promise<IProductWithImages[]> {
     const filters: {
       isActive: boolean;
@@ -58,6 +59,7 @@ export class ProductService {
       categoryId?: number;
       basePrice?: { gte?: number; lte?: number };
       stockQuantity?: { gt?: number; equals?: number };
+      averageRating?: { gte?: number };
     } = { isActive: true };
 
     // Tìm kiếm theo từ khóa
@@ -91,6 +93,10 @@ export class ProductService {
       } else if (stockStatus === 'outOfStock') {
         filters.stockQuantity = { equals: 0 };
       }
+    }
+
+    if (averageRating !== undefined && averageRating !== null) {
+      filters.averageRating = { gte: averageRating };
     }
 
     try {

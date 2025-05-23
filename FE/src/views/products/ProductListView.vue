@@ -2,7 +2,7 @@
   <div class="py-8 bg-gray-50 w-full">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/5">
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <div class="bg-white p-6 rounded-lg shadow-xl mb-6">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
             <button @click="resetFilters" class="text-blue-600 hover:text-neutral-800 text-lg font-medium">
@@ -13,54 +13,20 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.categories.title') }}</h3>
             <FilterDropdown v-model="tempFilters.categories" :options="categoryOptions"
-              :title="$t('product.filters.categories.title')" :loading="categoriesLoading" />
+              :title="$t('product.filters.categories.title')" :loading="categoriesLoading"
+              @change="handleFilterChange" />
           </div>
 
           <div class="mb-8">
-            <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.priceRange.title') }}</h3>
-            <div class="mb-4">
-              <input type="range" min="0" max="5000000" step="10000" v-model="tempFilters.maxPrice"
-                class="w-full h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-neutral-600 outline-none border-none" />
-              <div class="flex justify-between text-neutral-600 text-xl mt-2">
-                <span>0 đ</span>
-                <span>{{ formatPrice(tempFilters.maxPrice) }}</span>
-              </div>
-            </div>
+            <h3 class="font-semibold mb-4 text-2xl text-neutral-700">{{ $t('product.filters.priceRange.title') }}</h3>
             <div class="space-y-3">
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('0-500000')">
-                <input type="radio" id="price1" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="0-500000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }}
-                  500.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('500000-1000000')">
-                <input type="radio" id="price2" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="500000-1000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  500.000đ - 1.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('1000000-2000000')">
-                <input type="radio" id="price3" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="1000000-2000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  1.000.000đ - 2.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('2000000-5000000')">
-                <input type="radio" id="price4" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="2000000-5000000">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }}
-                  2.000.000đ - 5.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setPriceRange('5000000-')">
-                <input type="radio" id="price5" name="price" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.priceRange" value="5000000-">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }}
-                  5.000.000đ</span>
+              <label v-for="range in priceRanges" :key="range.value"
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === range.value ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange(range.value)">
+                <span class="text-neutral-700 text-xl">
+                  {{ $t(range.label) }} {{ range.display }}
+                </span>
               </label>
             </div>
           </div>
@@ -68,54 +34,17 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.brands.title') }}</h3>
             <FilterDropdown v-model="tempFilters.brands" :options="brandOptions"
-              :title="$t('product.filters.brands.title')" :loading="brandsLoading" />
+              :title="$t('product.filters.brands.title')" :loading="brandsLoading" @change="handleFilterChange" />
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.rating.title') }}</h3>
             <div class="space-y-3">
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('5')">
-                <input type="radio" id="rating5" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="5">
+              <label v-for="n in [5, 4, 3, 2, 1]" :key="n" class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.rating === String(n) ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setRating(String(n))">
                 <div class="flex items-center">
-                  <StarRating :rating="5" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('4')">
-                <input type="radio" id="rating4" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="4">
-                <div class="flex items-center">
-                  <StarRating :rating="4" :showCount="false" :readonly="true" />
-                  <span class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('3')">
-                <input type="radio" id="rating3" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="3">
-                <div class="flex items-center">
-                  <StarRating :rating="3" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('2')">
-                <input type="radio" id="rating2" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="2">
-                <div class="flex items-center">
-                  <StarRating :rating="2" :showCount="false" :readonly="true" /> <span
-                    class="ml-2 text-neutral-700 text-xl">and above</span>
-                </div>
-              </label>
-              <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer"
-                @click="setRating('1')">
-                <input type="radio" id="rating1" name="rating" class="mr-3 w-4 h-4 accent-neutral-600"
-                  v-model="tempFilters.rating" value="1">
-                <div class="flex items-center">
-                  <StarRating :rating="1" :showCount="false" :readonly="true" />
+                  <StarRating :rating="n" :showCount="false" :readonly="true" />
                   <span class="ml-2 text-neutral-700 text-xl">and above</span>
                 </div>
               </label>
@@ -147,7 +76,7 @@
       </div>
 
       <div class="w-full md:w-4/5 mr-6">
-        <div class="bg-white p-4 rounded-lg shadow mb-6 flex justify-between items-center flex-wrap gap-4">
+        <div class="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center flex-wrap gap-4">
           <div class="flex items-center">
             <span class="mr-4 text-xl text-neutral-700">{{ $t('product.sort.title') }}:</span>
             <select v-model="sortOption" ref="selectRef" @change="adjustWidth"
@@ -169,8 +98,11 @@
             class="product-card h-full" />
         </div>
 
-        <div v-if="loadingMore" class="mt-8 flex justify-center">
-          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-neutral-800"></div>
+        <div v-if="hasMorePages" class="mt-8 flex justify-center">
+          <div v-if="loadingMore" class="flex items-center gap-2 text-neutral-800">
+            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-neutral-800"></div>
+            <span class="text-lg">{{ $t('common.loading') }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -228,6 +160,30 @@ const tempFilters = ref({ ...filters.value });
 const searchQuery = ref('');
 const sortOption = ref('newest');
 
+const filteredProducts = computed(() => {
+  const sortedProducts = [...products.value];
+
+  switch (sortOption.value) {
+    case 'priceAsc':
+      return sortedProducts.sort((a, b) => a.price - b.price);
+    case 'priceDesc':
+      return sortedProducts.sort((a, b) => b.price - a.price);
+    case 'rating':
+      return sortedProducts.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+    case 'newest':
+    default:
+      return sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+});
+
+const priceRanges = [
+  { value: '0-500000', label: 'product.filters.priceRange.under', display: '500.000đ' },
+  { value: '500000-1000000', label: 'product.filters.priceRange.between', display: '500.000đ - 1.000.000đ' },
+  { value: '1000000-2000000', label: 'product.filters.priceRange.between', display: '1.000.000đ - 2.000.000đ' },
+  { value: '2000000-5000000', label: 'product.filters.priceRange.between', display: '2.000.000đ - 5.000.000đ' },
+  { value: '5000000-', label: 'product.filters.priceRange.above', display: '5.000.000đ' }
+];
+
 const setPriceRange = (range) => {
   tempFilters.value.priceRange = range;
   tempFilters.value.maxPrice = 0;
@@ -235,6 +191,12 @@ const setPriceRange = (range) => {
 
 const setRating = (rating) => {
   tempFilters.value.rating = rating;
+};
+
+const applyFilters = () => {
+  filters.value = { ...tempFilters.value };
+  currentPage.value = 1;
+  loadProducts();
 };
 
 const resetFilters = () => {
@@ -247,66 +209,8 @@ const resetFilters = () => {
     inStock: false,
     onSale: false,
   };
-  filters.value = { ...tempFilters.value };
-  currentPage.value = 1;
-  debouncedLoadProducts();
+  applyFilters();
 };
-
-const applyFilters = () => {
-  filters.value = { ...tempFilters.value };
-  currentPage.value = 1;
-  debouncedLoadProducts();
-};
-
-const filteredProducts = computed(() => {
-  let result = [...products.value];
-
-  if (filters.value.rating) {
-    const minRating = Number(filters.value.rating);
-    result = result.filter(product => product.averageRating >= minRating);
-  }
-
-  if (filters.value.inStock) {
-    result = result.filter(product => product.stockQuantity > 0);
-  }
-
-  if (filters.value.onSale) {
-    result = result.filter(product => product.salePrice != null && product.salePrice > 0);
-  }
-
-  if (filters.value.categories.length > 0) {
-    result = result.filter(product => filters.value.categories.includes(String(product.categoryId)));
-  }
-
-  if (filters.value.brands.length > 0) {
-    result = result.filter(product => filters.value.brands.includes(String(product.brandId)));
-  }
-
-  if (filters.value.priceRange) {
-    const [min, max] = filters.value.priceRange.split('-').map(Number);
-    result = result.filter(product => {
-      const price = product.salePrice || product.basePrice;
-      return price >= min && (max === 0 || isNaN(max) || price <= max);
-    });
-  } else if (filters.value.maxPrice > 0) {
-    result = result.filter(product => {
-      const price = product.salePrice || product.basePrice;
-      return price <= filters.value.maxPrice;
-    });
-  }
-
-  switch (sortOption.value) {
-    case 'priceAsc':
-      return result.sort((a, b) => (a.salePrice || a.basePrice) - (b.salePrice || b.basePrice));
-    case 'priceDesc':
-      return result.sort((a, b) => (b.salePrice || b.basePrice) - (a.salePrice || a.basePrice));
-    case 'rating':
-      return result.sort((a, b) => b.averageRating - a.averageRating);
-    case 'newest':
-    default:
-      return result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
-});
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -359,15 +263,35 @@ const loadBrands = async () => {
   }
 };
 
+const loadMore = () => {
+  if (loadingMore.value || !hasMorePages.value) return;
+  currentPage.value++;
+  loadProducts(currentPage.value);
+};
+
+const handleScroll = () => {
+  if (loadingMore.value || !hasMorePages.value) return;
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const documentHeight = document.documentElement.scrollHeight;
+
+  if (documentHeight - scrollPosition < 100) {
+    loadMore();
+  }
+};
+
+const handleFilterChange = () => {
+  debouncedLoadProducts();
+};
+
 const loadProducts = async (page = 1) => {
+  if (loading.value || loadingMore.value) return;
   if (page === 1) {
     loading.value = true;
   } else {
     loadingMore.value = true;
   }
-
   error.value = '';
-
   try {
     let minPrice, maxPrice;
     if (filters.value.priceRange) {
@@ -377,7 +301,6 @@ const loadProducts = async (page = 1) => {
     } else if (filters.value.maxPrice > 0) {
       maxPrice = filters.value.maxPrice;
     }
-
     const response = await productApi.getProducts({
       page,
       pageSize,
@@ -387,22 +310,17 @@ const loadProducts = async (page = 1) => {
       categoryId: getCategoryId(),
       brandId: getBrandId(),
       stockStatus: filters.value.inStock ? 'inStock' : undefined,
+      averageRating: filters.value.rating ? Number(filters.value.rating) : undefined,
+      onSale: filters.value.onSale ? true : undefined,
     });
-
     const newProducts = response?.data || [];
-
     if (page === 1) {
       products.value = newProducts;
     } else {
       products.value = [...products.value, ...newProducts];
     }
-
     totalProducts.value = response?.total ?? products.value.length;
     hasMorePages.value = newProducts.length === pageSize;
-
-    nextTick(() => {
-      setupIntersectionObserver();
-    });
   } catch (err) {
     error.value = t('product.error.loadFailed');
     console.error('Error loading products:', err);
@@ -417,53 +335,10 @@ const debouncedLoadProducts = debounce(() => {
   loadProducts();
 }, 300);
 
-const debouncedLoadMore = debounce(() => {
-  if (loadingMore.value) return;
-  currentPage.value++;
-  loadProducts(currentPage.value);
-}, 500);
-
-const setupIntersectionObserver = () => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
-
-  if (!hasMorePages.value || loading.value || loadingMore.value || products.value.length === 0) {
-    lastProductRef.value = null;
-    return;
-  }
-
-  const productElements = document.querySelectorAll('.product-card');
-  if (productElements.length === 0) {
-    lastProductRef.value = null;
-    return;
-  }
-
-  lastProductRef.value = productElements[productElements.length - 1];
-
-  observer.value = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && hasMorePages.value && !loading.value && !loadingMore.value) {
-        debouncedLoadMore();
-      }
-    },
-    { rootMargin: '0px 0px 200px 0px', threshold: 0.1 }
-  );
-
-  if (lastProductRef.value) {
-    observer.value.observe(lastProductRef.value);
-  }
-};
-
-watch(() => tempFilters.value.maxPrice, () => {
-  debouncedLoadProducts();
-});
-
-watch([() => filters.value.categories, () => filters.value.brands, () => filters.value.priceRange, () => filters.value.rating, () => filters.value.inStock, () => filters.value.onSale, sortOption], () => {
-  if (filters.value.maxPrice) return;
+watch(sortOption, () => {
   currentPage.value = 1;
-  debouncedLoadProducts();
-}, { deep: true });
+  loadProducts();
+});
 
 onMounted(() => {
   if (route.query.searchQuery) {
@@ -472,12 +347,11 @@ onMounted(() => {
 
   loadCategories();
   loadBrands();
-  debouncedLoadProducts();
+  loadProducts();
+  window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>

@@ -282,9 +282,8 @@ const updateItemQuantity = async (itemId, newQuantity) => {
   updateCartTimer = setTimeout(async () => {
     try {
       await cartStore.updateItem(itemId, newQuantity);
-      console.log('Đã cập nhật lên server sau khi người dùng ngừng thay đổi');
     } catch (error) {
-      console.error('Không thể cập nhật số lượng trên server:', error);
+      console.error(error);
     }
   }, 1000);
 };
@@ -311,7 +310,7 @@ const confirmRemoveAll = () => {
       Promise.all(
         items.map(async (item) => {
           try {
-            await cartStore.removeItem(item.id); // Gọi API nếu cần, hoặc xóa trực tiếp
+            await cartStore.removeItem(item.id);
             delete selectedItems[item.id];
           } catch (error) {
             showToast(ToastEnum.Error, t('cart.removeAllError'));
@@ -350,7 +349,6 @@ const checkout = async () => {
     return;
   }
 
-  // Đảm bảo sử dụng dữ liệu mới nhất từ localStorage
   cartStore.initializeCartFromLocalStorage();
 
   const selectedProductIds = cartStore.cartItems

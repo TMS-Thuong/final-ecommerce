@@ -2,6 +2,8 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { FastifyInstance } from 'fastify';
 
+import { PORT } from '@app/config/env';
+
 export async function swagger(fastify: FastifyInstance): Promise<void> {
   fastify.register(fastifySwagger, {
     openapi: {
@@ -13,7 +15,7 @@ export async function swagger(fastify: FastifyInstance): Promise<void> {
       },
       servers: [
         {
-          url: 'http://localhost:3000',
+          url: `http://localhost:${PORT}`,
         },
       ],
       components: {

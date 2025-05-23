@@ -229,14 +229,12 @@ export const useCheckoutStore = defineStore('checkout', () => {
               await cartStore.removeItem(itemId);
             } catch (removeError) {
               console.error(`Failed to remove cart item ${itemId}:`, removeError);
-              // Continue with other items
             }
           }
 
           await cartStore.fetchCart();
         } catch (cartError) {
           console.error('Error updating cart after order:', cartError);
-          // Continue with order completion
         }
 
         localStorage.removeItem('selectedCartItems');
