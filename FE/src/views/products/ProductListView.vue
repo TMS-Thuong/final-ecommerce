@@ -54,8 +54,7 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="inStock"
-                class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800 hover:bg-neutral-100"
+              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-800 hover:bg-neutral-100"
                 v-model="tempFilters.inStock">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
             </label>
@@ -64,8 +63,7 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.promotion.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800"
-                v-model="tempFilters.onSale">
+              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-800" v-model="tempFilters.onSale">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly') }}</span>
             </label>
           </div>
