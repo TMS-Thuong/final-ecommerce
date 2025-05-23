@@ -1,5 +1,7 @@
 import { FastifySchema } from 'fastify';
 
+import { errorResponseSchema } from './error.schema';
+
 export const getCartSchema: FastifySchema = {
   description: 'Get user cart',
   tags: ['cart'],
@@ -122,6 +124,10 @@ export const addItemToCartSchema: FastifySchema = {
         },
       },
     },
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
   },
 };
 
@@ -202,6 +208,10 @@ export const updateCartItemSchema: FastifySchema = {
         },
       },
     },
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
   },
 };
 
@@ -267,5 +277,9 @@ export const deleteCartItemSchema: FastifySchema = {
         },
       },
     },
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    404: errorResponseSchema,
+    500: errorResponseSchema,
   },
 };

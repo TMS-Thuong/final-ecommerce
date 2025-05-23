@@ -13,7 +13,8 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.categories.title') }}</h3>
             <FilterDropdown v-model="tempFilters.categories" :options="categoryOptions"
-              :title="$t('product.filters.categories.title')" :loading="categoriesLoading" />
+              :title="$t('product.filters.categories.title')" :loading="categoriesLoading"
+              @change="handleFilterChange" />
           </div>
 
           <div class="mb-8">
@@ -27,39 +28,32 @@
               </div>
             </div>
             <div class="space-y-3">
-              <label
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.priceRange === '0-500000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('0-500000')"
-              >
+                @click="setPriceRange('0-500000')">
                 <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }} 500.000đ</span>
               </label>
-              <label
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.priceRange === '500000-1000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('500000-1000000')"
-              >
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 500.000đ - 1.000.000đ</span>
+                @click="setPriceRange('500000-1000000')">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 500.000đ -
+                  1.000.000đ</span>
               </label>
-              <label
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.priceRange === '1000000-2000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('1000000-2000000')"
-              >
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 1.000.000đ - 2.000.000đ</span>
+                @click="setPriceRange('1000000-2000000')">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 1.000.000đ -
+                  2.000.000đ</span>
               </label>
-              <label
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.priceRange === '2000000-5000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('2000000-5000000')"
-              >
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 2.000.000đ - 5.000.000đ</span>
+                @click="setPriceRange('2000000-5000000')">
+                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 2.000.000đ -
+                  5.000.000đ</span>
               </label>
-              <label
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.priceRange === '5000000-' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('5000000-')"
-              >
+                @click="setPriceRange('5000000-')">
                 <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }} 5.000.000đ</span>
               </label>
             </div>
@@ -68,19 +62,15 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.brands.title') }}</h3>
             <FilterDropdown v-model="tempFilters.brands" :options="brandOptions"
-              :title="$t('product.filters.brands.title')" :loading="brandsLoading" />
+              :title="$t('product.filters.brands.title')" :loading="brandsLoading" @change="handleFilterChange" />
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.rating.title') }}</h3>
             <div class="space-y-3">
-              <label
-                v-for="n in [5,4,3,2,1]"
-                :key="n"
-                class="flex items-center p-2 rounded-md cursor-pointer"
+              <label v-for="n in [5, 4, 3, 2, 1]" :key="n" class="flex items-center p-2 rounded-md cursor-pointer"
                 :class="tempFilters.rating === String(n) ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setRating(String(n))"
-              >
+                @click="setRating(String(n))">
                 <div class="flex items-center">
                   <StarRating :rating="n" :showCount="false" :readonly="true" />
                   <span class="ml-2 text-neutral-700 text-xl">and above</span>
@@ -92,7 +82,8 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800" v-model="tempFilters.inStock">
+              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800"
+                v-model="tempFilters.inStock">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
             </label>
           </div>
@@ -100,7 +91,8 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.promotion.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800" v-model="tempFilters.onSale">
+              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800"
+                v-model="tempFilters.onSale">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly') }}</span>
             </label>
           </div>
@@ -132,12 +124,14 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
-          <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
-            class="product-card h-full" />
+          <ProductCard v-for="product in products" :key="product.id" :product="product" class="product-card h-full" />
         </div>
 
-        <div v-if="loadingMore" class="mt-8 flex justify-center">
-          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-neutral-800"></div>
+        <div v-if="hasMorePages" class="mt-8 flex justify-center">
+          <div v-if="loadingMore" class="flex items-center gap-2 text-neutral-800">
+            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-neutral-800"></div>
+            <span class="text-lg">{{ $t('common.loading') }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -194,6 +188,7 @@ const filters = ref({
 const tempFilters = ref({ ...filters.value });
 const searchQuery = ref('');
 const sortOption = ref('newest');
+const isApplyingFilters = ref(false);
 
 const setPriceRange = (range) => {
   tempFilters.value.priceRange = range;
@@ -202,6 +197,12 @@ const setPriceRange = (range) => {
 
 const setRating = (rating) => {
   tempFilters.value.rating = rating;
+};
+
+const applyFilters = () => {
+  filters.value = { ...tempFilters.value };
+  currentPage.value = 1;
+  loadProducts();
 };
 
 const resetFilters = () => {
@@ -214,66 +215,8 @@ const resetFilters = () => {
     inStock: false,
     onSale: false,
   };
-  filters.value = { ...tempFilters.value };
-  currentPage.value = 1;
-  debouncedLoadProducts();
+  applyFilters();
 };
-
-const applyFilters = () => {
-  filters.value = { ...tempFilters.value };
-  currentPage.value = 1;
-  debouncedLoadProducts();
-};
-
-const filteredProducts = computed(() => {
-  let result = [...products.value];
-
-  if (filters.value.rating) {
-    const minRating = Number(filters.value.rating);
-    result = result.filter(product => product.averageRating >= minRating);
-  }
-
-  if (filters.value.inStock) {
-    result = result.filter(product => product.stockQuantity > 0);
-  }
-
-  if (filters.value.onSale) {
-    result = result.filter(product => product.salePrice != null && product.salePrice > 0);
-  }
-
-  if (filters.value.categories.length > 0) {
-    result = result.filter(product => filters.value.categories.includes(String(product.categoryId)));
-  }
-
-  if (filters.value.brands.length > 0) {
-    result = result.filter(product => filters.value.brands.includes(String(product.brandId)));
-  }
-
-  if (filters.value.priceRange) {
-    const [min, max] = filters.value.priceRange.split('-').map(Number);
-    result = result.filter(product => {
-      const price = product.salePrice || product.basePrice;
-      return price >= min && (max === 0 || isNaN(max) || price <= max);
-    });
-  } else if (filters.value.maxPrice > 0) {
-    result = result.filter(product => {
-      const price = product.salePrice || product.basePrice;
-      return price <= filters.value.maxPrice;
-    });
-  }
-
-  switch (sortOption.value) {
-    case 'priceAsc':
-      return result.sort((a, b) => (a.salePrice || a.basePrice) - (b.salePrice || b.basePrice));
-    case 'priceDesc':
-      return result.sort((a, b) => (b.salePrice || b.basePrice) - (a.salePrice || a.basePrice));
-    case 'rating':
-      return result.sort((a, b) => b.averageRating - a.averageRating);
-    case 'newest':
-    default:
-      return result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
-});
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -326,15 +269,36 @@ const loadBrands = async () => {
   }
 };
 
+const loadMore = () => {
+  if (loadingMore.value || !hasMorePages.value) return;
+  currentPage.value++;
+  loadProducts(currentPage.value);
+};
+
+const handleScroll = () => {
+  if (loadingMore.value || !hasMorePages.value) return;
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const documentHeight = document.documentElement.scrollHeight;
+
+  if (documentHeight - scrollPosition < 100) {
+    loadMore();
+  }
+};
+
+const handleFilterChange = () => {
+  // Debounce the filter change to avoid too many API calls
+  debouncedLoadProducts();
+};
+
 const loadProducts = async (page = 1) => {
+  if (loading.value || loadingMore.value) return;
   if (page === 1) {
     loading.value = true;
   } else {
     loadingMore.value = true;
   }
-
   error.value = '';
-
   try {
     let minPrice, maxPrice;
     if (filters.value.priceRange) {
@@ -344,7 +308,6 @@ const loadProducts = async (page = 1) => {
     } else if (filters.value.maxPrice > 0) {
       maxPrice = filters.value.maxPrice;
     }
-
     const response = await productApi.getProducts({
       page,
       pageSize,
@@ -355,22 +318,16 @@ const loadProducts = async (page = 1) => {
       brandId: getBrandId(),
       stockStatus: filters.value.inStock ? 'inStock' : undefined,
       averageRating: filters.value.rating ? Number(filters.value.rating) : undefined,
+      onSale: filters.value.onSale ? true : undefined,
     });
-
     const newProducts = response?.data || [];
-
     if (page === 1) {
       products.value = newProducts;
     } else {
       products.value = [...products.value, ...newProducts];
     }
-
     totalProducts.value = response?.total ?? products.value.length;
     hasMorePages.value = newProducts.length === pageSize;
-
-    nextTick(() => {
-      setupIntersectionObserver();
-    });
   } catch (err) {
     error.value = t('product.error.loadFailed');
     console.error('Error loading products:', err);
@@ -385,65 +342,10 @@ const debouncedLoadProducts = debounce(() => {
   loadProducts();
 }, 300);
 
-const debouncedLoadMore = debounce(() => {
-  if (loadingMore.value) return;
-  currentPage.value++;
-  loadProducts(currentPage.value);
-}, 500);
-
-const setupIntersectionObserver = () => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
-
-  if (!hasMorePages.value || loading.value || loadingMore.value || products.value.length === 0) {
-    lastProductRef.value = null;
-    return;
-  }
-
-  const productElements = document.querySelectorAll('.product-card');
-  if (productElements.length === 0) {
-    lastProductRef.value = null;
-    return;
-  }
-
-  lastProductRef.value = productElements[productElements.length - 1];
-
-  observer.value = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && hasMorePages.value && !loading.value && !loadingMore.value) {
-        debouncedLoadMore();
-      }
-    },
-    { rootMargin: '0px 0px 200px 0px', threshold: 0.1 }
-  );
-
-  if (lastProductRef.value) {
-    observer.value.observe(lastProductRef.value);
-  }
-};
-
-watch(() => tempFilters.value.maxPrice, () => {
-  debouncedLoadProducts();
-});
-
-watch(() => tempFilters.value.categories, () => {
-  filters.value.categories = [...tempFilters.value.categories];
+watch(sortOption, () => {
   currentPage.value = 1;
-  applyFilters();
+  loadProducts();
 });
-
-watch(() => tempFilters.value.brands, () => {
-  filters.value.brands = [...tempFilters.value.brands];
-  currentPage.value = 1;
-  applyFilters();
-});
-
-watch([() => filters.value.categories, () => filters.value.brands, () => filters.value.priceRange, () => filters.value.rating, () => filters.value.inStock, () => filters.value.onSale, sortOption], () => {
-  if (filters.value.maxPrice) return;
-  currentPage.value = 1;
-  debouncedLoadProducts();
-}, { deep: true });
 
 onMounted(() => {
   if (route.query.searchQuery) {
@@ -452,12 +354,11 @@ onMounted(() => {
 
   loadCategories();
   loadBrands();
-  debouncedLoadProducts();
+  loadProducts();
+  window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
-  if (observer.value) {
-    observer.value.disconnect();
-  }
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>

@@ -1,18 +1,12 @@
 <template>
   <div class="flex items-center">
     <div class="flex items-center">
-      <span v-for="i in 5" :key="i" :class="[
-          'mr-1', 
-          { 
-            'cursor-pointer': !readonly,
-            'cursor-default': readonly
-          }
-        ]"
+      <span v-for="i in 5" :key="i" :class="['mr-1', { 'cursor-pointer': !readonly, 'cursor-default': readonly }]"
         @click="!readonly && $emit('update:rating', i)">
-        <StarIcon :size="size" :filled="i <= Math.round(rating)" :color="i <= Math.round(rating) ? 'rgb(234 179 8)' : 'rgb(209 213 219)'" />
+        <StarIcon :size="size" :filled="i <= Math.floor(rating)" :half="i === Math.ceil(rating) && (rating % 1) >= 0.5"
+          :color="i <= Math.floor(rating) || (i === Math.ceil(rating) && (rating % 1) >= 0.5) ? 'rgb(234 179 8)' : 'rgb(209 213 219)'" />
       </span>
     </div>
-    <span v-if="showCount" class="ml-1 text-lg text-neutral-600">({{ count }})</span>
   </div>
 </template>
 

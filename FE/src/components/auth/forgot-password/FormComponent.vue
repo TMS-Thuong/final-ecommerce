@@ -9,28 +9,23 @@
           placeholder="name@example.com" type="email" :error="errors.email" @input="onClearError('email')"
           class="w-full" />
         <div class="relative">
-          <SubmitButton
-            :text="$t('auth.forgotPassword.submitButton')"
-            :disabled="isLoading"
+          <SubmitButton :text="$t('auth.forgotPassword.submitButton')" :disabled="isSubmitting"
             class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
-            <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+            <LoadingSpinner v-if="isSubmitting" class="absolute inset-0 flex justify-center items-center" />
           </SubmitButton>
-        </div>  
+        </div>
         <div class="relative">
-          <SubmitButton
-            :text="$t('auth.forgotPassword.cancelButton')"
-            :disabled="isLoading"
-            type="button"
+          <SubmitButton :text="$t('auth.forgotPassword.cancelButton')" :disabled="isCancelling" type="button"
             class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
             @click="onCancel">
-            <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
+            <LoadingSpinner v-if="isCancelling" class="absolute inset-0 flex justify-center items-center" />
           </SubmitButton>
-        </div>          
+        </div>
       </form>
     </div>
 
     <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
-      <BoxText :text="$t('auth.register.title')" :disabled="isLoading" @click="onRegister" />
+      <BoxText :text="$t('auth.register.title')" :disabled="isSubmitting" @click="onRegister" />
       <div class="flex justify-center">
         <ImagePlaceholder :src="imageSrc" alt="Description of image" />
       </div>
@@ -61,7 +56,8 @@ const { showToast, toastType, toastMessage, toastMessageStore } = useToast()
 
 const formData = ref({ email: '' })
 const errors = ref<{ [key: string]: string }>({})
-const isLoading = ref(false)
+const isSubmitting = ref(false)
+const isCancelling = ref(false)
 const errorMessage = ref<string | null>(null)
 const imageSrc = new URL('@/assets/nen.jpg', import.meta.url).href
 
@@ -78,12 +74,14 @@ const onRegister = () => {
 }
 
 const onCancel = () => {
+  if (isCancelling.value) return
+  isCancelling.value = true
   router.push({ name: AuthRouterEnum.Login })
 }
 
 const onForgotPW = async (event: Event) => {
   event.preventDefault()
-  if (isLoading.value) return
+  if (isSubmitting.value) return
 
   const validationResult = forgotPasswordSchema.safeParse(formData.value)
   if (!validationResult.success) {
@@ -95,7 +93,7 @@ const onForgotPW = async (event: Event) => {
   }
 
   try {
-    isLoading.value = true
+    isSubmitting.value = true
     const response = await authApi.forgotPassword(formData.value.email)
 
     showToast(ToastEnum.Success, t('success.resetEmailSent'))
@@ -114,7 +112,7 @@ const onForgotPW = async (event: Event) => {
 
     showToast(ToastEnum.Error, errorMessage.value)
   } finally {
-    isLoading.value = false
+    isSubmitting.value = false
   }
 }
 </script>

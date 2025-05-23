@@ -1,23 +1,23 @@
 <template>
   <router-link :to="`/products/${product.id}`" class="block">
     <div class="product-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
+      <div
+        class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2 filter blur-[1.5px]': product.stockQuantity === 0 ">
+        <div v-if="discountPercent > 0"
+          class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
+          -{{ discountPercent }}%
+        </div>
+
+        <div v-if="isNewProduct"
+          :class="['absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 ? 'top-10' : 'top-1']">
+          {{ $t('product.new') }}
+        </div>
         <div :class="{ 'filter blur-[1.5px]': product.stockQuantity === 0 }" class="relative h-full w-full">
           <div class="h-full w-full flex items-center justify-center">
             <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
               loading="lazy" />
             <ProductIcon v-else size="10" class="text-gray-400" />
           </div>
-          <div v-if="discountPercent > 0"
-            class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
-            -{{ discountPercent }}%
-          </div>
-
-          <div v-if="isNewProduct"
-            :class="['absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 ? 'top-10' : 'top-1']">
-            {{ $t('product.new') }}
-          </div>
-
           <div v-if="isBestSeller"
             :class="['absolute left-2 bg-yellow-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 && isNewProduct ? 'top-14' : discountPercent > 0 ? 'top-10' : isNewProduct ? 'top-10' : 'top-1']">
             {{ $t('product.bestSeller') }}
@@ -41,8 +41,12 @@
             formatPrice(product.basePrice) }}</span>
         </div>
 
-        <div class="mt-2">
-          <StarRating :rating="product.averageRating" :count="product.ratingCount" :readonly="true" />
+        <div class="mt-2 flex items-center">
+          <StarRating :size="6" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
+            :readonly="true" />
+          <span class="ml-2 text-neutral-600 text-xl">
+            {{ Math.round(product.averageRating || 0) }}
+          </span>
         </div>
 
         <div class="mt-2">
@@ -97,6 +101,10 @@ const isNewProduct = computed(() => {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
   return createdDate >= thirtyDaysAgo
+})
+
+const isBestSeller = computed(() => {
+  return props.product.isBestSeller === true
 })
 
 const formatPrice = (price) => {

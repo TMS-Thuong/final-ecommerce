@@ -1,30 +1,21 @@
 <template>
   <div class="relative" ref="dropdownRef">
-    <div
-      @click="toggleDropdown"
-      class="flex items-center justify-between w-full p-3 text-left border border-neutral-300 rounded-lg bg-white cursor-pointer hover:border-neutral-400 focus:outline-none"
-    >
+    <div @click="toggleDropdown"
+      class="flex items-center justify-between w-full p-3 text-left border border-neutral-300 rounded-lg bg-white cursor-pointer hover:border-neutral-400 focus:outline-none">
       <div class="text-lg text-neutral-700 truncate">
         <span v-if="selectedItems.length === 1">
           {{ selectedItems[0].label }}
         </span>
         <span v-else>{{ placeholder || `Select ${title}` }}</span>
       </div>
-      <svg
-        :class="[isOpen ? 'transform rotate-180' : '', 'w-5 h-5 text-neutral-500']"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg :class="[isOpen ? 'transform rotate-180' : '', 'w-5 h-5 text-neutral-500']" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
     </div>
 
-    <div
-      v-if="isOpen"
-      class="absolute z-50 mt-1 w-full bg-white border border-neutral-200 rounded-md shadow-lg py-1 max-h-60 overflow-auto"
-    >
+    <div v-if="isOpen"
+      class="absolute z-50 mt-1 w-full bg-white border border-neutral-200 rounded-md shadow-lg py-1 max-h-60 overflow-auto">
       <div v-if="loading" class="flex justify-center items-center p-4">
         <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-neutral-800"></div>
       </div>
@@ -32,18 +23,15 @@
         No options available
       </div>
       <template v-else>
-        <div
-          v-for="option in options"
-          :key="option.value"
+        <div v-for="option in options" :key="option.value"
           :class="['px-4 py-2 cursor-pointer', isSelected(option.value) ? 'bg-neutral-100 font-semibold text-neutral-900' : 'hover:bg-neutral-100']"
-          @click="toggleOption(option.value)"
-        >
-          <div class="flex justify-between w-full items-center">
-            <div class="flex items-center">
-              <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-6 h-6 mr-2 object-contain" />
+          @click="toggleOption(option.value)">
+            <div class="flex justify-between w-full items-center">
+              <div class="flex items-center">
+                <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-6 h-6 mr-2 object-contain" />
               <span class="text-neutral-700" style="text-transform: uppercase;">{{ option.label }}</span>
-            </div>
-            <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
+              </div>
+              <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
           </div>
         </div>
       </template>
@@ -77,7 +65,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'change'])
 
 const isOpen = ref(false)
 const dropdownRef = ref(null)
@@ -89,22 +77,17 @@ const selectedItems = computed(() => {
 
 watch(() => props.modelValue, (newVal) => {
   selectedValues.value = [...newVal]
-})
-
-watch(selectedValues, (newVal) => {
-  emit('update:modelValue', newVal)
-})
+}, { deep: true })
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
 const toggleOption = (value) => {
-  if (!isSelected(value)) {
-    selectedValues.value = [value];
-  } else {
-    selectedValues.value = [];
-  }
+  const newValue = !isSelected(value) ? [value] : [];
+  selectedValues.value = newValue;
+  emit('update:modelValue', newValue);
+  emit('change', newValue);
   isOpen.value = false;
 }
 

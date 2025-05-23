@@ -48,6 +48,9 @@ export const getCategoriesSchema: FastifySchema = {
   tags: ['Category'],
   response: {
     200: successResponseSchema,
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    404: errorResponseSchema,
     500: errorResponseSchema,
   },
 };
@@ -64,6 +67,9 @@ export const getCategoryByIdSchema: FastifySchema = {
   },
   response: {
     200: successResponseSchemaWithCategory,
+    400: errorResponseSchema,
+    401: errorResponseSchema,
+    404: errorResponseSchema,
     500: errorResponseSchema,
   },
 };
