@@ -1,48 +1,57 @@
 <template>
   <router-link :to="`/products/${product.id}`" class="block">
     <div class="product-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div
-        class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2 filter blur-[1.5px]': product.stockQuantity === 0 ">
-        <div v-if="discountPercent > 0"
-          class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
-          -{{ discountPercent }}%
-        </div>
-
-        <div v-if="isNewProduct"
-          :class="['absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 ? 'top-10' : 'top-1']">
-          {{ $t('product.new') }}
-        </div>
-        <div :class="{ 'filter blur-[1.5px]': product.stockQuantity === 0 }" class="relative h-full w-full">
-          <div class="h-full w-full flex items-center justify-center">
-            <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
-              loading="lazy" />
-            <ProductIcon v-else size="10" class="text-gray-400" />
+      <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
+        <div :class="{ 'filter blur-[1px]': product.stockQuantity === 0 }" class="w-full h-full relative">
+          <div v-if="discountPercent > 0"
+            class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
+            -{{ discountPercent }}%
           </div>
-          <div v-if="isBestSeller"
-            :class="['absolute left-2 bg-yellow-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center', discountPercent > 0 && isNewProduct ? 'top-14' : discountPercent > 0 ? 'top-10' : isNewProduct ? 'top-10' : 'top-1']">
-            {{ $t('product.bestSeller') }}
+
+          <div v-if="isNewProduct" :class="[
+            'absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center',
+            discountPercent > 0 ? 'top-10' : 'top-1'
+          ]">
+            {{ $t('product.new') }}
+          </div>
+
+          <div class="w-full h-full relative">
+            <div class="h-full w-full flex items-center justify-center">
+              <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
+                loading="lazy" />
+              <ProductIcon v-else size="10" class="text-gray-400" />
+            </div>
+
+            <div v-if="isBestSeller" :class="[
+              'absolute left-2 bg-yellow-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center',
+              discountPercent > 0 && isNewProduct ? 'top-14' :
+                discountPercent > 0 ? 'top-10' :
+                  isNewProduct ? 'top-10' : 'top-1'
+            ]">
+              {{ $t('product.bestSeller') }}
+            </div>
           </div>
         </div>
-
-        <div v-if="product.stockQuantity === 0" class="absolute inset-0 flex items-center justify-center">
-          <span class="bg-white text-red-600 text-base font-bold px-4 py-2 rounded-full border-2 border-red-500 z-20">
+        <div v-if="product.stockQuantity === 0"
+          class="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+          <span
+            class="bg-gray-50 text-red-600 text-base font-bold px-4 py-2 rounded-full border-2 border-red-500 shadow-md">
             {{ $t('product.soldOut') }}
           </span>
         </div>
       </div>
       <div class="p-4">
         <h3 class="text-xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
-
         <div class="mt-1 flex items-center">
-          <span class="text-xl font-bold text-red-500">{{
+          <span class="text-2xl font-bold text-red-500">{{
             formatPrice(product.salePrice || product.basePrice)
           }}</span>
-          <span v-if="product.salePrice" class="ml-2 text-base text-gray-500 line-through">{{
+          <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{
             formatPrice(product.basePrice) }}</span>
         </div>
 
         <div class="mt-2 flex items-center">
-          <StarRating :size="6" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
+          <StarRating :size="'6'" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
             :readonly="true" />
           <span class="ml-2 text-neutral-600 text-xl">
             {{ Math.round(product.averageRating || 0) }}

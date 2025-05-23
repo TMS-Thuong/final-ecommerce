@@ -1,5 +1,5 @@
 <template>
-  <div class="py-8 bg-gray-50 w-full">
+  <div class="py-8 bg-while w-full">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/5">
         <div class="bg-white p-6 rounded-lg shadow mb-6">
@@ -19,42 +19,14 @@
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.priceRange.title') }}</h3>
-            <div class="mb-4">
-              <input type="range" min="0" max="5000000" step="10000" v-model="tempFilters.maxPrice"
-                class="w-full h-1 bg-neutral-300 rounded-lg appearance-none cursor-pointer accent-neutral-600 outline-none border-none" />
-              <div class="flex justify-between text-neutral-600 text-xl mt-2">
-                <span>0 đ</span>
-                <span>{{ formatPrice(tempFilters.maxPrice) }}</span>
-              </div>
-            </div>
             <div class="space-y-3">
-              <label class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === '0-500000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('0-500000')">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.under') }} 500.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === '500000-1000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('500000-1000000')">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 500.000đ -
-                  1.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === '1000000-2000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('1000000-2000000')">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 1.000.000đ -
-                  2.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === '2000000-5000000' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('2000000-5000000')">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.between') }} 2.000.000đ -
-                  5.000.000đ</span>
-              </label>
-              <label class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === '5000000-' ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
-                @click="setPriceRange('5000000-')">
-                <span class="text-neutral-700 text-xl">{{ $t('product.filters.priceRange.above') }} 5.000.000đ</span>
+              <label v-for="range in priceRanges" :key="range.value"
+                class="flex items-center p-2 rounded-md cursor-pointer"
+                :class="tempFilters.priceRange === range.value ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                @click="setPriceRange(range.value)">
+                <span class="text-neutral-700 text-xl">
+                  {{ $t(range.label) }} {{ range.display }}
+                </span>
               </label>
             </div>
           </div>
@@ -82,7 +54,8 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800"
+              <input type="checkbox" id="inStock"
+                class="mr-3 w-4 h-4 accent-neutral-800 border-neutral-800 hover:bg-neutral-100"
                 v-model="tempFilters.inStock">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
             </label>
@@ -124,7 +97,8 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
-          <ProductCard v-for="product in products" :key="product.id" :product="product" class="product-card h-full" />
+          <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
+            class="product-card h-full" />
         </div>
 
         <div v-if="hasMorePages" class="mt-8 flex justify-center">
@@ -189,6 +163,30 @@ const tempFilters = ref({ ...filters.value });
 const searchQuery = ref('');
 const sortOption = ref('newest');
 const isApplyingFilters = ref(false);
+
+const filteredProducts = computed(() => {
+  const sortedProducts = [...products.value];
+
+  switch (sortOption.value) {
+    case 'priceAsc':
+      return sortedProducts.sort((a, b) => a.price - b.price);
+    case 'priceDesc':
+      return sortedProducts.sort((a, b) => b.price - a.price);
+    case 'rating':
+      return sortedProducts.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+    case 'newest':
+    default:
+      return sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+});
+
+const priceRanges = [
+  { value: '0-500000', label: 'product.filters.priceRange.under', display: '500.000đ' },
+  { value: '500000-1000000', label: 'product.filters.priceRange.between', display: '500.000đ - 1.000.000đ' },
+  { value: '1000000-2000000', label: 'product.filters.priceRange.between', display: '1.000.000đ - 2.000.000đ' },
+  { value: '2000000-5000000', label: 'product.filters.priceRange.between', display: '2.000.000đ - 5.000.000đ' },
+  { value: '5000000-', label: 'product.filters.priceRange.above', display: '5.000.000đ' }
+];
 
 const setPriceRange = (range) => {
   tempFilters.value.priceRange = range;
