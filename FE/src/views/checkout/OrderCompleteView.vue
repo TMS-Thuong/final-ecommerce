@@ -182,19 +182,19 @@
 
         <div class="flex flex-col gap-3 md:flex-row sm:justify-between items-center sm:items-stretch gap-3 mt-8">
           <router-link to="/account/orders"
-            class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mb-2 sm:mb-0">
+            class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-lg font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mb-2 sm:mb-0">
             {{ $t('checkout.viewOrders') }}
           </router-link>
 
           <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:gap-4 sm:items-stretch items-center">
             <button v-if="canCancel" @click="confirmCancelOrder"
-              class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-red-300 rounded-md shadow-sm text-base font-medium text-red-700 bg-white hover:bg-red-50"
+              class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-red-300 rounded-md shadow-sm text-lg font-medium text-red-700 bg-white hover:bg-red-50"
               :disabled="isCancelling">
               <span v-if="isCancelling">{{ $t('common.loading') }}</span>
               <span v-else>{{ $t('orders.cancelOrder') }}</span>
             </button>
             <router-link to="/products"
-              class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-neutral-800 hover:bg-neutral-900">
+              class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-neutral-800 hover:bg-neutral-900">
               {{ $t('cart.continueShopping') }}
             </router-link>
           </div>

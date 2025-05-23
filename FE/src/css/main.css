@@ -18,3 +18,9 @@ html {
 .some-element {
   font-size: 1.2rem;
 }
+
+.prose p, .prose p + p {
+  /* text-indent: 2em !important; */
+  margin-bottom: 1.5em !important;
+  margin-top: 0 !important;
+}

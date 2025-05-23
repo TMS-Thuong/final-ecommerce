@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center">
         <button @click="inBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
-          <BackIcon size="8" />
+          <BackIcon size="6" />
         </button>
         <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.title') }}</h1>
       </div>

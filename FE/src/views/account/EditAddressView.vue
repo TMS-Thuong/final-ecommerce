@@ -2,10 +2,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center mb-6">
       <button @click="goBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-        </svg>
+        <BackIcon size="6"/>
       </button>
       <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.edit') }}</h1>
     </div>
@@ -17,7 +14,7 @@
     <div v-else-if="loadError" class="bg-white rounded-lg shadow-sm p-8 text-center">
       <p class="text-red-500">{{ loadError }}</p>
       <button @click="goBack"
-        class="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+        class="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50">
         {{ $t('address.cancel') }}
       </button>
     </div>
@@ -26,86 +23,86 @@
       <form @submit.prevent="saveAddress">
         <div class="space-y-4">
           <div>
-            <label for="recipientName" class="block text-sm font-medium text-gray-700">{{ $t('address.fullName') }}
+            <label for="recipientName" class="block text-lg font-medium text-gray-700">{{ $t('address.fullName') }}
               *</label>
             <input type="text" id="recipientName" v-model="form.recipientName"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 text-lg block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.recipientName }" required>
-            <p v-if="errors.recipientName" class="mt-1 text-sm text-red-600">{{ errors.recipientName }}</p>
+            <p v-if="errors.recipientName" class="mt-1 text-lg text-red-600">{{ errors.recipientName }}</p>
           </div>
 
           <div>
-            <label for="phoneNumber" class="block text-sm font-medium text-gray-700">{{ $t('address.phone') }} *</label>
+            <label for="phoneNumber" class="block text-lg font-medium text-gray-700">{{ $t('address.phone') }} *</label>
             <input type="tel" id="phoneNumber" v-model="form.phoneNumber"
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.phoneNumber }" required>
-            <p v-if="errors.phoneNumber" class="mt-1 text-sm text-red-600">{{ errors.phoneNumber }}</p>
+            <p v-if="errors.phoneNumber" class="mt-1 text-lg text-red-600">{{ errors.phoneNumber }}</p>
           </div>
 
           <div>
-            <label for="province" class="block text-sm font-medium text-gray-700">{{ $t('address.province') }} *</label>
+            <label for="province" class="block text-lg font-medium text-gray-700">{{ $t('address.province') }} *</label>
             <select id="province" v-model="form.province"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 text-lg block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.province }" required>
               <option value="" disabled>{{ $t('address.selectProvince') }}</option>
               <option v-for="province in provinces" :key="province.code" :value="province.name">
                 {{ province.name }}
               </option>
             </select>
-            <p v-if="errors.province" class="mt-1 text-sm text-red-600">{{ errors.province }}</p>
+            <p v-if="errors.province" class="mt-1 text-lg text-red-600">{{ errors.province }}</p>
           </div>
 
           <div>
-            <label for="district" class="block text-sm font-medium text-gray-700">{{ $t('address.district') }} *</label>
+            <label for="district" class="block text-lg font-medium text-gray-700">{{ $t('address.district') }} *</label>
             <select id="district" v-model="form.district"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 text-lg block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.district }" required>
               <option value="" disabled>{{ $t('address.selectDistrict') }}</option>
               <option v-for="district in districts" :key="district.code" :value="district.name">
                 {{ district.name }}
               </option>
             </select>
-            <p v-if="errors.district" class="mt-1 text-sm text-red-600">{{ errors.district }}</p>
+            <p v-if="errors.district" class="mt-1 text-lg text-red-600">{{ errors.district }}</p>
           </div>
 
           <div>
-            <label for="ward" class="block text-sm font-medium text-gray-700">{{ $t('address.ward') }} *</label>
+            <label for="ward" class="block text-lg font-medium text-gray-700">{{ $t('address.ward') }} *</label>
             <select id="ward" v-model="form.ward"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 text-lg block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.ward }" required>
               <option value="" disabled>{{ $t('address.selectWard') }}</option>
               <option v-for="ward in wards" :key="ward.code" :value="ward.name">
                 {{ ward.name }}
               </option>
             </select>
-            <p v-if="errors.ward" class="mt-1 text-sm text-red-600">{{ errors.ward }}</p>
+            <p v-if="errors.ward" class="mt-1 text-lg text-red-600">{{ errors.ward }}</p>
           </div>
 
           <div>
-            <label for="streetAddress" class="block text-sm font-medium text-gray-700">{{ $t('address.streetAddress') }}
+            <label for="streetAddress" class="block text-lg font-medium text-gray-700">{{ $t('address.streetAddress') }}
               *</label>
             <textarea id="streetAddress" v-model="form.streetAddress" rows="2"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 text-lg block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :class="{ 'border-red-500': errors.streetAddress }" required></textarea>
-            <p v-if="errors.streetAddress" class="mt-1 text-sm text-red-600">{{ errors.streetAddress }}</p>
+            <p v-if="errors.streetAddress" class="mt-1 text-lg text-red-600">{{ errors.streetAddress }}</p>
           </div>
 
           <div class="flex items-center">
             <input id="isDefaultShipping" type="checkbox" v-model="form.isDefaultShipping"
-              class="h-4 w-4 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded">
-            <label for="isDefaultShipping" class="ml-2 block text-sm text-gray-900">{{ $t('address.setAsDefault')
+              class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded">
+            <label for="isDefaultShipping" class="ml-2 block text-lg text-gray-900">{{ $t('address.setAsDefault')
               }}</label>
           </div>
         </div>
 
         <div class="mt-6 flex justify-end">
           <button type="button"
-            class="mr-3 inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:w-auto sm:text-sm"
+            class="mr-3 inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:w-auto sm:text-lg"
             @click="goBack">
             {{ $t('address.cancel') }}
           </button>
           <button type="submit"
-            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-neutral-800 text-base font-medium text-white hover:bg-neutral-700 focus:outline-none sm:w-auto sm:text-sm"
+            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-neutral-800 text-base font-medium text-white hover:bg-neutral-700 focus:outline-none sm:w-auto sm:text-lg"
             :disabled="isSubmitting">
             <span v-if="isSubmitting" class="mr-2">
               <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -143,6 +140,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { RouterEnum } from '@/enums/router';
 import provinceApi from '@/api/province';
 import type { Province, District, Ward } from '@/api/province';
+import BackIcon from '@/components/icons/BackIcon.vue';
 
 const { t } = useI18n();
 const { showToast } = useToast();
