@@ -394,7 +394,7 @@ const messages = {
           status: "Status"
         },
         brand: "Brand",
-        sku:  "SKU",
+        sku: "SKU",
         category: "Category",
         quantity: "Quantity",
         addToCart: "Add to Cart",
@@ -421,8 +421,17 @@ const messages = {
       profile: "My Profile",
       logout: "Logout",
       logoutSuccess: "Logged out successfully",
-      profileComingSoon: "Profile feature coming soon",
       myOrders: "My Orders",
+      edit: "Edit",
+      avatar: "Avatar",
+      changePassword: "Change Password",
+      noAvatar: "No avatar",
+      firstName: "First name",
+      lastName: "Last name",
+      email: "Email",
+      gender: "Gender",
+      birthDate: "Birth date",
+      phoneNumber: "Phone number",
     },
   }
 }

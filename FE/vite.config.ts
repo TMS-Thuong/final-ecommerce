@@ -20,6 +20,9 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['8e18-117-3-39-237.ngrok-free.app']
+    allowedHosts: ['8e18-117-3-39-237.ngrok-free.app'],
+    proxy: {
+      '/users': 'http://localhost:3000'
+    }
   }
 })

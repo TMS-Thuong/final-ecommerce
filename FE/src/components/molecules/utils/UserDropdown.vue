@@ -82,12 +82,11 @@ const inSignUp = () => {
 const inLogout = () => {
   dropdownVisible.value = false
   authStore.logout(router)
-  
   showToast(ToastEnum.Success, t('account.logoutSuccess'))
 }
 
 const inProfile = () => {
+  router.push({ name: RouterEnum.Profile })
   dropdownVisible.value = false
-  showToast(ToastEnum.Info, t('account.profileComingSoon'))
 }
 </script>
