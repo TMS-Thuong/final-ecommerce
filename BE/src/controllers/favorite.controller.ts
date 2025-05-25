@@ -60,7 +60,13 @@ class FavoriteController {
   async removeFromFavorites(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply): Promise<void> {
     try {
       const userId = request.user.userId;
-      const validationResult = FavoriteItemIdZodSchema.safeParse({ id: parseInt(request.params.id) });
+      const id = parseInt(request.params.id);
+
+      if (isNaN(id)) {
+        return reply.badRequest(FavoriteErrorMessages.INVALID_FAVORITE_ITEM_ID, 'INVALID_FAVORITE_ITEM_ID');
+      }
+
+      const validationResult = FavoriteItemIdZodSchema.safeParse({ id });
 
       if (!validationResult.success) {
         return reply.badRequest(
@@ -69,8 +75,8 @@ class FavoriteController {
         );
       }
 
-      const { id } = validationResult.data;
-      const removeResult = await this.favoriteService.removeFromFavorites(userId, id);
+      const { id: parsedId } = validationResult.data;
+      const removeResult = await this.favoriteService.removeFromFavorites(userId, parsedId);
 
       return reply.ok(removeResult);
     } catch (error) {

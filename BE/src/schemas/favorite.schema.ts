@@ -98,7 +98,7 @@ export const removeFromFavoritesSchema: FastifySchema = {
     type: 'object',
     required: ['id'],
     properties: {
-      id: { type: 'string' },
+      id: { type: 'integer' },
     },
   },
   response: {

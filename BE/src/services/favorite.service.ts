@@ -149,22 +149,12 @@ export class FavoriteService {
       }
 
       // Tìm kiếm theo ID của mục yêu thích
-      let favoriteItem = await prisma.favoriteItem.findFirst({
+      const favoriteItem = await prisma.favoriteItem.findFirst({
         where: {
           id: id,
           favoriteId: favorite.id,
         },
       });
-
-      // Nếu không tìm thấy, thử tìm theo ID sản phẩm
-      if (!favoriteItem) {
-        favoriteItem = await prisma.favoriteItem.findFirst({
-          where: {
-            productId: id,
-            favoriteId: favorite.id,
-          },
-        });
-      }
 
       if (!favoriteItem) {
         throw new Error('Product not found in wishlist');
