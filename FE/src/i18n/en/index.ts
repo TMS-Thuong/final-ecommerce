@@ -432,6 +432,14 @@ const messages = {
       gender: "Gender",
       birthDate: "Birth date",
       phoneNumber: "Phone number",
+      save: "Save",
+      cancel: "Cancel",
+      password: "Password",
+      newPassword: "New password",
+      confirmPassword: "Confirm password",
+      updatePassword: "Update password",
+      updatePasswordSuccess: "Password updated successfully",
+      chooseFile: "Choose file",
     },
   }
 }
