@@ -1,33 +1,33 @@
 <template>
     <form @submit.prevent="onSubmit" class="flex flex-col gap-4 max-w-lg mx-auto">
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('account.currentPassword') }}</label>
+            <label class="block text-xl font-medium text-gray-700 mb-1">{{ $t('account.currentPassword') }}</label>
             <PasswordInputComponent id="currentPassword" v-model="form.currentPassword"
                 :placeholder="$t('account.currentPasswordPlaceholder')" :error="normalizedErrors.currentPassword"
                 required />
-            <p v-if="normalizedErrors.currentPassword" class="text-red-500 text-sm mt-1">{{
+            <p v-if="normalizedErrors.currentPassword" class="text-red-500 text-xl mt-1">{{
                 normalizedErrors.currentPassword }}</p>
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('account.newPassword') }}</label>
+            <label class="block text-xl font-medium text-gray-700 mb-1">{{ $t('account.newPassword') }}</label>
             <PasswordInputComponent id="newPassword" v-model="form.newPassword"
                 :placeholder="$t('account.newPasswordPlaceholder')" :error="normalizedErrors.newPassword" required />
-            <p v-if="normalizedErrors.newPassword" class="text-red-500 text-sm mt-1">{{ normalizedErrors.newPassword }}
+            <p v-if="normalizedErrors.newPassword" class="text-red-500 text-xl mt-1">{{ normalizedErrors.newPassword }}
             </p>
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('account.confirmNewPassword') }}</label>
+            <label class="block text-xl font-medium text-gray-700 mb-1">{{ $t('account.confirmNewPassword') }}</label>
             <PasswordInputComponent id="confirmPassword" v-model="form.confirmPassword"
                 :placeholder="$t('account.confirmNewPasswordPlaceholder')" :error="normalizedErrors.confirmPassword"
                 required />
-            <p v-if="normalizedErrors.confirmPassword" class="text-red-500 text-sm mt-1">{{
+            <p v-if="normalizedErrors.confirmPassword" class="text-red-500 text-xl mt-1">{{
                 normalizedErrors.confirmPassword }}</p>
         </div>
         <div class="flex gap-4 mt-4">
-            <button type="submit" class="flex-1 bg-neutral-700 text-white py-2 rounded font-semibold">
+            <button type="submit" class="flex-1 bg-neutral-700 text-white py-2 rounded">
                 {{ $t('account.changePassword') }}
             </button>
-            <button type="button" class="flex-1 border border-neutral-400 py-2 rounded font-semibold"
+            <button type="button" class="flex-1 border border-neutral-400 py-2 rounded"
                 @click="$emit('cancel')">
                 {{ $t('account.cancel') }}
             </button>
@@ -56,23 +56,15 @@ const props = defineProps({
 })
 
 const form = ref({
-    currentPassword: props.passwordForm.currentPassword || '',
-    newPassword: props.passwordForm.newPassword || '',
-    confirmPassword: props.passwordForm.confirmPassword || ''
+    ...props.passwordForm
 })
 
 watch(() => props.passwordForm, (val) => {
-    form.value = {
-        currentPassword: val.currentPassword || '',
-        newPassword: val.newPassword || '',
-        confirmPassword: val.confirmPassword || ''
-    }
+    form.value = { ...val }
 })
 
 const normalizedErrors = computed(() => ({
-    currentPassword: props.errors.currentPassword || '',
-    newPassword: props.errors.newPassword || '',
-    confirmPassword: props.errors.confirmPassword || ''
+    ...props.errors
 }))
 
 const onSubmit = () => {

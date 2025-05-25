@@ -2,8 +2,26 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getProfile, updatePassword, updateAvatar } from '@/api/user';
 
+interface UserProfile {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatarUrl: string;
+    gender?: number | string;
+    phoneNumber?: string;
+    birthDate?: string;
+    address?: string;
+}
+
+interface UpdatePasswordBody {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
 export const useUserStore = defineStore('user', () => {
-    const profile = ref<any>(null);
+    const profile = ref<UserProfile | null>(null);
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -20,7 +38,7 @@ export const useUserStore = defineStore('user', () => {
         }
     };
 
-    const updateUserPassword = async (data: any) => {
+    const updateUserPassword = async (data: UpdatePasswordBody) => {
         loading.value = true;
         error.value = null;
         try {

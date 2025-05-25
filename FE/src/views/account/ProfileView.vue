@@ -19,7 +19,7 @@
                 userStore.profile?.lastName }}</h2>
             </div>
           </div>
-          <div class="p-0 text-2xl">
+          <div class="p-0 text-xl">
             <nav class="space-y-1 mt-2">
               <button
                 :class="tabClass('profile') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
@@ -59,7 +59,7 @@
             <div
               class="bg-gradient-to-r from-neutral-800 to-black text-white rounded-t-lg px-8 py-6 flex flex-row items-center justify-between">
               <div>
-                <h2 class="text-2xl font-bold">{{ $t('account.profile') }}</h2>
+                <h2 class="text-3xl font-bold">{{ $t('account.profile') }}</h2>
                 <p class="text-neutral-300 mt-1 text-xl">Manage your personal information</p>
               </div>
               <EditIcon v-if="!isEditing" @click="isEditing = true" size="8" />
@@ -129,8 +129,9 @@
                 </div>
               </div>
               <div v-else>
-                <ProfileInfoForm ref="profileInfoFormRef" :profile="userStore.profile" :isEditing="isEditing"
-                  :form="form" @submit="onSubmit" @cancel-edit="cancelEdit" @update-avatar="onUpdateAvatar" />
+                <ProfileInfoForm ref="profileInfoFormRef" :profile="userStore.profile || undefined"
+                  :isEditing="isEditing" :form="form" @submit="onSubmit" @cancel-edit="cancelEdit"
+                  @update-avatar="onUpdateAvatar" />
               </div>
             </div>
           </div>
@@ -198,7 +199,7 @@ const passwordForm = reactive({
 const avatarError = ref(false);
 const avatarFile = ref<File | null>(null);
 const avatarPreview = ref<string | null>(null);
-const profileInfoFormRef = ref();
+const profileInfoFormRef = ref<{ resetAvatarPreview?: () => void }>();
 const errors = ref<{ [key: string]: string }>({});
 
 watch(
@@ -210,9 +211,10 @@ watch(
       form.email = val.email || '';
       form.phone = val.phoneNumber || '';
       form.birthDate = val.birthDate ? val.birthDate.slice(0, 10) : '';
-      if (val.gender === 1 || val.gender === '1') form.gender = 'male';
-      else if (val.gender === 2 || val.gender === '2') form.gender = 'female';
-      else if (val.gender === 0 || val.gender === '0') form.gender = 'other';
+      const genderValue = val.gender?.toString() || '';
+      if (genderValue === '1') form.gender = 'male';
+      else if (genderValue === '2') form.gender = 'female';
+      else if (genderValue === '0') form.gender = 'other';
       else form.gender = '';
       form.avatarUrl = val.avatarUrl || '';
     }
@@ -246,14 +248,14 @@ const cancelEdit = () => {
     form.lastName = userStore.profile.lastName || '';
     form.phone = userStore.profile.phoneNumber || '';
     form.birthDate = userStore.profile.birthDate ? userStore.profile.birthDate.slice(0, 10) : '';
-    form.gender = userStore.profile.gender || '';
+    form.gender = userStore.profile.gender?.toString() || '';
     form.avatarUrl = userStore.profile.avatarUrl || '';
   }
 };
 const onSubmit = async () => {
   let gender = form.gender;
   if (!['male', 'female', 'other'].includes(gender)) {
-    console.warn(`Invalid gender value: ${gender}. Please select a valid gender.`);
+    showToast(ToastEnum.Error, t('account.invalidGender'));
     return;
   }
   if (avatarFile.value) {
@@ -301,10 +303,11 @@ const onChangePassword = async (payload: { currentPassword: string; newPassword:
       newPassword: payload.newPassword,
       confirmPassword: payload.confirmPassword,
     });
-    showToast(ToastEnum.Success, t('account.changePasswordSuccess'));
     passwordForm.currentPassword = '';
     passwordForm.newPassword = '';
     passwordForm.confirmPassword = '';
+    errors.value = {};
+    showToast(ToastEnum.Success, t('account.changePasswordSuccess'));
   } catch (error: any) {
     if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
       error.response.data.errors.forEach((err: any) => {
@@ -312,14 +315,17 @@ const onChangePassword = async (payload: { currentPassword: string; newPassword:
           errors.value[err.path[0]] = err.message;
         }
       });
-      const msg = error.response.data.errors.map((e: any) => e.message || e).join('\n');
-      showToast(ToastEnum.Error, msg);
+      error.response.data.errors.forEach((err: any) => {
+        if (err.message) {
+          showToast(ToastEnum.Error, err.message);
+        }
+      });
     } else if (error?.response?.data?.message) {
       showToast(ToastEnum.Error, error.response.data.message);
     } else if (error?.message) {
       showToast(ToastEnum.Error, error.message);
     } else {
-      showToast(ToastEnum.Error, 'Đổi mật khẩu thất bại');
+      showToast(ToastEnum.Error, t('account.changePasswordFailed'));
     }
   }
 };
@@ -353,9 +359,10 @@ function formatDate(dateStr: string | undefined, mode: 'date' | 'datetime' = 'da
 }
 
 function genderText(gender: number | string | undefined) {
-  if (gender === 0 || gender === '0') return 'Other';
-  if (gender === 1 || gender === '1') return 'Male';
-  if (gender === 2 || gender === '2') return 'Female';
+  const genderValue = gender?.toString();
+  if (genderValue === '0') return 'Other';
+  if (genderValue === '1') return 'Male';
+  if (genderValue === '2') return 'Female';
   return '-';
 }
 </script>
