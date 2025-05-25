@@ -440,6 +440,10 @@ const messages = {
       updatePassword: "Update password",
       updatePasswordSuccess: "Password updated successfully",
       chooseFile: "Choose file",
+      male: "Male",
+      female: "Female",
+      other: "Other",
+      select: "Select",
     },
   }
 }

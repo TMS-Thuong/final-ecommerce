@@ -103,7 +103,7 @@ export class ProductService {
     try {
       const products = await prisma.product.findMany({
         skip: 0,
-        take: 1000,
+        take: 1000000,
         where: filters,
         select: {
           id: true,
