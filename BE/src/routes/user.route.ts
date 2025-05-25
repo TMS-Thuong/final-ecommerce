@@ -17,7 +17,7 @@ export default async function userRoutes(fastify: FastifyInstance): Promise<void
     handler: UserController.editProfile,
   });
 
-  fastify.put('/users/me/password', {
+  fastify.put('/users/me/change-password', {
     schema: updatePasswordSchema,
     preHandler: verifyUserAuthentication,
     handler: UserController.editPassword,

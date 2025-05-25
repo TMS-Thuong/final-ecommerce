@@ -18,4 +18,5 @@ export const ProductQuerySchema = z.object({
   stockStatus: z.string().optional().nullable(),
   searchQuery: z.string().optional().default(''),
   averageRating: z.coerce.number().optional().nullable(),
+  sortBy: z.enum(['newest', 'priceAsc', 'priceDesc', 'rating']).optional().default('newest'),
 });

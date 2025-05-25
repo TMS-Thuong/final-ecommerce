@@ -19,6 +19,7 @@ import MyOrdersView from '@/views/account/MyOrdersView.vue'
 import AddressListView from '@/views/account/AddressListView.vue'
 import AddAddressView from '@/views/account/AddAddressView.vue'
 import EditAddressView from '@/views/account/EditAddressView.vue'
+import ProfileView from '@/views/account/ProfileView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -81,6 +82,12 @@ const routes = [
     path: '/account/addresses/edit/:id',
     name: RouterEnum.EditAddress,
     component: EditAddressView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/account/profile',
+    name: RouterEnum.Profile,
+    component: ProfileView,
     meta: { requiresAuth: true }
   },
   {

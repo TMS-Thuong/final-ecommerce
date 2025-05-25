@@ -11,6 +11,7 @@ export enum RouterEnum {
   AddressList = "AddressList",
   AddAddress = "AddAddress",
   EditAddress = "EditAddress",
+  Profile = "Profile",
 }
 
 export enum AuthRouterEnum {

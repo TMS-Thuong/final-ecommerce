@@ -9,6 +9,7 @@ import { saveAvatarFile } from '../utils/file.util';
 interface UpdatePasswordBody {
   currentPassword: string;
   newPassword: string;
+  confirmPassword: string;
 }
 
 class UserController {

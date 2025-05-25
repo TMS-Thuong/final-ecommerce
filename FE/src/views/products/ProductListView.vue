@@ -161,19 +161,7 @@ const searchQuery = ref('');
 const sortOption = ref('newest');
 
 const filteredProducts = computed(() => {
-  const sortedProducts = [...products.value];
-
-  switch (sortOption.value) {
-    case 'priceAsc':
-      return sortedProducts.sort((a, b) => a.price - b.price);
-    case 'priceDesc':
-      return sortedProducts.sort((a, b) => b.price - a.price);
-    case 'rating':
-      return sortedProducts.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
-    case 'newest':
-    default:
-      return sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
+  return products.value;
 });
 
 const priceRanges = [
@@ -312,6 +300,7 @@ const loadProducts = async (page = 1) => {
       stockStatus: filters.value.inStock ? 'inStock' : undefined,
       averageRating: filters.value.rating ? Number(filters.value.rating) : undefined,
       onSale: filters.value.onSale ? true : undefined,
+      sortBy: sortOption.value
     });
     const newProducts = response?.data || [];
     if (page === 1) {

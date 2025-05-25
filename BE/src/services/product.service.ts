@@ -46,7 +46,8 @@ export class ProductService {
     maxPrice?: number,
     stockStatus?: string,
     searchQuery?: string,
-    averageRating?: number
+    averageRating?: number,
+    sortBy: 'newest' | 'priceAsc' | 'priceDesc' | 'rating' = 'newest'
   ): Promise<IProductWithImages[]> {
     const filters: {
       isActive: boolean;
@@ -101,8 +102,8 @@ export class ProductService {
 
     try {
       const products = await prisma.product.findMany({
-        skip: (page - 1) * pageSize,
-        take: pageSize,
+        skip: 0,
+        take: 1000000,
         where: filters,
         select: {
           id: true,
@@ -124,13 +125,36 @@ export class ProductService {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          id: 'desc',
-        },
       });
 
-      return await this.addImagesToProducts(products);
+      // Sắp xếp theo giá hiển thị thực tế
+      if (sortBy === 'priceAsc') {
+        products.sort((a, b) => {
+          const priceA = (a.salePrice ? a.salePrice.toNumber?.() : undefined) ?? a.basePrice.toNumber?.();
+          const priceB = (b.salePrice ? b.salePrice.toNumber?.() : undefined) ?? b.basePrice.toNumber?.();
+          return priceA - priceB;
+        });
+      } else if (sortBy === 'priceDesc') {
+        products.sort((a, b) => {
+          const priceA = (a.salePrice ? a.salePrice.toNumber?.() : undefined) ?? a.basePrice.toNumber?.();
+          const priceB = (b.salePrice ? b.salePrice.toNumber?.() : undefined) ?? b.basePrice.toNumber?.();
+          return priceB - priceA;
+        });
+      } else if (sortBy === 'rating') {
+        products.sort(
+          (a, b) =>
+            (b.averageRating ? b.averageRating.toNumber?.() : 0) - (a.averageRating ? a.averageRating.toNumber?.() : 0)
+        );
+      } else if (sortBy === 'newest') {
+        products.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      }
+
+      // Phân trang lại
+      const pagedProducts = products.slice((page - 1) * pageSize, page * pageSize);
+
+      return await this.addImagesToProducts(pagedProducts);
     } catch (error) {
+      console.error('Error in getProducts:', error);
       throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }

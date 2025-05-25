@@ -23,28 +23,28 @@
     <div v-else-if="product" class="mx-auto px-4 sm:px-8 md:px-16 lg:px-[16rem]">
       <div class="flex flex-col lg:flex-row gap-4 sm:gap-8">
         <div class="w-full lg:w-1/2">
-          <ProductImageGallery
-            :images="product.images || []"
-            :thumbnailIndex="currentImageIndex"
-            @select-image="selectImage"
-            @next-image="nextImage"
-            @prev-image="prevImage"
-          />
+          <ProductImageGallery :images="product.images || []" :thumbnailIndex="currentImageIndex"
+            @select-image="selectImage" @next-image="nextImage" @prev-image="prevImage" />
         </div>
 
         <div class="w-full lg:w-1/2">
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{{ product.name }}</h1>
 
           <div class="flex flex-wrap items-center mb-2 text-xl">
-            <StarRating :size="'8'" :rating="product.averageRating || 0" :count="product.ratingCount || 0" :readonly="true" />
-            <span class="ml-1 sm:ml-2 text-gray-500 ">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }} {{ $t('product.detail.reviews').toLowerCase() }})</span>
+            <StarRating :size="'8'" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
+              :readonly="true" />
+            <span class="ml-1 sm:ml-2 text-gray-500 ">{{ product.averageRating || 0 }} ({{ product.ratingCount || 0 }}
+              {{ $t('product.detail.reviews').toLowerCase() }})</span>
           </div>
 
           <div class="mb-4 sm:mb-6">
             <div class="flex flex-wrap items-center">
-              <span class="text-xl sm:text-2xl font-bold text-red-600">{{ formatPrice(product.salePrice || product.basePrice) }}</span>
-              <span v-if="product.salePrice" class="ml-1 sm:ml-2 text-base sm:text-xl text-gray-500 line-through">{{ formatPrice(product.basePrice) }}</span>
-              <span v-if="discountPercent > 0" class="ml-2 sm:ml-3 bg-red-100 text-red-800 text-base sm:text-lg font-semibold px-2 py-1 rounded">
+              <span class="text-xl sm:text-2xl font-bold text-red-600">{{ formatPrice(product.salePrice ||
+                product.basePrice) }}</span>
+              <span v-if="product.salePrice" class="ml-1 sm:ml-2 text-base sm:text-xl text-gray-500 line-through">{{
+                formatPrice(product.basePrice) }}</span>
+              <span v-if="discountPercent > 0"
+                class="ml-2 sm:ml-3 bg-red-100 text-red-800 text-base sm:text-lg font-semibold px-2 py-1 rounded">
                 {{ $t('product.detail.discount', { percent: discountPercent }) }}
               </span>
             </div>
@@ -72,28 +72,25 @@
             <span class="ml-1 sm:ml-2 inline-block px-2 py-1 rounded" :class="[
               product.stockQuantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
             ]">
-              {{ product.stockQuantity > 0 ? $t('product.detail.stock.inStock') : $t('product.detail.stock.outOfStock') }}
+              {{ product.stockQuantity > 0 ? $t('product.detail.stock.inStock') : $t('product.detail.stock.outOfStock')
+              }}
             </span>
           </div>
           <div class="mb-4 sm:mb-6 text-base sm:text-xl">
             <div class="flex flex-wrap items-center">
               <span class="mr-2 sm:mr-4 font-semibold text-gray-700">{{ $t('product.detail.quantity') }}:</span>
               <div class="flex items-center border border-gray-300 rounded-md">
-                <button
-                  @click="decrementQuantity"
+                <button @click="decrementQuantity"
                   class="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
-                  :disabled="quantity <= 1 || product.stockQuantity <= 0"
-                >
+                  :disabled="quantity <= 1 || product.stockQuantity <= 0">
                   -
                 </button>
                 <div class="w-10 sm:w-12 py-1 text-center border-x border-gray-300">
                   {{ quantity }}
                 </div>
-                <button
-                  @click="incrementQuantity"
+                <button @click="incrementQuantity"
                   class="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
-                  :disabled="quantity >= product.stockQuantity || product.stockQuantity <= 0"
-                >
+                  :disabled="quantity >= product.stockQuantity || product.stockQuantity <= 0">
                   +
                 </button>
               </div>
@@ -101,20 +98,20 @@
           </div>
 
           <div class="flex space-x-2 sm:space-x-4 mb-6 sm:mb-8">
-            <button
-              @click="addToCart"
-              class="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
+            <button @click="addToCart"
+              class="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-800  text-lg text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
               :disabled="product.stockQuantity <= 0"
-              :class="{'opacity-50 cursor-not-allowed': product.stockQuantity <= 0}"
-            >
-              <CartIcon size="5" class="mr-2" />
+              :class="{ 'opacity-50 cursor-not-allowed': product.stockQuantity <= 0 }">
+              <CartIcon size="8" class="mr-2" />
               {{ $t('product.detail.addToCart') }}
             </button>
-            <button class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
-              <HeartIcon size="5" class="text-gray-700" />
+            <button
+              class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
+              <HeartIcon size="8" class="text-gray-700" />
             </button>
-            <button class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
-              <ShareIcon size="5" class="text-gray-700" />
+            <button
+              class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
+              <ShareIcon size="8" class="text-gray-700" />
             </button>
           </div>
         </div>
@@ -126,17 +123,20 @@
             <button class="py-2 sm:py-4 px-1 border-b-2 border-neutral-800 font-medium text-neutral-800">
               {{ $t('product.tabs.description') }}
             </button>
-            <button class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            <button
+              class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
               {{ $t('product.tabs.specifications') }}
             </button>
-            <button class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            <button
+              class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
               {{ $t('product.tabs.reviews') }} ({{ product.ratingCount || 0 }})
             </button>
           </nav>
         </div>
 
         <div class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
-          <div v-if="product.description" class="text-justify" v-html="product.description"></div>
+          <div v-if="product.description" class="text-justify text-xl prose"
+            v-html="formatDescription(product.description)"></div>
           <div v-else class="text-justify text-gray-500">{{ $t('product.detail.updating') }}</div>
           <div v-if="product.features && product.features.length > 0" class="mt-6 sm:mt-8">
             <h3 class="text-lg sm:text-xl font-semibold mb-2 sm:mb-4">{{ $t('product.detail.features') }}</h3>
@@ -296,6 +296,22 @@ const loadProductData = async () => {
 
 watch(() => cartStore.totalItems, (newCount, oldCount) => {
 })
+
+const formatDescription = (desc) => {
+  if (!desc) return '';
+  const sentences = desc.match(/[^.?!]+[.?!]+/g) || [desc];
+  let paragraphs = [];
+  let temp = '';
+  for (let i = 0; i < sentences.length; i++) {
+    temp += sentences[i].trim() + ' ';
+    if ((i + 1) % 2 === 0) {
+      paragraphs.push(temp.trim());
+      temp = '';
+    }
+  }
+  if (temp.trim()) paragraphs.push(temp.trim());
+  return paragraphs.map(p => `<p>${p}</p>`).join('');
+};
 
 onMounted(() => {
   loadProductData()

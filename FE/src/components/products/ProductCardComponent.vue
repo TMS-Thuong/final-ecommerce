@@ -3,19 +3,18 @@
     <div class="product-card bg-white rounded-lg">
 
       <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
+        <div v-if="discountPercent > 0"
+          class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[25%] h-8 flex items-center justify-center leading-8">
+          -{{ discountPercent }}%
+        </div>
+
+        <div v-if="isNewProduct" :class="[
+          'absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[25%] h-8 flex items-center justify-center leading-8',
+          discountPercent > 0 ? 'top-10' : 'top-1'
+        ]">
+          {{ $t('product.new') }}
+        </div>
         <div :class="{ 'filter blur-[1px]': product.stockQuantity === 0 }" class="w-full h-full relative">
-          <div v-if="discountPercent > 0"
-            class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center">
-            -{{ discountPercent }}%
-          </div>
-
-          <div v-if="isNewProduct" :class="[
-            'absolute left-2 bg-blue-500 text-white text-base font-bold rounded-full z-10 w-[20%] h-7 flex items-center justify-center',
-            discountPercent > 0 ? 'top-10' : 'top-1'
-          ]">
-            {{ $t('product.new') }}
-          </div>
-
           <div class="w-full h-full relative">
             <div class="h-full w-full flex items-center justify-center">
               <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
