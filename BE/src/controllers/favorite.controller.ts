@@ -18,7 +18,18 @@ class FavoriteController {
       const userId = request.user.userId;
       const favorites = await this.favoriteService.getUserFavorites(userId);
 
-      return reply.ok(favorites);
+      const transformedFavorites = {
+        ...favorites,
+        items: favorites.items.map((item) => ({
+          ...item,
+          product: {
+            ...item.product,
+            images: item.product.images.map((img) => img.imageUrl),
+          },
+        })),
+      };
+
+      return reply.ok(transformedFavorites);
     } catch (error) {
       console.error('Error getting user favorites:', error);
       return reply.internalError(FavoriteErrorMessages.GET_WISHLIST_ERROR, 'GET_WISHLIST_ERROR');
@@ -41,7 +52,16 @@ class FavoriteController {
       const { productId } = result.data;
       const favoriteItem = await this.favoriteService.addToFavorites(userId, productId);
 
-      return reply.created(favoriteItem);
+      // Transform data for response
+      const transformedFavoriteItem = {
+        ...favoriteItem,
+        product: {
+          ...favoriteItem.product,
+          images: favoriteItem.product.images.map((img) => img.imageUrl),
+        },
+      };
+
+      return reply.created(transformedFavoriteItem);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === FavoriteErrorMessages.PRODUCT_NOT_FOUND) {
@@ -57,10 +77,13 @@ class FavoriteController {
   }
 
   @binding
-  async removeFromFavorites(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply): Promise<void> {
+  async removeFromFavorites(
+    request: FastifyRequest<{ Params: { favoriteItemId: string } }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const userId = request.user.userId;
-      const id = parseInt(request.params.id);
+      const id = parseInt(request.params.favoriteItemId);
 
       if (isNaN(id)) {
         return reply.badRequest(FavoriteErrorMessages.INVALID_FAVORITE_ITEM_ID, 'INVALID_FAVORITE_ITEM_ID');
@@ -76,9 +99,9 @@ class FavoriteController {
       }
 
       const { id: parsedId } = validationResult.data;
-      const removeResult = await this.favoriteService.removeFromFavorites(userId, parsedId);
+      await this.favoriteService.removeFromFavorites(userId, parsedId);
 
-      return reply.ok(removeResult);
+      return reply.ok({ message: 'Successfully removed from favorites' });
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === FavoriteErrorMessages.WISHLIST_NOT_FOUND) {

@@ -39,15 +39,7 @@ export class FavoriteService {
         };
       }
 
-      const transformedItems = favorite.items.map((item) => ({
-        ...item,
-        product: {
-          ...item.product,
-          images: item.product.images.map((img) => img.imageUrl),
-        },
-      }));
-
-      return { ...favorite, items: transformedItems };
+      return favorite;
     } catch (error) {
       console.error('Error in getUserFavorites:', error);
       throw new Error('Failed to get wishlist');
@@ -77,16 +69,12 @@ export class FavoriteService {
         throw new Error('Product not found');
       }
 
-      // Tạo mới danh sách yêu thích cho user
-      let favorite = await prisma.favorite.findUnique({
+      // Tạo mới hoặc lấy danh sách yêu thích cho user
+      const favorite = await prisma.favorite.upsert({
         where: { userId },
+        update: {},
+        create: { userId },
       });
-
-      if (!favorite) {
-        favorite = await prisma.favorite.create({
-          data: { userId },
-        });
-      }
 
       //KT sản phẩm đã có trong danh sách yêu thích chưa
       const existingItem = await prisma.favoriteItem.findFirst({
@@ -124,13 +112,7 @@ export class FavoriteService {
         },
       });
 
-      return {
-        ...favoriteItem,
-        product: {
-          ...favoriteItem.product,
-          images: favoriteItem.product.images.map((img) => img.imageUrl),
-        },
-      };
+      return favoriteItem;
     } catch (error) {
       console.error('Error in addToFavorites:', error);
       throw error;

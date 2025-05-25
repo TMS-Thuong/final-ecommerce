@@ -17,7 +17,7 @@ export async function favoriteRoutes(fastify: FastifyInstance): Promise<void> {
     handler: favoriteController.addToFavorites.bind(favoriteController),
   });
 
-  fastify.delete('/wishlist/:id', {
+  fastify.delete('/wishlist/:favoriteItemId', {
     schema: removeFromFavoritesSchema,
     handler: favoriteController.removeFromFavorites.bind(favoriteController),
   });

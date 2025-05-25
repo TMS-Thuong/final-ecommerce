@@ -96,9 +96,9 @@ export const removeFromFavoritesSchema: FastifySchema = {
   summary: 'Remove product from favorites',
   params: {
     type: 'object',
-    required: ['id'],
+    required: ['favoriteItemId'],
     properties: {
-      id: { type: 'integer' },
+      favoriteItemId: { type: 'integer' },
     },
   },
   response: {
