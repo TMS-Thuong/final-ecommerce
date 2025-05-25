@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
+import { Favorite, FavoriteItem, Product } from '@app/types/favorite.types';
+
 const prisma = new PrismaClient();
 
 export class FavoriteService {
-  async getUserFavorites(userId: number) {
+  async getUserFavorites(userId: number): Promise<Favorite> {
     try {
       // Lấy danh sách yêu thích của người dùng
       const favorite = await prisma.favorite.findUnique({
@@ -46,24 +48,28 @@ export class FavoriteService {
     }
   }
 
-  async addToFavorites(userId: number, productId: number) {
-    try {
-      // Kiểm tra sản phẩm có tồn tại không
-      const product = await prisma.product.findUnique({
-        where: { id: productId },
-        select: {
-          id: true,
-          name: true,
-          basePrice: true,
-          salePrice: true,
-          stockQuantity: true,
-          images: {
-            select: {
-              imageUrl: true,
-            },
+  private async getProductDetails(productId: number): Promise<Product | null> {
+    return prisma.product.findUnique({
+      where: { id: productId },
+      select: {
+        id: true,
+        name: true,
+        basePrice: true,
+        salePrice: true,
+        stockQuantity: true,
+        images: {
+          select: {
+            imageUrl: true,
           },
         },
-      });
+      },
+    });
+  }
+
+  async addToFavorites(userId: number, productId: number): Promise<FavoriteItem> {
+    try {
+      // Kiểm tra sản phẩm có tồn tại không
+      const product = await this.getProductDetails(productId);
 
       if (!product) {
         throw new Error('Product not found');
@@ -119,7 +125,7 @@ export class FavoriteService {
     }
   }
 
-  async removeFromFavorites(userId: number, id: number) {
+  async removeFromFavorites(userId: number, id: number): Promise<{ message: string }> {
     try {
       // Lấy danh sách yêu thích của người dùng
       const favorite = await prisma.favorite.findUnique({

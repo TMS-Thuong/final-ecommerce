@@ -20,13 +20,14 @@ class FavoriteController {
 
       const transformedFavorites = {
         ...favorites,
-        items: favorites.items.map((item) => ({
-          ...item,
-          product: {
-            ...item.product,
-            images: item.product.images.map((img) => img.imageUrl),
-          },
-        })),
+        items:
+          favorites?.items?.map((item) => ({
+            ...item,
+            product: {
+              ...item.product,
+              images: item.product.images.map((img) => img.imageUrl),
+            },
+          })) || [],
       };
 
       return reply.ok(transformedFavorites);
@@ -52,14 +53,17 @@ class FavoriteController {
       const { productId } = result.data;
       const favoriteItem = await this.favoriteService.addToFavorites(userId, productId);
 
-      // Transform data for response
-      const transformedFavoriteItem = {
-        ...favoriteItem,
-        product: {
-          ...favoriteItem.product,
-          images: favoriteItem.product.images.map((img) => img.imageUrl),
-        },
-      };
+      const transformedFavoriteItem = favoriteItem
+        ? {
+            ...favoriteItem,
+            product: favoriteItem.product
+              ? {
+                  ...favoriteItem.product,
+                  images: favoriteItem.product.images.map((img) => img.imageUrl),
+                }
+              : null,
+          }
+        : null;
 
       return reply.created(transformedFavoriteItem);
     } catch (error) {
@@ -83,12 +87,12 @@ class FavoriteController {
   ): Promise<void> {
     try {
       const userId = request.user.userId;
-      const id = parseInt(request.params.favoriteItemId);
 
-      if (isNaN(id)) {
+      if (isNaN(Number(request.params.favoriteItemId))) {
         return reply.badRequest(FavoriteErrorMessages.INVALID_FAVORITE_ITEM_ID, 'INVALID_FAVORITE_ITEM_ID');
       }
 
+      const id = parseInt(request.params.favoriteItemId);
       const validationResult = FavoriteItemIdZodSchema.safeParse({ id });
 
       if (!validationResult.success) {
