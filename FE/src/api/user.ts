@@ -9,7 +9,7 @@ export const updateProfile = async (data: any) => {
 };
 
 export const updatePassword = async (data: any) => {
-    return instanceAxios.put('/users/me/password', data);
+    return instanceAxios.put('/users/me/change-password', data);
 };
 
 export const updateAvatar = async (formData: FormData) => {

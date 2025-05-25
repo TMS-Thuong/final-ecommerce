@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { getProfile, updateProfile, updatePassword, updateAvatar } from '@/api/user';
+import { getProfile, updatePassword, updateAvatar } from '@/api/user';
 
 export const useUserStore = defineStore('user', () => {
     const profile = ref<any>(null);
@@ -15,19 +15,6 @@ export const useUserStore = defineStore('user', () => {
             profile.value = res.data;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Failed to fetch profile';
-        } finally {
-            loading.value = false;
-        }
-    };
-
-    const updateProfileInfo = async (data: any) => {
-        loading.value = true;
-        error.value = null;
-        try {
-            const res = await updateProfile(data);
-            profile.value = res.data;
-        } catch (err: any) {
-            error.value = err.response?.data?.message || 'Failed to update profile';
         } finally {
             loading.value = false;
         }
@@ -63,7 +50,6 @@ export const useUserStore = defineStore('user', () => {
         loading,
         error,
         fetchProfile,
-        updateProfileInfo,
         updateUserPassword,
         updateUserAvatar,
     };

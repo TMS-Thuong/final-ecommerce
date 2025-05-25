@@ -337,8 +337,6 @@ onMounted(async () => {
         showToast(ToastEnum.Warning, t('checkout.paymentCancelled'));
       } else if (status === 'failed') {
         showToast(ToastEnum.Error, t('checkout.paymentFailed'));
-      } else if (order.value.paymentStatus === 'Paid') {
-        showToast(ToastEnum.Success, t('checkout.paymentSuccess'));
       }
 
       if (order.value.addressId) {

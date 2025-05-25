@@ -11,7 +11,6 @@
         <EyeIcon :class="showPassword ? 'text-gray-400' : 'text-gray-500'" class="h-5 w-5" />
       </button>
     </div>
-    <p v-if="error" class="mt-1 text-lg text-red-600">{{ error }}</p>
   </div>
 </template>
 

@@ -56,7 +56,7 @@
                 <th scope="col" class="px-6 py-3 text-left text-gray-500 uppercase tracking-wider">
                   {{ $t('orders.status') }}
                 </th>
-                <th scope="col" class="px-6 py-3 text-right text-gray-500 uppercase tracking-wider">
+                <th scope="col" class="px-6 py-3 text-center text-gray-500 uppercase tracking-wider">
                   {{ $t('orders.total') }}
                 </th>
                 <th scope="col" class="px-6 py-3 text-right text-gray-500 uppercase tracking-wider">
@@ -64,16 +64,16 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200 text-lg">
+            <tbody class="bg-white divide-y divide-gray-200 text-xl">
               <tr v-for="order in orders" :key="order.id" class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-lg font-medium text-gray-900">{{ order.orderCode || order.id }}</div>
+                  <div class="font-medium text-gray-900">{{ order.orderCode || order.id }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-lg text-gray-500">{{ formatDate(order.createdAt) }}</div>
+                  <div class="text-gray-500">{{ formatDate(order.createdAt) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 py-1 text-lg font-medium rounded-full"
+                  <span class="px-2 py-1 font-medium rounded-full"
                     :class="{
                       'text-yellow-500': order.status === 'Pending',
                       'text-blue-500': order.status === 'Processing',
@@ -84,9 +84,9 @@
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <div class="text-lg font-medium text-gray-900">{{ formatPrice(order.totalAmount) }}</div>
+                  <div class="font-medium text-gray-900">{{ formatPrice(order.totalAmount) }}</div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
+                <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
                   <router-link :to="`/order-complete/${order.id}`" class="text-blue-600 hover:text-blue-900">
                     {{ $t('orders.viewDetails') }}
                   </router-link>

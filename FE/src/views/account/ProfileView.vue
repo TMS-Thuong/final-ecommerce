@@ -19,7 +19,7 @@
                 userStore.profile?.lastName }}</h2>
             </div>
           </div>
-          <div class="p-0">
+          <div class="p-0 text-2xl">
             <nav class="space-y-1 mt-2">
               <button
                 :class="tabClass('profile') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
@@ -53,7 +53,7 @@
         </div>
       </aside>
 
-      <section class="flex-1 text-lg">
+      <section class="flex-1 text-xl">
         <div v-if="activeTab === 'profile'">
           <div class="shadow-xl border-0 bg-white rounded-lg overflow-hidden">
             <div
@@ -142,7 +142,7 @@
               <p class="text-neutral-300 mt-1">Update your security settings</p>
             </div>
             <div class="p-12 bg-neutral-50">
-              <ChangePasswordForm :passwordForm="passwordForm" @submit="onChangePassword" />
+              <ChangePasswordForm :passwordForm="passwordForm" :errors="errors" @submit="onChangePassword" />
             </div>
           </div>
         </div>
@@ -169,11 +169,15 @@ import CalendarDotsIcon from '@/components/icons/CalendarDotsIcon.vue';
 import EditIcon from '@/components/icons/EditIcon.vue';
 import { ToastEnum } from '@/enums/toast';
 import { updateProfile, updateAvatar } from '@/api/user';
+import { z } from 'zod';
+import { resetPasswordSchema } from '@/validations/form';
+import { useI18n } from 'vue-i18n';
 
 const userStore = useUserStore();
-const { fetchProfile, updateProfileInfo, updateUserPassword, updateUserAvatar } = userStore;
+const { fetchProfile, updateUserPassword, updateUserAvatar } = userStore;
 const { showToast } = useToast();
 const router = useRouter();
+const { t } = useI18n();
 
 const activeTab = ref('profile');
 const isEditing = ref(false);
@@ -189,11 +193,13 @@ const form = reactive({
 const passwordForm = reactive({
   currentPassword: '',
   newPassword: '',
+  confirmPassword: '',
 });
 const avatarError = ref(false);
 const avatarFile = ref<File | null>(null);
 const avatarPreview = ref<string | null>(null);
 const profileInfoFormRef = ref();
+const errors = ref<{ [key: string]: string }>({});
 
 watch(
   () => userStore.profile,
@@ -266,16 +272,56 @@ const onSubmit = async () => {
   }
   await fetchProfile();
   isEditing.value = false;
-  showToast(ToastEnum.Success, 'Cập nhật thành công');
+  showToast(ToastEnum.Success, t('account.updateProfileSuccess'));
 };
-const onChangePassword = async () => {
-  await updateUserPassword({
-    currentPassword: passwordForm.currentPassword,
-    newPassword: passwordForm.newPassword,
+const onChangePassword = async (payload: { currentPassword: string; newPassword: string; confirmPassword: string }) => {
+  errors.value = {};
+
+  const parsed = resetPasswordSchema.safeParse({
+    newPassword: payload.newPassword,
+    confirmPassword: payload.confirmPassword,
   });
-  passwordForm.currentPassword = '';
-  passwordForm.newPassword = '';
-  showToast(ToastEnum.Success, 'Đổi mật khẩu thành công');
+
+  if (!payload.currentPassword) {
+    errors.value.currentPassword = 'Current password is required';
+  }
+
+  if (!parsed.success) {
+    parsed.error.errors.forEach(err => {
+      const field = err.path[0]?.toString();
+      if (field) errors.value[field] = err.message;
+    });
+  }
+
+  if (Object.keys(errors.value).length > 0) return;
+
+  try {
+    await updateUserPassword({
+      currentPassword: payload.currentPassword,
+      newPassword: payload.newPassword,
+      confirmPassword: payload.confirmPassword,
+    });
+    showToast(ToastEnum.Success, t('account.changePasswordSuccess'));
+    passwordForm.currentPassword = '';
+    passwordForm.newPassword = '';
+    passwordForm.confirmPassword = '';
+  } catch (error: any) {
+    if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+      error.response.data.errors.forEach((err: any) => {
+        if (err.path && err.message) {
+          errors.value[err.path[0]] = err.message;
+        }
+      });
+      const msg = error.response.data.errors.map((e: any) => e.message || e).join('\n');
+      showToast(ToastEnum.Error, msg);
+    } else if (error?.response?.data?.message) {
+      showToast(ToastEnum.Error, error.response.data.message);
+    } else if (error?.message) {
+      showToast(ToastEnum.Error, error.message);
+    } else {
+      showToast(ToastEnum.Error, 'Đổi mật khẩu thất bại');
+    }
+  }
 };
 const onAvatarChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
@@ -292,7 +338,7 @@ const onUpdateAvatar = async (file: File) => {
   formData.append('file', file);
   await updateAvatar(formData);
   await fetchProfile();
-  showToast(ToastEnum.Success, 'Cập nhật ảnh đại diện thành công');
+  showToast(ToastEnum.Success, t('account.updateAvatarSuccess'));
   if (profileInfoFormRef.value?.resetAvatarPreview) {
     profileInfoFormRef.value.resetAvatarPreview();
   }
@@ -303,13 +349,13 @@ function formatDate(dateStr: string | undefined, mode: 'date' | 'datetime' = 'da
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return '-';
   if (mode === 'date') return d.toLocaleDateString();
-  return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+  return d.toLocaleString();
 }
 
 function genderText(gender: number | string | undefined) {
-  if (gender === 0 || gender === '0') return 'Male';
-  if (gender === 1 || gender === '1') return 'Female';
-  if (gender === 2 || gender === '2') return 'Other';
+  if (gender === 0 || gender === '0') return 'Other';
+  if (gender === 1 || gender === '1') return 'Male';
+  if (gender === 2 || gender === '2') return 'Female';
   return '-';
 }
 </script>
