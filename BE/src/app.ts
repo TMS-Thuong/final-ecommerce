@@ -11,6 +11,7 @@ import { authUserRoutes } from './routes/auth-user.routes';
 import { brandRoutes } from './routes/brand.routes';
 import { cartRoutes } from './routes/cart.routes';
 import { categoryRoutes } from './routes/category.routes';
+import { favoriteRoutes } from './routes/favorite.routes';
 import { orderRoutes } from './routes/order.routes';
 import { paymentRoutes } from './routes/payment.routes';
 import { productRoutes } from './routes/product.routes';
@@ -70,6 +71,7 @@ app.register(productRoutes, { prefix: '/api' });
 app.register(categoryRoutes, { prefix: '/api' });
 app.register(brandRoutes, { prefix: '/api' });
 app.register(cartRoutes, { prefix: '/api' });
+app.register(favoriteRoutes, { prefix: '/api' });
 app.register(publicPaymentRoutes);
 app.register(userRoutes);
 
