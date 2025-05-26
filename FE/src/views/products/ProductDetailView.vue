@@ -107,10 +107,8 @@
             </button>
             <button
               class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center"
-              @click="addToWishlist" :disabled="isWishlistLoading">
-              <HeartIcon size="8" :class="[
-                isWishlistLoading || isInWishlist ? 'text-red-600' : 'text-gray-700'
-              ]" />
+              @click="handleWishlistClick" :disabled="isWishlistLoading">
+              <HeartIcon size="8" :class="[isInWishlist ? 'text-red-600' : 'text-gray-700']" />
             </button>
             <button
               class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
@@ -257,29 +255,22 @@ const addToCart = async () => {
   }
 }
 
-const addToWishlist = async () => {
-  if (!product.value) return
-
+const handleWishlistClick = async () => {
+  if (isWishlistLoading.value) return;
+  isWishlistLoading.value = true;
   try {
-    isWishlistLoading.value = true
-
-    if (!localStorage.getItem('accessToken')) {
-      router.push({ name: 'Login', query: { redirect: route.fullPath } });
-      return;
-    }
-
     if (isInWishlist.value) {
-      showToast(ToastEnum.Error, t('product.detail.alreadyInWishlist'));
-      return;
-    }
-
-    await wishlistStore.addToWishlist(product.value.id);
-    showToast(ToastEnum.Success, t('product.detail.addedToWishlist', { name: product.value.name }));
-  } catch (err) {
-    if (err.response?.status === 409 || err.response?.data?.message === 'PRODUCT_ALREADY_IN_FAVORITES') {
-      showToast(ToastEnum.Error, t('product.detail.alreadyInWishlist'));
+      await wishlistStore.removeFromWishlist(productId.value)
+      showToast(ToastEnum.Success, t('wishlist.messages.removed'))
     } else {
-      showToast(ToastEnum.Error, t('product.detail.addToWishlistError'));
+      await wishlistStore.addToWishlist(productId.value)
+      showToast(ToastEnum.Success, t('wishlist.messages.addedToWishlist'))
+    }
+  } catch (e) {
+    if (e?.response?.status === 409) {
+      showToast(ToastEnum.Error, t('wishlist.errors.alreadyInWishlist'))
+    } else {
+      showToast(ToastEnum.Error, t('wishlist.errors.addToWishlistFailed'))
     }
   } finally {
     isWishlistLoading.value = false;

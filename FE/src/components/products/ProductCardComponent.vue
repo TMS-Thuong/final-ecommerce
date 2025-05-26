@@ -41,9 +41,9 @@
         </div>
       </div>
       <div class="p-4">
-        <h3 class="text-2xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
+        <h3 class="text-xl font-medium text-gray-900 truncate">{{ product.name }}</h3>
         <div class="mt-1 flex items-center">
-          <span class="text-2xl font-bold text-red-500">{{
+          <span class="text-xl font-bold text-red-500">{{
             formatPrice(product.salePrice || product.basePrice)
             }}</span>
           <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{

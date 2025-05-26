@@ -6,13 +6,14 @@
                 <p class="text-gray-600">Total value of saved items</p>
             </div>
             <div class="text-right">
-                <div class="text-2xl font-bold text-gray-900">{{ total.toLocaleString('en-US', {
+                <div class="text-2xl font-bold text-gray-900">{{ total.toLocaleString('vi-VN', {
                     style: 'currency',
-                    currency: 'USD' }) }}</div>
+                    currency: 'VND'
+                }) }}</div>
                 <button
-                    class="mt-2 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white flex items-center px-4 py-2 rounded"
+                    class="mt-2 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white flex items-center justify-center px-4 py-2 rounded-md text-lg font-medium transition"
                     type="button">
-                    <CartIcon class="w-4 h-4 mr-2" /> Add All to Cart
+                    <CartIcon size="6" class="mr-2" /> Add All to Cart
                 </button>
             </div>
         </div>

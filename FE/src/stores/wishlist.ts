@@ -32,7 +32,6 @@ export interface Wishlist {
 const WISHLIST_STORAGE_KEY = 'ecommerce_wishlist_data';
 
 export const useWishlistStore = defineStore('wishlist', () => {
-    // Lưu trực tiếp mảng sản phẩm yêu thích
     const wishlistProducts = ref<any[]>([])
     const isLoading = ref(false)
     const error = ref<string | null>(null)
@@ -115,7 +114,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const isInWishlist = (productId: number) => {
-        return wishlistProducts.value.some(item => item.id === productId);
+        return wishlistProducts.value.some(item => item.productId === productId || (item.product && item.product.id === productId));
     };
 
     const totalItems = computed(() => wishlistProducts.value.length);

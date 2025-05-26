@@ -24,15 +24,16 @@ import WishlistEmpty from '@/components/wishlist/WishlistEmpty.vue'
 
 const wishlistStore = useWishlistStore()
 const { wishlistItems } = storeToRefs(wishlistStore)
-const totalValue = computed(() => wishlistItems.value.reduce((sum, item) => sum + (item.salePrice || item.basePrice), 0))
+const totalValue = computed(() =>
+    wishlistItems.value.reduce(
+        (sum, item) => sum + (item.product?.salePrice ?? item.product?.basePrice ?? 0),
+        0
+    )
+)
 const fetchWishlist = () => wishlistStore.fetchWishlist && wishlistStore.fetchWishlist()
 const clearWishlist = () => wishlistStore.clearWishlist && wishlistStore.clearWishlist()
 
 onMounted(() => {
     fetchWishlist()
-    setTimeout(() => {
-        console.log('wishlistItems:', wishlistItems.value)
-        console.log('wishlistStore.wishlistItems:', wishlistStore.wishlistItems.value)
-    }, 1000)
 })
 </script>

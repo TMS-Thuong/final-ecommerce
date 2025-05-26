@@ -12,4 +12,5 @@
 <script setup>
 import WishlistItem from './WishlistItem.vue'
 const props = defineProps({ items: Array })
+const emit = defineEmits(['update'])
 </script>

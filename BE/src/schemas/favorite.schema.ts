@@ -63,13 +63,23 @@ const favoriteListSchema = {
   required: ['id', 'userId', 'createdAt', 'items'],
 };
 
+const wishlistItemWithProductSchema = {
+  type: 'object',
+  properties: {
+    favoriteItemId: { type: 'integer' },
+    productId: { type: 'integer' },
+    product: productSchema,
+  },
+  required: ['favoriteItemId', 'productId', 'product'],
+};
+
 const successResponseSchema = {
   type: 'object',
   properties: {
     success: { type: 'boolean' },
     data: {
       type: 'array',
-      items: productSchema,
+      items: wishlistItemWithProductSchema,
     },
   },
   required: ['success', 'data'],

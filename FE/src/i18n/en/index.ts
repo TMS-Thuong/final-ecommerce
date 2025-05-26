@@ -457,6 +457,23 @@ const messages = {
       updateProfileSuccess: "Profile updated successfully",
       changePasswordSuccess: "Password changed successfully",
     },
+    wishlist: {
+      sale: 'Sale',
+      outOfStock: 'Out of Stock',
+      addToCart: 'Add to Cart',
+      messages: {
+        removed: 'Removed from wishlist successfully!',
+        addedToCart: 'Added to cart successfully!',
+        addedToWishlist: 'Added to wishlist!',
+      },
+      errors: {
+        notFoundId: 'Wishlist item ID not found!',
+        removeFailed: 'Failed to remove from wishlist!',
+        addToCartFailed: 'Failed to add to cart!',
+        addToWishlistFailed: 'Failed to add to wishlist!',
+        alreadyInWishlist: 'Product is already in your wishlist!'
+      }
+    },
   }
 }
 

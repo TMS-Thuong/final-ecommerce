@@ -14,6 +14,7 @@
         <div class="flex items-center space-x-4">
           <SearchIcon size="9" class="text-gray-700" @click.stop="inToggleSearch" />
           <CartIcon size="9" class="text-gray-700" @click="inCart" :item-count="cartItemsCount" />
+          <HeartIcon size="9" class="text-gray-700" @click="inWishlist" :item-count="wishlistItemsCount" />
         </div>
       </div>
 
@@ -124,22 +125,19 @@ import { useWishlistStore } from '@/stores/wishlist'
 import LocationIcon from '@/components/icons/LocationIcon.vue'
 import ShoppingCartIcon from '@/components/icons/ShoppingCartIcon.vue'
 import LogoutIcon from '@/components/icons/LogoutIcon.vue'
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
 const router = useRouter()
 const cartStore = useCartStore()
 const wishlistStore = useWishlistStore()
+const { totalItems: cartItemsCount } = storeToRefs(cartStore)
+const { totalItems: wishlistItemsCount } = storeToRefs(wishlistStore)
 const imageSrc = new URL('@/assets/logo.png', import.meta.url).href
 const searchBoxRef = ref(null)
 const isSearchVisible = ref(false)
 const isMenuOpen = ref(false)
 const searchQuery = ref('')
-
-const cartItemsCount = computed(() => {
-  return cartStore.totalItems;
-})
-
-const wishlistItemsCount = computed(() => wishlistStore.totalItems.value)
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
