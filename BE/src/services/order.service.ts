@@ -13,7 +13,7 @@ class OrderService {
     const random = Math.floor(Math.random() * 1000)
       .toString()
       .padStart(3, '0');
-    return `ORD${timestamp}${random}`;
+    return `#ORD${timestamp}${random}`;
   }
 
   private async ensurePaymentMethods(): Promise<void> {
