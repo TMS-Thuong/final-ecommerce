@@ -18,19 +18,38 @@ class FavoriteController {
       const userId = request.user.userId;
       const favorites = await this.favoriteService.getUserFavorites(userId);
 
-      const transformedFavorites = {
-        ...favorites,
-        items:
-          favorites?.items?.map((item) => ({
-            ...item,
-            product: {
-              ...item.product,
-              images: item.product.images.map((img) => img.imageUrl),
-            },
-          })) || [],
-      };
+      const transformedFavorites =
+        favorites?.items?.map((item) => ({
+          id: item.product.id,
+          sku: item.product.sku || '',
+          name: item.product.name,
+          slug: item.product.slug || '',
+          categoryId: item.product.categoryId,
+          brandId: item.product.brandId,
+          basePrice: Number(item.product.basePrice),
+          salePrice: item.product.salePrice ? Number(item.product.salePrice) : null,
+          stockQuantity: item.product.stockQuantity,
+          averageRating: Number(item.product.averageRating) || 0,
+          ratingCount: item.product.ratingCount || 0,
+          viewCount: item.product.viewCount || 0,
+          soldCount: item.product.soldCount || 0,
+          isActive: item.product.isActive,
+          isFeatured: item.product.isFeatured,
+          createdAt: item.product.createdAt.toISOString(),
+          updatedAt: item.product.updatedAt.toISOString(),
+          images: item.product.images.map((img) => ({
+            id: img.id,
+            productId: item.product.id,
+            imageUrl: img.imageUrl,
+            isThumbnail: img.isThumbnail,
+            displayOrder: img.displayOrder,
+          })),
+        })) || [];
 
-      return reply.ok(transformedFavorites);
+      return reply.send({
+        success: true,
+        data: transformedFavorites,
+      });
     } catch (error) {
       console.error('Error getting user favorites:', error);
       return reply.internalError(FavoriteErrorMessages.GET_WISHLIST_ERROR, 'GET_WISHLIST_ERROR');

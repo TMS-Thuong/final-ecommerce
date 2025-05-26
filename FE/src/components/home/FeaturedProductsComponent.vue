@@ -10,7 +10,7 @@
       No products found
     </div>
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 px-4 sm:px-0">
-      <ProductCard v-for="product in products" :key="product.id" :product="product" class="h-full" />
+      <ProductCard v-for="product in products" :key="product.id" :product="product" class="h-full shadow-featured" />
     </div>
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
       <router-link :to="{ name: RouterEnum.ProductList }"

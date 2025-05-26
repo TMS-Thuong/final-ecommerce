@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full bg-gray-50">
     <HeroSection />
     <div class="bg-white py-16 text-center my-0">
       <h2 class="text-5xl md:text-4xl font-extrabold mb-4">About Our Store</h2>

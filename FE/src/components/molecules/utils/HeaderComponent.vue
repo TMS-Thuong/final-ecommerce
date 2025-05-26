@@ -8,7 +8,7 @@
         </button>
 
         <div class="flex-1 flex justify-center">
-          <Logo :src="imageSrc" alt="Logo" class="h-8 w-auto object-contain" @click="inHome" />
+          <Logo :src="imageSrc" alt="Logo" class="h-8 w-auto object-contain cursor-pointer" @click="inHome" />
         </div>
 
         <div class="flex items-center space-x-4">
@@ -20,40 +20,48 @@
       <div v-if="isMenuOpen" class="px-4 py-3 bg-gray-50 border-t border-gray-200">
         <nav class="space-y-4">
           <div class="flex flex-col space-y-4">
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inAbout">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inAbout">
               <GroupUserIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">About</span>
             </div>
 
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inProducts">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inProducts">
               <ProductIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">Products</span>
             </div>
 
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inContact">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inContact">
               <TelephoneIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">Contact</span>
             </div>
           </div>
 
           <div class="border-t border-gray-200 pt-3 mt-1 space-y-1">
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inAccount">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inAccount">
               <PersonIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">My Account</span>
             </div>
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inWishlist">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inWishlist">
               <HeartIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">Wishlist</span>
             </div>
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inMyOrders">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inMyOrders">
               <ShoppingCartIcon customClass="text-gray-700 w-5 h-5" />
               <span class="text-lg font-medium">My Orders</span>
             </div>
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inAddresses">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inAddresses">
               <LocationIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">Addresses</span>
             </div>
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer" @click="inLogout">
+            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
+              @click="inLogout">
               <LogoutIcon size="6" class="text-gray-700" />
               <span class="text-lg font-medium">Logout</span>
             </div>
@@ -63,8 +71,8 @@
     </div>
 
     <div class="hidden md:flex items-center justify-between px-6 py-4 relative">
-      <div class="flex items-center min-w-[200px]">
-        <Logo :src="imageSrc" alt="Logo" class="h-10 w-auto object-contain" @click="inHome" />
+      <div class="flex items-center min-w-[200px] ">
+        <Logo :src="imageSrc" alt="Logo" class="h-10 w-auto object-contain cursor-pointer" @click="inHome" />
       </div>
 
       <div class="flex items-center space-x-8 lg:space-x-12">
