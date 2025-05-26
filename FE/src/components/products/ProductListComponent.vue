@@ -10,6 +10,7 @@
       No products found
     </div>
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 px-4 sm:px-0">
+      
       <ProductCard v-for="product in products" :key="product.id" :product="product"
         class="h-full shadow-2xl hover:shadow-xl transition-shadow duration-300 rounded-[10px] overflow-hidden hover:scale-105 transition-transform" />
     </div>

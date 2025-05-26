@@ -407,7 +407,10 @@ const messages = {
         addedToCart: "Added {quantity} {name} to cart!",
         productNotFound: "Product not found",
         insufficientStock: "Insufficient stock",
-        addToCartError: "Failed to add item to cart"
+        addToCartError: "Failed to add item to cart",
+        addedToWishlist: "Added to wishlist!",
+        addToWishlistError: "Failed to add to wishlist.",
+        alreadyInWishlist: "Product is already in your wishlist."
       },
       tabs: {
         description: "Product Description",

@@ -106,8 +106,11 @@
               {{ $t('product.detail.addToCart') }}
             </button>
             <button
-              class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
-              <HeartIcon size="8" class="text-gray-700" />
+              class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center"
+              @click="addToWishlist" :disabled="isWishlistLoading">
+              <HeartIcon size="8" :class="[
+                isWishlistLoading || isInWishlist ? 'text-red-600' : 'text-gray-700'
+              ]" />
             </button>
             <button
               class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
@@ -159,7 +162,9 @@ import { useI18n } from 'vue-i18n'
 import { productApi } from '@/api/product'
 import { categoryApi } from '@/api/category'
 import { brandApi } from '@/api/brand'
+import { wishlistApi } from '@/api/wishlist'
 import { useCartStore } from '@/stores/cart'
+import { useWishlistStore } from '@/stores/wishlist'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
@@ -173,6 +178,7 @@ const router = useRouter()
 const { t } = useI18n()
 const { showToast } = useToast()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const productId = computed(() => Number(route.params.id))
 
 const product = ref(null)
@@ -182,6 +188,8 @@ const quantity = ref(1)
 const currentImageIndex = ref(0)
 const categoryData = ref(null)
 const brandData = ref(null)
+const isWishlistLoading = ref(false)
+const isInWishlist = computed(() => wishlistStore.isInWishlist(productId.value))
 
 const discountPercent = computed(() => {
   if (!product.value || !product.value.salePrice) return 0
@@ -246,6 +254,35 @@ const addToCart = async () => {
     }
   } finally {
     loading.value = false;
+  }
+}
+
+const addToWishlist = async () => {
+  if (!product.value) return
+
+  try {
+    isWishlistLoading.value = true
+
+    if (!localStorage.getItem('accessToken')) {
+      router.push({ name: 'Login', query: { redirect: route.fullPath } });
+      return;
+    }
+
+    if (isInWishlist.value) {
+      showToast(ToastEnum.Error, t('product.detail.alreadyInWishlist'));
+      return;
+    }
+
+    await wishlistStore.addToWishlist(product.value.id);
+    showToast(ToastEnum.Success, t('product.detail.addedToWishlist', { name: product.value.name }));
+  } catch (err) {
+    if (err.response?.status === 409 || err.response?.data?.message === 'PRODUCT_ALREADY_IN_FAVORITES') {
+      showToast(ToastEnum.Error, t('product.detail.alreadyInWishlist'));
+    } else {
+      showToast(ToastEnum.Error, t('product.detail.addToWishlistError'));
+    }
+  } finally {
+    isWishlistLoading.value = false;
   }
 }
 
@@ -315,5 +352,6 @@ const formatDescription = (desc) => {
 
 onMounted(() => {
   loadProductData()
+  wishlistStore.initWishlist()
 })
 </script>

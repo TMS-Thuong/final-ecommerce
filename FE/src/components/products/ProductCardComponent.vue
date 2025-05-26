@@ -58,11 +58,11 @@
           </span>
         </div>
 
-        <div class="mt-2">
-          <span class="inline-block text-lg px-3 py-1 rounded-full border-1" :class="product.salePrice
-            ? 'bg-white text-red-500 border-red-500'
-            : 'bg-transparent text-transparent border-transparent'">
-            {{ product.salePrice ? $t('product.discount') : '' }}
+        <div class="mt-2 min-h-[40px] flex items-center">
+          <span class="inline-block text-lg px-3 py-1 rounded-full border-1 transition-all duration-200" :class="product.salePrice
+            ? 'bg-white text-red-500 border-red-500 visible'
+            : 'bg-transparent text-transparent border-transparent invisible'">
+            {{ $t('product.discount') }}
           </span>
         </div>
       </div>

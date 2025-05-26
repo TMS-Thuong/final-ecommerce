@@ -20,6 +20,7 @@ import AddressListView from '@/views/account/AddressListView.vue'
 import AddAddressView from '@/views/account/AddAddressView.vue'
 import EditAddressView from '@/views/account/EditAddressView.vue'
 import ProfileView from '@/views/account/ProfileView.vue'
+import WishlistView from '@/views/wishlist/WishlistView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -88,6 +89,12 @@ const routes = [
     path: '/account/profile',
     name: RouterEnum.Profile,
     component: ProfileView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/wishlist',
+    name: 'Wishlist',
+    component: WishlistView,
     meta: { requiresAuth: true }
   },
   {

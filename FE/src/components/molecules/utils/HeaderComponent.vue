@@ -84,7 +84,8 @@
           @click.stop="inToggleSearch" />
         <CartIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inCart"
           :item-count="cartItemsCount" />
-        <HeartIcon size="9" class="text-gray-700 hover:text-black transition" @click="inWishlist" />
+        <HeartIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inWishlist"
+          :item-count="wishlistItemsCount" />
         <div class="flex items-center">
           <PersonIcon size="9" class="text-gray-700 hover:text-black transition" @click="inAccount" />
           <UserDropdown />
@@ -119,6 +120,7 @@ import HeaderSection from '@/components/molecules/utils/HeaderSelectionComponent
 import { useI18n } from 'vue-i18n'
 import { RouterEnum } from '@/enums/router'
 import { useCartStore } from '@/stores/cart'
+import { useWishlistStore } from '@/stores/wishlist'
 import LocationIcon from '@/components/icons/LocationIcon.vue'
 import ShoppingCartIcon from '@/components/icons/ShoppingCartIcon.vue'
 import LogoutIcon from '@/components/icons/LogoutIcon.vue'
@@ -126,6 +128,7 @@ import LogoutIcon from '@/components/icons/LogoutIcon.vue'
 const { t } = useI18n()
 const router = useRouter()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const imageSrc = new URL('@/assets/logo.png', import.meta.url).href
 const searchBoxRef = ref(null)
 const isSearchVisible = ref(false)
@@ -135,6 +138,8 @@ const searchQuery = ref('')
 const cartItemsCount = computed(() => {
   return cartStore.totalItems;
 })
+
+const wishlistItemsCount = computed(() => wishlistStore.totalItems.value)
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
@@ -150,7 +155,7 @@ const handleClickOutside = (event) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
 
   window.addEventListener('resize', () => {
@@ -160,6 +165,7 @@ onMounted(() => {
   })
 
   cartStore.initializeCartFromLocalStorage()
+  await wishlistStore.fetchWishlist()
 })
 
 const inHome = () => {
@@ -192,7 +198,12 @@ const inCart = () => {
 }
 
 const inWishlist = () => {
-  isMenuOpen.value = false
+  if (localStorage.getItem('accessToken')) {
+    router.push('/wishlist');
+  } else {
+    router.push({ name: RouterEnum.Login, query: { redirect: '/wishlist' } });
+  }
+  isMenuOpen.value = false;
 }
 
 const inAccount = () => {
