@@ -20,21 +20,10 @@ class FavoriteController {
 
       const transformedFavorites =
         favorites?.items?.map((item) => ({
-          id: item.product.id,
-          sku: item.product.sku || '',
-          name: item.product.name,
-          slug: item.product.slug || '',
-          categoryId: item.product.categoryId,
-          brandId: item.product.brandId,
+          ...item.product,
           basePrice: Number(item.product.basePrice),
           salePrice: item.product.salePrice ? Number(item.product.salePrice) : null,
-          stockQuantity: item.product.stockQuantity,
           averageRating: Number(item.product.averageRating) || 0,
-          ratingCount: item.product.ratingCount || 0,
-          viewCount: item.product.viewCount || 0,
-          soldCount: item.product.soldCount || 0,
-          isActive: item.product.isActive,
-          isFeatured: item.product.isFeatured,
           createdAt: item.product.createdAt.toISOString(),
           updatedAt: item.product.updatedAt.toISOString(),
           images: item.product.images.map((img) => ({
@@ -46,10 +35,7 @@ class FavoriteController {
           })),
         })) || [];
 
-      return reply.send({
-        success: true,
-        data: transformedFavorites,
-      });
+      return reply.ok(transformedFavorites);
     } catch (error) {
       console.error('Error getting user favorites:', error);
       return reply.internalError(FavoriteErrorMessages.GET_WISHLIST_ERROR, 'GET_WISHLIST_ERROR');
@@ -72,17 +58,32 @@ class FavoriteController {
       const { productId } = result.data;
       const favoriteItem = await this.favoriteService.addToFavorites(userId, productId);
 
-      const transformedFavoriteItem = favoriteItem
-        ? {
-            ...favoriteItem,
-            product: favoriteItem.product
-              ? {
-                  ...favoriteItem.product,
-                  images: favoriteItem.product.images.map((img) => img.imageUrl),
-                }
-              : null,
-          }
-        : null;
+      if (!favoriteItem) {
+        return reply.internalError(FavoriteErrorMessages.ADD_TO_WISHLIST_ERROR, 'ADD_TO_WISHLIST_ERROR');
+      }
+
+      const transformedFavoriteItem = {
+        id: favoriteItem.id,
+        favoriteId: favoriteItem.favoriteId,
+        productId: favoriteItem.productId,
+        product: favoriteItem.product
+          ? {
+              ...favoriteItem.product,
+              basePrice: Number(favoriteItem.product.basePrice),
+              salePrice: favoriteItem.product.salePrice ? Number(favoriteItem.product.salePrice) : null,
+              averageRating: Number(favoriteItem.product.averageRating) || 0,
+              createdAt: favoriteItem.product.createdAt.toISOString(),
+              updatedAt: favoriteItem.product.updatedAt.toISOString(),
+              images: favoriteItem.product.images.map((img) => ({
+                id: img.id,
+                productId: img.productId,
+                imageUrl: img.imageUrl,
+                isThumbnail: img.isThumbnail,
+                displayOrder: img.displayOrder,
+              })),
+            }
+          : null,
+      };
 
       return reply.created(transformedFavoriteItem);
     } catch (error) {
