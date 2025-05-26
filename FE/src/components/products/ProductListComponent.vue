@@ -9,20 +9,13 @@
     <div v-else-if="products.length === 0" class="text-center py-8 text-gray-500">
       No products found
     </div>
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <ProductCard
-        v-for="product in products"
-        :key="product.id"
-        :product="product"
-        class="h-full"
-      />
+    <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 px-4 sm:px-0">
+      <ProductCard v-for="product in products" :key="product.id" :product="product"
+        class="h-full shadow-2xl hover:shadow-xl transition-shadow duration-300 rounded-[10px] overflow-hidden hover:scale-105 transition-transform" />
     </div>
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
-      <button
-        v-if="hasMorePages"
-        @click="loadMore"
-        class="px-6 py-2 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors"
-      >
+      <button v-if="hasMorePages" @click="loadMore"
+        class="px-6 py-2 bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
         Load More
       </button>
     </div>

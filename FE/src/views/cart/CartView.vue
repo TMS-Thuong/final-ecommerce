@@ -1,18 +1,17 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $t('cart.yourCart') }}</h1>
-
     <div v-if="cartStore.isLoading" class="flex justify-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-800"></div>
     </div>
 
     <div v-else-if="cartStore.isEmpty" class="py-8 text-center">
       <div class="flex justify-center mb-4">
-        <img src="@/assets/empty-cart.svg" alt="Empty Cart" class="w-24 h-24 text-gray-300" />
+        <img src="@/assets/empty-cart.svg" alt="Empty Cart" class="w-34 h-34 text-gray-300" />
       </div>
-      <h2 class="text-2xl font-medium text-gray-900 mb-2">{{ $t('cart.emptyCart') }}</h2>
-      <p class="text-gray-600 mb-6">{{ $t('cart.noProducts') }}</p>
-      <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-xl font-medium text-white bg-neutral-800 hover:bg-neutral-700">
+      <h2 class="text-3xl font-medium text-gray-900 mb-2">{{ $t('cart.emptyCart') }}</h2>
+      <p class="text-gray-600 text-xl mb-6">{{ $t('cart.noProducts') }}</p>
+      <router-link to="/products"
+        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-xl font-medium text-white bg-neutral-800 hover:bg-neutral-700">
         {{ $t('cart.continueShopping') }}
       </router-link>
     </div>
@@ -23,35 +22,31 @@
           <div class="flex justify-between items-center px-6 py-4 bg-gray-50 border-b border-gray-200">
             <div class="flex items-center">
               <div class="mr-3">
-                <input
-                  type="checkbox"
-                  id="select-all"
+                <input type="checkbox" id="select-all"
                   class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded cursor-pointer"
-                  :checked="isAllSelected"
-                  @change="toggleSelectAll"
-                />
+                  :checked="isAllSelected" @change="toggleSelectAll" />
               </div>
               <h2 class="text-xl font-medium text-gray-900">{{ $t('cart.products') }} ({{ cartStore.totalItems }})</h2>
             </div>
-            <button @click="confirmRemoveAll" class="text-red-600 hover:text-red-800 text-xl font-medium">{{ $t('cart.removeAll') }}</button>
+            <button @click="confirmRemoveAll" class="text-red-600 hover:text-red-800 text-xl font-medium">{{
+              $t('cart.removeAll') }}</button>
           </div>
           <ul class="divide-y divide-gray-200">
             <li v-for="item in cartStore.cartItems" :key="item.id" class="px-6 py-4">
               <div class="flex items-center">
                 <div class="mr-4">
-                  <input
-                    type="checkbox"
-                    :id="`item-${item.id}`"
+                  <input type="checkbox" :id="`item-${item.id}`"
                     class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded cursor-pointer"
-                    v-model="selectedItems[item.id]"
-                    @change="updateSelectedState"
-                  />
+                    v-model="selectedItems[item.id]" @change="updateSelectedState" />
                 </div>
                 <div class="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
-                  <img v-if="item.product.image" :src="item.product.image" :alt="item.product.name" class="w-full h-full object-center object-cover">
+                  <img v-if="item.product.image" :src="item.product.image" :alt="item.product.name"
+                    class="w-full h-full object-center object-cover">
                   <div v-else class="flex items-center justify-center w-full h-full text-gray-400">
-                    <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
                 </div>
@@ -60,43 +55,37 @@
                     <div>
                       <h3 class="text-xl font-medium text-gray-900">{{ item.product.name }}</h3>
                       <p class="mt-1 text-xl text-gray-500">
-                        <span v-if="item.product.salePrice" class="line-through">{{ formatPrice(item.product.basePrice) }}</span>
+                        <span v-if="item.product.salePrice" class="line-through">{{ formatPrice(item.product.basePrice)
+                          }}</span>
                         <span class="font-medium ml-1">{{ formatPrice(item.price) }}</span>
                       </p>
                     </div>
                     <button @click="removeItem(item.id)" class="text-gray-400 hover:text-gray-500">
-                      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clip-rule="evenodd" />
                       </svg>
                     </button>
                   </div>
                   <div class="mt-4 sm:flex sm:items-center sm:justify-between">
                     <div class="flex items-center border border-gray-300 rounded w-28">
-                      <button
-                        @click="updateItemQuantity(item.id, item.quantity - 1)"
+                      <button @click="updateItemQuantity(item.id, item.quantity - 1)"
                         class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-r border-gray-300"
-                        :disabled="item.quantity <= 1"
-                        :class="{'opacity-50 cursor-not-allowed': item.quantity <= 1}"
-                      >
+                        :disabled="item.quantity <= 1" :class="{ 'opacity-50 cursor-not-allowed': item.quantity <= 1 }">
                         <span class="text-xl font-medium">-</span>
                       </button>
 
-                      <input
-                        type="number"
-                        v-model.number="item.quantity"
-                        min="1"
-                        :max="item.product.stockQuantity"
+                      <input type="number" v-model.number="item.quantity" min="1" :max="item.product.stockQuantity"
                         class="w-10 text-center border-none py-1 text-gray-700 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         @blur="handleQuantityInput(item.id, item.quantity)"
-                        @keyup.enter="handleQuantityInput(item.id, item.quantity)"
-                      />
+                        @keyup.enter="handleQuantityInput(item.id, item.quantity)" />
 
-                      <button
-                        @click="updateItemQuantity(item.id, item.quantity + 1)"
+                      <button @click="updateItemQuantity(item.id, item.quantity + 1)"
                         class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-l border-gray-300"
                         :disabled="item.quantity >= item.product.stockQuantity"
-                        :class="{'opacity-50 cursor-not-allowed': item.quantity >= item.product.stockQuantity}"
-                      >
+                        :class="{ 'opacity-50 cursor-not-allowed': item.quantity >= item.product.stockQuantity }">
                         <span class="text-xl font-medium">+</span>
                       </button>
                     </div>
@@ -109,9 +98,12 @@
         </div>
 
         <div class="mt-6">
-          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-xl font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+          <router-link to="/products"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-xl font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
             <svg class="mr-2 -ml-1 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              <path fill-rule="evenodd"
+                d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+                clip-rule="evenodd" />
             </svg>
             {{ $t('cart.continueShopping') }}
           </router-link>
@@ -137,19 +129,15 @@
           </div>
           <div class="px-6 py-4">
             <div class="mb-4">
-              <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode') }}</label>
+              <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode')
+                }}</label>
               <div class="flex">
-                <input
-                  type="text"
-                  id="coupon"
+                <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
-                  :placeholder="$t('cart.enterCouponCode')"
-                  v-model="couponCode"
-                >
+                  :placeholder="$t('cart.enterCouponCode')" v-model="couponCode">
                 <button
                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-r-md shadow-sm text-xl font-medium text-white bg-neutral-800 hover:bg-neutral-700"
-                  @click="applyCoupon"
-                >
+                  @click="applyCoupon">
                   {{ $t('cart.apply') }}
                 </button>
               </div>
@@ -157,10 +145,8 @@
 
             <button
               class="w-full px-6 py-3 bg-neutral-800 text-xl text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
-              @click="checkout"
-              :disabled="selectedItemCount === 0"
-              :class="{'opacity-50 cursor-not-allowed': selectedItemCount === 0}"
-            >
+              @click="checkout" :disabled="selectedItemCount === 0"
+              :class="{ 'opacity-50 cursor-not-allowed': selectedItemCount === 0 }">
               {{ $t('cart.checkout') }} ({{ selectedItemCount }})
             </button>
           </div>

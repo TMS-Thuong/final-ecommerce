@@ -1,7 +1,6 @@
 .product-card {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .product-card > div:first-child {
@@ -13,3 +12,4 @@
   height: 100%;
   object-fit: contain;
 }
+

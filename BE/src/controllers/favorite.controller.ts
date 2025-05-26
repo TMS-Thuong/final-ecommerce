@@ -2,8 +2,43 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { FavoriteErrorMessages } from '@app/constants/favorite.message';
 import { FavoriteService } from '@app/services/favorite.service';
+import { FavoriteItem, Product } from '@app/types/favorite.types';
 import { ProductIdZodSchema, FavoriteItemIdZodSchema } from '@app/validations/favorite.zod';
 import { binding } from '@decorator/binding';
+
+interface TransformedProduct {
+  id: number;
+  sku: string;
+  name: string;
+  slug: string;
+  categoryId: number;
+  brandId: number;
+  basePrice: number;
+  salePrice: number | null;
+  stockQuantity: number;
+  averageRating: number;
+  ratingCount: number;
+  viewCount: number;
+  soldCount: number;
+  isActive: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  images: {
+    id: number;
+    productId: number;
+    imageUrl: string;
+    isThumbnail: boolean;
+    displayOrder: number;
+  }[];
+}
+
+interface TransformedFavoriteItem {
+  id: number;
+  favoriteId: number;
+  productId: number;
+  product: TransformedProduct | null;
+}
 
 class FavoriteController {
   private favoriteService: FavoriteService;
@@ -18,23 +53,31 @@ class FavoriteController {
       const userId = request.user.userId;
       const favorites = await this.favoriteService.getUserFavorites(userId);
 
-      const transformedFavorites = {
-        ...favorites,
-        items:
-          favorites?.items?.map((item) => ({
-            ...item,
-            product: {
-              ...item.product,
-              images: item.product.images.map((img) => img.imageUrl),
-            },
-          })) || [],
-      };
+      const transformedFavorites = favorites?.items?.map((item) => this.transformFavoriteItem(item.product)) || [];
 
       return reply.ok(transformedFavorites);
     } catch (error) {
       console.error('Error getting user favorites:', error);
       return reply.internalError(FavoriteErrorMessages.GET_WISHLIST_ERROR, 'GET_WISHLIST_ERROR');
     }
+  }
+
+  private transformFavoriteItem(product: Product): TransformedProduct {
+    return {
+      ...product,
+      basePrice: Number(product.basePrice),
+      salePrice: product.salePrice ? Number(product.salePrice) : null,
+      averageRating: Number(product.averageRating) || 0,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+      images: product.images.map((img) => ({
+        id: img.id,
+        productId: img.productId,
+        imageUrl: img.imageUrl,
+        isThumbnail: img.isThumbnail,
+        displayOrder: img.displayOrder,
+      })),
+    };
   }
 
   @binding
@@ -53,17 +96,11 @@ class FavoriteController {
       const { productId } = result.data;
       const favoriteItem = await this.favoriteService.addToFavorites(userId, productId);
 
-      const transformedFavoriteItem = favoriteItem
-        ? {
-            ...favoriteItem,
-            product: favoriteItem.product
-              ? {
-                  ...favoriteItem.product,
-                  images: favoriteItem.product.images.map((img) => img.imageUrl),
-                }
-              : null,
-          }
-        : null;
+      if (!favoriteItem) {
+        return reply.internalError(FavoriteErrorMessages.ADD_TO_WISHLIST_ERROR, 'ADD_TO_WISHLIST_ERROR');
+      }
+
+      const transformedFavoriteItem = this.transformFavoriteItemDetails(favoriteItem);
 
       return reply.created(transformedFavoriteItem);
     } catch (error) {
@@ -78,6 +115,17 @@ class FavoriteController {
       console.error('Error adding to favorites:', error);
       return reply.internalError(FavoriteErrorMessages.ADD_TO_WISHLIST_ERROR, 'ADD_TO_WISHLIST_ERROR');
     }
+  }
+
+  private transformFavoriteItemDetails(favoriteItem: FavoriteItem): TransformedFavoriteItem | null {
+    return favoriteItem
+      ? {
+          id: favoriteItem.id,
+          favoriteId: favoriteItem.favoriteId,
+          productId: favoriteItem.productId,
+          product: favoriteItem.product ? this.transformFavoriteItem(favoriteItem.product) : null,
+        }
+      : null;
   }
 
   @binding

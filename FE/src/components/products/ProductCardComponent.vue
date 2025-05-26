@@ -1,7 +1,7 @@
 <template>
   <router-link :to="`/products/${product.id}`" class="block">
-    <div class="product-card bg-white rounded-lg">
-
+    <div
+      class="product-card bg-white rounded-[10px] shadow-2xl hover:shadow-xl overflow-hidden transition-shadow duration-300 hover:scale-105 transition-transform">
       <div class="relative w-full aspect-[4/3] md:aspect-[1/1] bg-white p-2">
         <div v-if="discountPercent > 0"
           class="absolute top-1 left-2 bg-red-500 text-white text-base font-bold rounded-full z-10 w-[25%] h-8 flex items-center justify-center leading-8">
@@ -60,7 +60,7 @@
 
         <div class="mt-2">
           <span class="inline-block text-lg px-3 py-1 rounded-full border-1" :class="product.salePrice
-            ? 'bg-white text-green-500 border-green-500'
+            ? 'bg-white text-red-500 border-red-500'
             : 'bg-transparent text-transparent border-transparent'">
             {{ product.salePrice ? $t('product.discount') : '' }}
           </span>

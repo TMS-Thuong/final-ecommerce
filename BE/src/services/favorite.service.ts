@@ -16,13 +16,29 @@ export class FavoriteService {
               product: {
                 select: {
                   id: true,
+                  sku: true,
                   name: true,
+                  slug: true,
+                  categoryId: true,
+                  brandId: true,
                   basePrice: true,
                   salePrice: true,
                   stockQuantity: true,
+                  averageRating: true,
+                  ratingCount: true,
+                  viewCount: true,
+                  soldCount: true,
+                  isActive: true,
+                  isFeatured: true,
+                  createdAt: true,
+                  updatedAt: true,
                   images: {
                     select: {
+                      id: true,
+                      productId: true,
                       imageUrl: true,
+                      isThumbnail: true,
+                      displayOrder: true,
                     },
                   },
                 },
@@ -53,13 +69,29 @@ export class FavoriteService {
       where: { id: productId },
       select: {
         id: true,
+        sku: true,
         name: true,
+        slug: true,
+        categoryId: true,
+        brandId: true,
         basePrice: true,
         salePrice: true,
         stockQuantity: true,
+        averageRating: true,
+        ratingCount: true,
+        viewCount: true,
+        soldCount: true,
+        isActive: true,
+        isFeatured: true,
+        createdAt: true,
+        updatedAt: true,
         images: {
           select: {
+            id: true,
+            productId: true,
             imageUrl: true,
+            isThumbnail: true,
+            displayOrder: true,
           },
         },
       },
@@ -104,13 +136,29 @@ export class FavoriteService {
           product: {
             select: {
               id: true,
+              sku: true,
               name: true,
+              slug: true,
+              categoryId: true,
+              brandId: true,
               basePrice: true,
               salePrice: true,
               stockQuantity: true,
+              averageRating: true,
+              ratingCount: true,
+              viewCount: true,
+              soldCount: true,
+              isActive: true,
+              isFeatured: true,
+              createdAt: true,
+              updatedAt: true,
               images: {
                 select: {
+                  id: true,
+                  productId: true,
                   imageUrl: true,
+                  isThumbnail: true,
+                  displayOrder: true,
                 },
               },
             },
@@ -127,7 +175,6 @@ export class FavoriteService {
 
   async removeFromFavorites(userId: number, id: number): Promise<{ message: string }> {
     try {
-      // Lấy danh sách yêu thích của người dùng
       const favorite = await prisma.favorite.findUnique({
         where: { userId },
       });
