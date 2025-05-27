@@ -122,21 +122,25 @@
       <div class="mt-8 sm:mt-12">
         <div class="border-b border-gray-200 text-base sm:text-xl">
           <nav class="flex flex-wrap space-x-4 sm:space-x-8">
-            <button class="py-2 sm:py-4 px-1 border-b-2 border-neutral-800 font-medium text-neutral-800">
+            <button
+              :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'description' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
+              @click="handleTabClick('description')">
               {{ $t('product.tabs.description') }}
             </button>
             <button
-              class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+              :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'specifications' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
+              @click="handleTabClick('specifications')">
               {{ $t('product.tabs.specifications') }}
             </button>
             <button
-              class="py-2 sm:py-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+              :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'reviews' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
+              @click="handleTabClick('reviews')">
               {{ $t('product.tabs.reviews') }} ({{ product.ratingCount || 0 }})
             </button>
           </nav>
         </div>
 
-        <div class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
+        <div v-if="tab === 'description'" class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
           <div v-if="product.description" class="text-justify text-xl prose"
             v-html="formatDescription(product.description)"></div>
           <div v-else class="text-justify text-gray-500">{{ $t('product.detail.updating') }}</div>
@@ -147,6 +151,50 @@
                 {{ feature }}
               </li>
             </ul>
+          </div>
+        </div>
+        <div v-else-if="tab === 'specifications'"
+          class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
+        </div>
+        <div v-else-if="tab === 'reviews'" class="py-4 sm:py-6">
+          <div v-if="loadingReviews">Đang tải đánh giá...</div>
+          <div v-else-if="errorReviews" class="text-red-500">{{ errorReviews }}</div>
+          <div v-else>
+            <div v-if="reviews.length === 0" class="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</div>
+            <div v-else>
+              <div v-for="review in reviews" :key="review.id" class="bg-white rounded-lg shadow p-4 mb-4">
+                <div class="flex items-center mb-2">
+                  <img v-if="review.user?.avatarUrl" :src="review.user.avatarUrl"
+                    class="w-10 h-10 rounded-full object-cover mr-3" />
+                  <div v-else
+                    class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-600 mr-3">
+                    {{ (review.user?.firstName?.[0] || 'U') }}
+                  </div>
+                  <div class=text-xl>
+                    <div class="font-semibold">{{ review.user?.firstName }} {{ review.user?.lastName }}</div>
+                    <div class="flex items-center space-x-2">
+                      <StarRating :size="'6'" :rating="review.rating" :readonly="true" />
+                      <span class="font-medium">{{ review.rating }}</span>
+                      <span class="text-gray-400 ml-2">{{ new Date(review.createdAt).toLocaleDateString('vi-VN')
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="font-bold text-xl mb-1">{{ review.title }}</div>
+                <div class="mb-2 text-lg">{{ review.comment }}</div>
+                <div class="flex space-x-2 mt-2">
+                  <img v-for="img in review.images" :key="img.id" :src="img.imageUrl"
+                    class="w-16 h-16 object-cover rounded bg-gray-100 cursor-zoom-in"
+                    @click="handleZoomImage(img.imageUrl)" />
+                </div>
+              </div>
+            </div>
+            <div v-if="zoomImageUrl" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+              <div @click.self="closeZoom" class="flex items-center justify-center w-full h-full">
+                <img :src="zoomImageUrl" class="max-w-[100vw] max-h-[95vh] rounded shadow-lg bg-white p-6" />
+                <button @click="closeZoom" class="absolute top-4 right-4 text-white text-3xl font-bold">&times;</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -161,7 +209,6 @@ import { useI18n } from 'vue-i18n'
 import { productApi } from '@/api/product'
 import { categoryApi } from '@/api/category'
 import { brandApi } from '@/api/brand'
-import { wishlistApi } from '@/api/wishlist'
 import { useCartStore } from '@/stores/cart'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useToast } from '@/hooks/useToast'
@@ -171,6 +218,7 @@ import ProductImageGallery from '@/components/products/ProductImageGalleryCompon
 import CartIcon from '@/components/icons/CartIcon.vue'
 import HeartIcon from '@/components/icons/HeartIcon.vue'
 import ShareIcon from '@/components/icons/ShareIcon.vue'
+import { reviewApi } from '@/api/review'
 
 const route = useRoute()
 const router = useRouter()
@@ -189,6 +237,11 @@ const categoryData = ref(null)
 const brandData = ref(null)
 const isWishlistLoading = ref(false)
 const isInWishlist = computed(() => wishlistStore.isInWishlist(productId.value))
+const tab = ref('description')
+const reviews = ref([])
+const loadingReviews = ref(false)
+const errorReviews = ref('')
+const zoomImageUrl = ref(null)
 
 const discountPercent = computed(() => {
   if (!product.value || !product.value.salePrice) return 0
@@ -342,10 +395,40 @@ const formatDescription = (desc) => {
   return paragraphs.map(p => `<p>${p}</p>`).join('');
 };
 
+const loadReviews = async () => {
+  loadingReviews.value = true
+  errorReviews.value = ''
+  try {
+    const res = await reviewApi.getProductReviews(productId.value)
+    console.log('API response:', res.data)
+    reviews.value = Array.isArray(res.data?.reviews) ? [...res.data.reviews] : []
+    console.log('reviews after set:', reviews.value)
+  } catch (e) {
+    errorReviews.value = 'Không thể tải đánh giá sản phẩm'
+  } finally {
+    loadingReviews.value = false
+  }
+}
+
+const handleTabClick = (selectedTab) => {
+  tab.value = selectedTab
+  if (selectedTab === 'reviews') {
+    loadReviews()
+  }
+}
+
+const handleZoomImage = (url) => {
+  zoomImageUrl.value = url
+}
+
+const closeZoom = () => {
+  zoomImageUrl.value = null
+}
+
 onMounted(() => {
   loadProductData()
   if (localStorage.getItem('accessToken')) {
-  wishlistStore.initWishlist()
+    wishlistStore.initWishlist()
   }
 })
 </script>

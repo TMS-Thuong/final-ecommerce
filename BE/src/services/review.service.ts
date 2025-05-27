@@ -202,4 +202,15 @@ export class ReviewService {
       },
     });
   }
+
+  async getUserReviews(userId: number) {
+    return await prisma.review.findMany({
+      where: { userId },
+      include: {
+        product: true,
+        images: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

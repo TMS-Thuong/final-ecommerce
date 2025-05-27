@@ -39,6 +39,12 @@
                 <UserLockIcon size="6" />
                 <span class="font-medium">Change Password</span>
               </button>
+              <button
+                :class="tabClass('purchased-products') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
+                @click="goToPurchasedProducts">
+                <UserBagIcon size="6" />
+                <span class="font-medium">Purchased Products</span>
+              </button>
             </nav>
             <div class="px-4 pb-6 mt-6">
               <button
@@ -236,6 +242,9 @@ const tabClass = (tab: string) =>
 
 const goToOrders = () => {
   router.push({ name: 'MyOrders' });
+};
+const goToPurchasedProducts = () => {
+  router.push({ name: 'MyPurchasedProducts' });
 };
 const logout = () => {
   localStorage.removeItem('accessToken');

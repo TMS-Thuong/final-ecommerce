@@ -45,4 +45,9 @@ export async function reviewRoutes(fastify: FastifyInstance): Promise<void> {
     preHandler: verifyUserAuthentication,
     handler: uploadController.deleteReviewImage.bind(uploadController),
   });
+
+  fastify.get('/reviews/me', {
+    preHandler: verifyUserAuthentication,
+    handler: reviewController.getMyReviews.bind(reviewController),
+  });
 }

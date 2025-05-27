@@ -119,4 +119,15 @@ export class ReviewController {
       return reply.internalError(ReviewErrorMessages.FETCH_REVIEWS_ERROR, 'FETCH_REVIEWS_ERROR');
     }
   }
+
+  @binding
+  async getMyReviews(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const userId = request.user.userId;
+      const reviews = await this.reviewService.getUserReviews(userId);
+      return reply.ok(reviews);
+    } catch (error) {
+      return reply.internalError('Failed to fetch user reviews', 'FETCH_USER_REVIEWS_ERROR');
+    }
+  }
 }

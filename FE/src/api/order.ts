@@ -33,9 +33,16 @@ export default {
     });
     return response.data;
   },
-  
+
   async cancelOrder(orderId: number) {
     const response = await axios.post(`${API_URL}/api/orders/${orderId}/cancel`, {}, {
+      headers: getAuthHeader()
+    });
+    return response.data;
+  },
+
+  async getPurchasedProducts() {
+    const response = await axios.get(`${API_URL}/api/orders/purchased-products`, {
       headers: getAuthHeader()
     });
     return response.data;
