@@ -2,9 +2,8 @@
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-0 md:p-2">
         <div class="mx-6 md:mx-10 max-w-full">
             <div class="shadow-xl border-0 bg-white rounded-lg">
-                <WishlistHeader :count="wishlistItems.length" @clear="clearWishlist" />
+                <WishlistHeader :count="wishlistItems.length" :total="totalValue" @clear="clearWishlist" />
                 <div class="p-4 bg-gray-50">
-                    <WishlistSummary v-if="wishlistItems.length" :total="totalValue" />
                     <WishlistGrid v-if="wishlistItems.length" :items="wishlistItems" @update="fetchWishlist" />
                     <WishlistEmpty v-else />
                 </div>
@@ -18,7 +17,6 @@ import { computed, onMounted } from 'vue'
 import { useWishlistStore } from '@/stores/wishlist'
 import { storeToRefs } from 'pinia'
 import WishlistHeader from '@/components/wishlist/WishlistHeader.vue'
-import WishlistSummary from '@/components/wishlist/WishlistSummary.vue'
 import WishlistGrid from '@/components/wishlist/WishlistGrid.vue'
 import WishlistEmpty from '@/components/wishlist/WishlistEmpty.vue'
 
@@ -32,8 +30,4 @@ const totalValue = computed(() =>
 )
 const fetchWishlist = () => wishlistStore.fetchWishlist && wishlistStore.fetchWishlist()
 const clearWishlist = () => wishlistStore.clearWishlist && wishlistStore.clearWishlist()
-
-onMounted(() => {
-    fetchWishlist()
-})
 </script>

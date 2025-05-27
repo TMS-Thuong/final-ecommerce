@@ -37,6 +37,10 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const error = ref<string | null>(null)
 
     const fetchWishlist = async () => {
+        if (!localStorage.getItem('accessToken')) {
+            wishlistProducts.value = []
+            return
+        }
         try {
             isLoading.value = true;
             error.value = null;

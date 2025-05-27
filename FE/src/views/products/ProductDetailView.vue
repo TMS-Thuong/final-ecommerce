@@ -107,8 +107,9 @@
             </button>
             <button
               class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center"
-              @click="handleWishlistClick" :disabled="isWishlistLoading">
-              <HeartIcon size="8" :class="[isInWishlist ? 'text-red-600' : 'text-gray-700']" />
+              @click="inWishlist" :disabled="isWishlistLoading">
+              <HeartIcon fillColor="currentColor"
+                :customClass="isInWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400 fill-gray-100'" size="8" />
             </button>
             <button
               class="p-2 sm:p-3 border border-gray-300 rounded-md hover:bg-gray-100 flex items-center justify-center">
@@ -255,7 +256,7 @@ const addToCart = async () => {
   }
 }
 
-const handleWishlistClick = async () => {
+const inWishlist = async () => {
   if (isWishlistLoading.value) return;
   isWishlistLoading.value = true;
   try {
@@ -343,6 +344,8 @@ const formatDescription = (desc) => {
 
 onMounted(() => {
   loadProductData()
-  wishlistStore.initWishlist()
+  if (localStorage.getItem('accessToken')) {
+    wishlistStore.initWishlist()
+  }
 })
 </script>

@@ -5,13 +5,14 @@
             <img :src="item.product.images?.[0]?.imageUrl || '/placeholder.svg'"
                 class="w-64 h-64 object-contain rounded-xl bg-gray-50" alt="product" />
             <button
-                class="absolute top-3 right-3 w-9 h-9 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow hover:bg-gray-100 transition p-0 m-0"
-                @click.stop="removeFromWishlist">
-                <HeartIcon class="w-6 h-6 block m-0 p-0 text-red-500 fill-red-500" />
+                class="absolute top-3 right-3 w-9 h-9 flex items-center justify-center border-none bg-transparent hover:bg-gray-100 transition p-0 m-0">
+                <HeartIcon fillColor="currentColor" customClass="text-red-500 fill-red-500" size="8"
+                    @click.stop="removeFromWishlist" />
             </button>
+
             <span
                 v-if="item.product.basePrice && item.product.salePrice && item.product.salePrice < item.product.basePrice"
-                class="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold shadow">
+                class="absolute top-4 left-4 bg-red-500 text-white text-lg px-2 py-0.5 rounded-full font-semibold shadow">
                 {{ $t('wishlist.sale') }}
             </span>
             <div v-if="item.product.stockQuantity <= 0"
@@ -22,21 +23,21 @@
         </div>
         <div class="flex-1 flex flex-col justify-between p-4 space-y-2">
             <div>
-                <h3 class="font-semibold text-gray-900 text-base mb-1 line-clamp-2">{{ item.product.name }}</h3>
+                <h3 class="font-semibold text-gray-900 text-xl mb-1 line-clamp-2">{{ item.product.name }}</h3>
                 <div class="flex items-center gap-2 mb-1">
                     <StarRatingComponent :rating="item.product.averageRating || 0"
-                        :count="item.product.ratingCount || 0" :showCount="true" :readonly="true" size="5" />
-                    <span class="text-xs text-gray-500">{{ item.product.averageRating || 0 }} ({{
+                        :count="item.product.ratingCount || 0" :showCount="true" :readonly="true" size="6" />
+                    <span class="text-lg text-gray-500">{{ item.product.averageRating || 0 }} ({{
                         item.product.ratingCount || 0
                     }})</span>
                 </div>
                 <div class="flex items-end gap-2">
-                    <span class="text-lg font-bold text-gray-900">{{ formatPrice(item.product.salePrice ||
+                    <span class="text-xl font-bold text-gray-900">{{ formatPrice(item.product.salePrice ||
                         item.product.basePrice)
                     }}</span>
                     <span
                         v-if="item.product.basePrice && item.product.salePrice && item.product.salePrice < item.product.basePrice"
-                        class="text-xs text-gray-400 line-through">{{ formatPrice(item.product.basePrice) }}</span>
+                        class="text-lg text-gray-400 line-through">{{ formatPrice(item.product.basePrice) }}</span>
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
@@ -54,7 +55,6 @@
 import { useRouter } from 'vue-router'
 import HeartIcon from '@/components/icons/HeartIcon.vue'
 import CartIcon from '@/components/icons/CartIcon.vue'
-import TrashIcon from '@/components/icons/TrashIcon.vue'
 import StarRatingComponent from '@/components/atoms/StarRatingComponent.vue'
 import { useWishlistStore } from '@/stores/wishlist'
 import { addToCart } from '@/api/cart'

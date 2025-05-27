@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import Logo from '@/components/icons/Logo.vue'
 import CartIcon from '@/components/icons/CartIcon.vue'
@@ -138,6 +138,7 @@ const searchBoxRef = ref(null)
 const isSearchVisible = ref(false)
 const isMenuOpen = ref(false)
 const searchQuery = ref('')
+const forceHeaderUpdate = inject('forceHeaderUpdate')
 
 const inToggleSearch = (event) => {
   event?.stopPropagation()
@@ -162,8 +163,11 @@ onMounted(async () => {
     }
   })
 
-  cartStore.initializeCartFromLocalStorage()
-  await wishlistStore.fetchWishlist()
+  if (localStorage.getItem('accessToken')) {
+    await wishlistStore.fetchWishlist()
+  } else {
+    wishlistStore.clearWishlist()
+  }
 })
 
 const inHome = () => {
@@ -218,8 +222,11 @@ const inAddresses = () => {
   isMenuOpen.value = false
 }
 
-const inLogout = () => {
+const inLogout = async () => {
   localStorage.removeItem('accessToken')
+  wishlistStore.clearWishlist()
+  await nextTick()
+  forceHeaderUpdate && forceHeaderUpdate()
   router.push({ name: 'Login' })
   isMenuOpen.value = false
 }

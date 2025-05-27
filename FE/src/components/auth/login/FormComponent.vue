@@ -20,11 +20,8 @@
           <PasswordInput id="password" v-model="formData.password" :error="errors.password"
             @input="onClearError('password')" class="w-full" />
         </div>
-        <SubmitButton
-          :text="$t('auth.login.submitButton')"
-          :disabled="isLoading"
-          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
-        >
+        <SubmitButton :text="$t('auth.login.submitButton')" :disabled="isLoading"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </SubmitButton>
       </form>
@@ -48,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, ref, inject } from 'vue'
 import InputText from '@/components/atoms/InputTextComponent.vue'
 import PasswordInput from '@/components/atoms/auth/_utils/PasswordInputComponent.vue'
 import SocialLoginButton from '@/components/atoms/auth/_utils/GoogleLoginButtonComponent.vue'
@@ -70,10 +67,13 @@ import { ToastEnum } from '@/enums/toast'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
+import { useWishlistStore } from '@/stores/wishlist'
 
 const { t } = useI18n()
 const route = useRoute()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
+const forceHeaderUpdate = inject('forceHeaderUpdate')
 
 const formData = ref(DEFAULT_FORM_DATA)
 const errors = ref<{ [key: string]: string }>({})
@@ -128,6 +128,8 @@ const onLogin = async () => {
     showToast(ToastEnum.Success, t('success.loginSuccess'))
 
     await cartStore.initCart()
+    await wishlistStore.initWishlist()
+    forceHeaderUpdate && forceHeaderUpdate()
 
     const redirectPath = route.query.redirect as string | undefined
 

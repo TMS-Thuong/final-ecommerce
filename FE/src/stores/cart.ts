@@ -75,7 +75,7 @@ export const useCartStore = defineStore('cart', () => {
     if (!cart.value || !cart.value.items) {
       return 0;
     }
-    
+
     const total = cart.value.items.reduce((sum: number, item: CartItem) => sum + (item.quantity || 0), 0);
     return total;
   });
@@ -83,17 +83,21 @@ export const useCartStore = defineStore('cart', () => {
     if (!cart.value || !cart.value.items) {
       return 0;
     }
-    
+
     return cart.value.items.reduce((sum: number, item: CartItem) => sum + (item.subtotal || 0), 0);
   });
   const cartItems = computed(() => cart.value?.items || []);
 
   const fetchCart = async () => {
+    if (!localStorage.getItem('accessToken')) {
+      cart.value = defaultCartValue();
+      return;
+    }
     try {
       isLoading.value = true;
       error.value = null;
       const response = await getCart();
-      
+
       if (response) {
         cart.value = response;
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(response));
@@ -113,14 +117,14 @@ export const useCartStore = defineStore('cart', () => {
       error.value = 'authentication_required';
       return false;
     }
-    
+
     try {
       isLoading.value = true;
       error.value = null;
       await addToCart(productId, quantity);
-      
+
       await fetchCart();
-      
+
       return true;
     } catch (err) {
       error.value = 'Failed to add item to cart';
@@ -135,29 +139,29 @@ export const useCartStore = defineStore('cart', () => {
       error.value = 'authentication_required';
       return false;
     }
-    
+
     try {
       isLoading.value = true;
       error.value = null;
-      
+
       if (cart.value && cart.value.items) {
         const itemIndex = cart.value.items.findIndex(item => item.id === cartItemId);
         if (itemIndex !== -1) {
           const item = cart.value.items[itemIndex];
           const oldQuantity = item.quantity;
           const priceDiff = item.price * (quantity - oldQuantity);
-          
+
           item.quantity = quantity;
           item.subtotal = item.price * quantity;
-          
+
           cart.value.totalAmount += priceDiff;
           cart.value.totalItems += (quantity - oldQuantity);
           cart.value.updatedAt = new Date().toISOString();
         }
       }
-      
+
       await updateCartItem(cartItemId, quantity);
-      
+
       return true;
     } catch (err) {
       error.value = 'Failed to update cart item';
@@ -173,26 +177,26 @@ export const useCartStore = defineStore('cart', () => {
       error.value = 'authentication_required';
       return false;
     }
-    
+
     try {
       isLoading.value = true;
       error.value = null;
-      
+
       if (cart.value && cart.value.items) {
         const itemIndex = cart.value.items.findIndex(item => item.id === cartItemId);
         if (itemIndex !== -1) {
           const item = cart.value.items[itemIndex];
-          
+
           cart.value.totalAmount -= item.subtotal;
           cart.value.totalItems -= item.quantity;
-          
+
           cart.value.items.splice(itemIndex, 1);
           cart.value.updatedAt = new Date().toISOString();
         }
       }
-      
+
       await removeCartItem(cartItemId);
-      
+
       return true;
     } catch (err) {
       error.value = 'Failed to remove item from cart';
@@ -209,7 +213,7 @@ export const useCartStore = defineStore('cart', () => {
       if (storedCart) {
         cart.value = JSON.parse(storedCart);
       }
-      
+
       return await fetchCart();
     } else {
       return false;
@@ -229,10 +233,10 @@ export const useCartStore = defineStore('cart', () => {
 
   const syncCartWithLocalData = async () => {
     initializeCartFromLocalStorage();
-    
+
     try {
       const serverCart = await getCart();
-      
+
       if (serverCart && serverCart.items && serverCart.items.length > 0) {
         if (cart.value && cart.value.items && cart.value.items.length > 0) {
           serverCart.items.forEach((serverItem: any) => {
@@ -242,11 +246,11 @@ export const useCartStore = defineStore('cart', () => {
               serverItem.subtotal = serverItem.price * localItem.quantity;
             }
           });
-          
+
           serverCart.totalItems = serverCart.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
           serverCart.totalAmount = serverCart.items.reduce((sum: number, item: any) => sum + item.subtotal, 0);
         }
-        
+
         cart.value = serverCart;
         saveCartToLocalStorage();
       }

@@ -472,7 +472,11 @@ const messages = {
         addToCartFailed: 'Failed to add to cart!',
         addToWishlistFailed: 'Failed to add to wishlist!',
         alreadyInWishlist: 'Product is already in your wishlist!'
-      }
+      },
+      headerTitle: "My Wishlist",
+      emptyTitle: "Your wishlist is empty",
+      emptyDesc: "Start adding items you love to keep track of them",
+      startShopping: "Start Shopping",
     },
   }
 }
