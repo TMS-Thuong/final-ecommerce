@@ -13,7 +13,7 @@
     <div class="bg-white py-16">
       <div class="w-full">
         <h2 class="text-3xl font-bold text-center mb-10">Featured Products</h2>
-        <FeaturedProducts :limit="10" :show-featured-only="true" :page="4" />
+        <FeaturedProducts :limit="10" :show-featured-only="true" :page="5" />
       </div>
     </div>
     <FooterOrganism />

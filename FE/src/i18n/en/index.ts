@@ -407,7 +407,10 @@ const messages = {
         addedToCart: "Added {quantity} {name} to cart!",
         productNotFound: "Product not found",
         insufficientStock: "Insufficient stock",
-        addToCartError: "Failed to add item to cart"
+        addToCartError: "Failed to add item to cart",
+        addedToWishlist: "Added to wishlist!",
+        addToWishlistError: "Failed to add to wishlist.",
+        alreadyInWishlist: "Product is already in your wishlist."
       },
       tabs: {
         description: "Product Description",
@@ -453,6 +456,27 @@ const messages = {
       required: "This field is required.",
       updateProfileSuccess: "Profile updated successfully",
       changePasswordSuccess: "Password changed successfully",
+    },
+    wishlist: {
+      sale: 'Sale',
+      outOfStock: 'Out of Stock',
+      addToCart: 'Add to Cart',
+      messages: {
+        removed: 'Removed from wishlist successfully!',
+        addedToCart: 'Added to cart successfully!',
+        addedToWishlist: 'Added to wishlist!',
+      },
+      errors: {
+        notFoundId: 'Wishlist item ID not found!',
+        removeFailed: 'Failed to remove from wishlist!',
+        addToCartFailed: 'Failed to add to cart!',
+        addToWishlistFailed: 'Failed to add to wishlist!',
+        alreadyInWishlist: 'Product is already in your wishlist!'
+      },
+      headerTitle: "My Wishlist",
+      emptyTitle: "Your wishlist is empty",
+      emptyDesc: "Start adding items you love to keep track of them",
+      startShopping: "Start Shopping",
     },
   }
 }

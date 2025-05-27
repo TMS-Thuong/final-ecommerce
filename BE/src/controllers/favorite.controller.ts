@@ -53,7 +53,12 @@ class FavoriteController {
       const userId = request.user.userId;
       const favorites = await this.favoriteService.getUserFavorites(userId);
 
-      const transformedFavorites = favorites?.items?.map((item) => this.transformFavoriteItem(item.product)) || [];
+      const transformedFavorites =
+        favorites?.items?.map((item) => ({
+          favoriteItemId: item.id,
+          productId: item.productId,
+          product: this.transformFavoriteItem(item.product),
+        })) || [];
 
       return reply.ok(transformedFavorites);
     } catch (error) {
