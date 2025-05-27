@@ -299,6 +299,43 @@ class OrderService {
       },
     });
   }
+
+  async getPurchasedProducts(userId: number): Promise<unknown> {
+    return prisma.order.findMany({
+      where: {
+        userId,
+        status: OrderStatus.Completed,
+      },
+      select: {
+        id: true,
+        orderCode: true,
+        items: {
+          select: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                sku: true,
+                slug: true,
+                basePrice: true,
+                salePrice: true,
+                images: {
+                  where: { isThumbnail: true },
+                  take: 1,
+                  select: {
+                    imageUrl: true,
+                  },
+                },
+              },
+            },
+            quantity: true,
+            price: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }
 
 export default new OrderService();

@@ -132,6 +132,22 @@ class OrderController {
       return reply.internalError();
     }
   }
+
+  @binding
+  async getPurchasedProducts(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const userId = request.user.userId;
+      const products = await OrderService.getPurchasedProducts(userId);
+
+      return reply.send({
+        success: true,
+        data: products,
+      });
+    } catch (error) {
+      console.error('Error getting purchased products:', error);
+      return reply.internalError();
+    }
+  }
 }
 
 export default new OrderController();
