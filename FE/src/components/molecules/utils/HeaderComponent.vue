@@ -164,7 +164,7 @@ onMounted(async () => {
   })
 
   if (localStorage.getItem('accessToken')) {
-    await wishlistStore.fetchWishlist()
+  await wishlistStore.fetchWishlist()
   } else {
     wishlistStore.clearWishlist()
   }

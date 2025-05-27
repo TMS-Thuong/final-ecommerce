@@ -345,7 +345,7 @@ const formatDescription = (desc) => {
 onMounted(() => {
   loadProductData()
   if (localStorage.getItem('accessToken')) {
-    wishlistStore.initWishlist()
+  wishlistStore.initWishlist()
   }
 })
 </script>

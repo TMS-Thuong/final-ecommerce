@@ -442,6 +442,7 @@ const messages = {
       confirmNewPassword: "Confirm New Password",
       updatePassword: "Update password",
       updatePasswordSuccess: "Password updated successfully",
+      updateAvatar: "Update Avatar",
       chooseFile: "Choose file",
       male: "Male",
       female: "Female",
