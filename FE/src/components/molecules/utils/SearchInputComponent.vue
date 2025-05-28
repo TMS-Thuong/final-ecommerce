@@ -32,7 +32,7 @@
             <div class="flex-shrink-0 w-10 h-10 mr-4">
               <img v-if="product.thumbnailUrl" :src="product.thumbnailUrl" alt=""
                 class="w-full h-full object-cover rounded">
-              <div v-else class="w-full h-full bg-gray-200 rounded"></div>
+              <img v-else src="/src/assets/no-img.png" alt="" class="w-full h-full object-cover rounded">
             </div>
             <div>
               <p class="text-sm font-medium text-gray-900">{{ product.name }}</p>

@@ -98,20 +98,16 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50 text-xl text-gray-600">
                 <tr>
-                  <th scope="col"
-                    class="px-6 py-3 text-left  font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" class="px-6 py-3 text-left  font-medium text-gray-500 uppercase tracking-wider">
                     {{ $t('checkout.product') }}
                   </th>
-                  <th scope="col"
-                    class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
                     {{ $t('checkout.unitPrice') }}
                   </th>
-                  <th scope="col"
-                    class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider">
                     {{ $t('checkout.quantity') }}
                   </th>
-                  <th scope="col"
-                    class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
                     {{ $t('checkout.amount') }}
                   </th>
                 </tr>
@@ -187,7 +183,7 @@
           </router-link>
 
           <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:gap-4 sm:items-stretch items-center">
-            <button v-if="canCancel" @click="confirmCancelOrder"
+            <button v-if="canCancel" @click="showConfirmCancelOrder = true"
               class="w-full max-w-[180px] sm:w-auto sm:max-w-none inline-flex items-center justify-center px-3 py-2 border border-red-300 rounded-md shadow-sm text-lg font-medium text-red-700 bg-white hover:bg-red-50"
               :disabled="isCancelling">
               <span v-if="isCancelling">{{ $t('common.loading') }}</span>
@@ -201,6 +197,16 @@
         </div>
       </div>
     </div>
+
+    <ConfirmModal
+      :visible="showConfirmCancelOrder"
+      :title="t('orders.cancelOrder')"
+      :message="t('orders.cancelOrderConfirm')"
+      :confirm-text="t('common.ok')"
+      :cancel-text="t('common.cancel')"
+      @confirm="handleCancelOrder"
+      @cancel="showConfirmCancelOrder = false"
+    />
   </div>
 </template>
 
@@ -215,6 +221,7 @@ import addressApi from '@/api/address';
 import { productApi } from '@/api/product';
 import axios from 'axios';
 import.meta.env ? import.meta.env.VITE_API_BASE_URL : process.env.VUE_APP_API_BASE_URL;
+import ConfirmModal from '@/components/molecules/utils/ConfirmModal.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -228,6 +235,7 @@ const productImages = ref({});
 const isLoading = ref(true);
 const error = ref(null);
 const isCancelling = ref(false);
+const showConfirmCancelOrder = ref(false);
 
 const canCancel = computed(() => {
   if (!order.value) return false;
@@ -262,13 +270,11 @@ const formatAddress = (addressData) => {
   return parts.length > 0 ? parts.join(', ') : 'N/A';
 };
 
-const confirmCancelOrder = async () => {
-  if (!confirm(t('orders.cancelOrderConfirm'))) return;
-
+const handleCancelOrder = async () => {
+  showConfirmCancelOrder.value = false;
   try {
     isCancelling.value = true;
     const response = await orderApi.cancelOrder(order.value.id);
-
     if (response.success) {
       showToast(ToastEnum.Success, t('orders.cancelSuccess'));
       order.value.status = 'Cancelled';
@@ -276,7 +282,6 @@ const confirmCancelOrder = async () => {
       showToast(ToastEnum.Error, t('orders.cancelFailed'));
     }
   } catch (err) {
-    console.error('Error cancelling order:', err);
     showToast(ToastEnum.Error, t('orders.cancelFailed'));
   } finally {
     isCancelling.value = false;

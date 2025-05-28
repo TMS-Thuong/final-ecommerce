@@ -13,8 +13,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useWishlistStore } from '@/stores/wishlist'
+import { computed } from 'vue'
+import { useWishlistStore } from '@/stores/wishlist/wishlist'
 import { storeToRefs } from 'pinia'
 import WishlistHeader from '@/components/wishlist/WishlistHeader.vue'
 import WishlistGrid from '@/components/wishlist/WishlistGrid.vue'

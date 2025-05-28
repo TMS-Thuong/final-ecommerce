@@ -21,20 +21,16 @@ import { onMounted, ref } from 'vue'
 import { gapi } from 'gapi-script'
 import { authApi } from '@/api/auth'
 import router from '@/router'
+import { useRoute } from 'vue-router'
 import { RouterEnum } from '@/enums/router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth/login/token.store'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import type { AxiosError } from 'axios'
-import { toCamelCase } from '@/helpers/stringUtils'
-
-interface ApiErrorResponse {
-  code: string;
-  message?: string;
-}
 
 const { t } = useI18n()
+const route = useRoute()
 
 declare global {
   interface Window {
@@ -80,7 +76,6 @@ const onGoogleSignIn = () => {
       onGoogleLogin(idToken)
     })
     .catch((error) => {
-      console.error(t('error.googleSigninFailed'), error)
       showToast(ToastEnum.Error, t('error.googleSigninFailed'))
     })
 }
@@ -95,7 +90,13 @@ const onGoogleLogin = async (idToken: string) => {
     const { accessToken, refreshToken } = responseData
     useAuthStore().setTokens(accessToken, refreshToken)
     showToast(ToastEnum.Success, t('success.loginSuccess'))
-    router.push({ name: RouterEnum.Home });
+
+    const redirectPath = route.query.redirect as string | undefined
+    if (redirectPath) {
+      router.push(redirectPath)
+    } else {
+      router.push({ name: RouterEnum.Home })
+    }
   } catch (error) {
     const apiError = error as AxiosError<{ message: string; code: string }>
     if (apiError?.response?.data?.code) {

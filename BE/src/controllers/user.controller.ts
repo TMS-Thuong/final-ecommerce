@@ -45,7 +45,8 @@ class UserController {
 
       const validation = updateUserZodSchema.partial().safeParse(request.body);
       if (!validation.success) {
-        return reply.badRequest(validation.error.message, 'INVALID_USER_DATA');
+        const messages = validation.error.errors.map((e) => e.message).join(', ');
+        return reply.badRequest(messages, 'INVALID_USER_DATA');
       }
 
       const userData = validation.data;

@@ -8,6 +8,7 @@ import {
   getUserOrdersSchema,
   getOrderByCodeSchema,
   cancelOrderSchema,
+  getPurchasedProductsSchema,
 } from '@app/schemas/order.schema';
 
 export async function orderRoutes(fastify: FastifyInstance): Promise<void> {
@@ -36,5 +37,10 @@ export async function orderRoutes(fastify: FastifyInstance): Promise<void> {
   fastify.post('/orders/:id/cancel', {
     schema: cancelOrderSchema,
     handler: orderController.cancelOrder.bind(orderController),
+  });
+
+  fastify.get('/orders/purchased-products', {
+    schema: getPurchasedProductsSchema,
+    handler: orderController.getPurchasedProducts.bind(orderController),
   });
 }

@@ -12,6 +12,9 @@ export enum RouterEnum {
   AddAddress = "AddAddress",
   EditAddress = "EditAddress",
   Profile = "Profile",
+  Wishlist = "Wishlist",
+  MyPurchasedProducts = "MyPurchasedProducts",
+  Contact = "Contact",
 }
 
 export enum AuthRouterEnum {

@@ -1,6 +1,8 @@
 import { PrismaClient, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
+import { USER_MESSAGES } from '@app/constants/message.constant';
+
 class UserService {
   private prisma: PrismaClient;
 
@@ -14,7 +16,7 @@ class UserService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(USER_MESSAGES.USER_NOT_FOUND);
     }
 
     return user;
@@ -22,22 +24,25 @@ class UserService {
 
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     try {
+      const updateData: Partial<User> = {
+        updatedAt: new Date(),
+      };
+
+      if (userData.firstName !== undefined) updateData.firstName = userData.firstName;
+      if (userData.lastName !== undefined) updateData.lastName = userData.lastName;
+      if (userData.birthDate !== undefined) updateData.birthDate = userData.birthDate;
+      if (userData.gender !== undefined) updateData.gender = userData.gender;
+      if (userData.phoneNumber !== undefined) updateData.phoneNumber = userData.phoneNumber;
+
       const user = await this.prisma.user.update({
         where: { id },
-        data: {
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          birthDate: userData.birthDate,
-          gender: userData.gender,
-          phoneNumber: userData.phoneNumber,
-          updatedAt: new Date(),
-        },
+        data: updateData,
       });
 
       return user;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating user:', error);
-      throw new Error('Failed to update user profile');
+      throw new Error(USER_MESSAGES.UPDATE_PROFILE_ERROR);
     }
   }
 
@@ -46,12 +51,12 @@ class UserService {
       const user = await this.getUserById(id);
 
       if (!user.password) {
-        throw new Error('User has no password set');
+        throw new Error(USER_MESSAGES.USER_NO_PASSWORD);
       }
 
       const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
       if (!isPasswordValid) {
-        throw new Error('Current password is incorrect');
+        throw new Error(USER_MESSAGES.CURRENT_PASSWORD_INCORRECT);
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -62,7 +67,7 @@ class UserService {
           updatedAt: new Date(),
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating password:', error);
       throw error;
     }
@@ -79,9 +84,9 @@ class UserService {
       });
 
       return user;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating avatar:', error);
-      throw new Error('Failed to update avatar');
+      throw new Error(USER_MESSAGES.UPDATE_AVATAR_ERROR);
     }
   }
 }

@@ -19,7 +19,7 @@
             <div class="h-full w-full flex items-center justify-center">
               <img v-if="thumbnailUrl" :src="thumbnailUrl" :alt="product.name" class="w-full h-full object-contain"
                 loading="lazy" />
-              <ProductIcon v-else size="10" class="text-gray-400" />
+              <img v-else :src="'/src/assets/no-img.png'" :alt="product.name" class="w-full h-full object-contain" />
             </div>
 
             <div v-if="isBestSeller" :class="[
@@ -45,7 +45,7 @@
         <div class="mt-1 flex items-center">
           <span class="text-xl font-bold text-red-500">{{
             formatPrice(product.salePrice || product.basePrice)
-            }}</span>
+          }}</span>
           <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{
             formatPrice(product.basePrice) }}</span>
         </div>

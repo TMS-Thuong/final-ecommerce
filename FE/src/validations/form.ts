@@ -77,3 +77,39 @@ export const resetPasswordSchema = z.object({
   path: ['confirmPassword'],
   message: ERROR_MESSAGES.passwordNotMath,
 })
+
+export const profileSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, { message: ERROR_MESSAGES.firstNameTooShort })
+    .max(50, { message: ERROR_MESSAGES.firstNameTooLong }),
+
+  lastName: z
+    .string()
+    .min(1, { message: ERROR_MESSAGES.lastNameTooShort })
+    .max(50, { message: ERROR_MESSAGES.lastNameTooLong }),
+
+  phone: z
+    .string()
+    .min(1, { message: ERROR_MESSAGES.required })
+    .regex(/^[0-9]+$/, { message: ERROR_MESSAGES.invalidPhoneNumber }),
+
+  birthDate: z
+    .string()
+    .superRefine((value, ctx) => {
+      if (!value) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.required })
+        return
+      }
+      const parsedDate = Date.parse(value)
+      if (isNaN(parsedDate)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.invalidDate })
+      } else if (new Date(value) > new Date()) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.dateInFuture })
+      }
+    }),
+
+  gender: z
+    .string()
+    .min(1, { message: ERROR_MESSAGES.required })
+});

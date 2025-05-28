@@ -21,6 +21,8 @@ import AddAddressView from '@/views/account/AddAddressView.vue'
 import EditAddressView from '@/views/account/EditAddressView.vue'
 import ProfileView from '@/views/account/ProfileView.vue'
 import WishlistView from '@/views/wishlist/WishlistView.vue'
+import MyPurchasedProductsView from '@/views/account/MyPurchasedProductsView.vue'
+import ContactView from '@/views/home/ContactView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -28,6 +30,11 @@ const routes = [
     path: '/',
     name: RouterEnum.Home,
     component: HomeView,
+  },
+  {
+    path: '/contact',
+    name: RouterEnum.Contact,
+    component: ContactView,
   },
   {
     path: '/products',
@@ -90,6 +97,12 @@ const routes = [
     name: RouterEnum.Profile,
     component: ProfileView,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/account/purchased-products',
+    name: 'MyPurchasedProducts',
+    component: MyPurchasedProductsView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/wishlist',

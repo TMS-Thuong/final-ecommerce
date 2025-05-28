@@ -51,11 +51,33 @@ export class ProductService {
   ): Promise<IProductWithImages[]> {
     const filters: {
       isActive: boolean;
-      OR?: {
+      OR?: Array<{
         name?: { contains?: string; mode?: 'insensitive' };
         sku?: { contains?: string; mode?: 'insensitive' };
         description?: { contains?: string; mode?: 'insensitive' };
-      }[];
+      }>;
+      AND?: Array<
+        | {
+            OR?: Array<{
+              name?: { contains?: string; mode?: 'insensitive' };
+              sku?: { contains?: string; mode?: 'insensitive' };
+              description?: { contains?: string; mode?: 'insensitive' };
+            }>;
+          }
+        | {
+            OR: Array<{
+              AND: Array<
+                | {
+                    salePrice: { not: null; gte?: number; lte?: number };
+                  }
+                | {
+                    salePrice: null;
+                    basePrice: { gte?: number; lte?: number };
+                  }
+              >;
+            }>;
+          }
+      >;
       brandId?: number;
       categoryId?: number;
       basePrice?: { gte?: number; lte?: number };
@@ -82,9 +104,31 @@ export class ProductService {
 
     // Lọc theo khoảng giá
     if (minPrice !== undefined || maxPrice !== undefined) {
-      filters.basePrice = {};
-      if (minPrice !== undefined) filters.basePrice.gte = minPrice;
-      if (maxPrice !== undefined) filters.basePrice.lte = maxPrice;
+      const salePriceCondition: { not: null; gte?: number; lte?: number } = { not: null };
+      if (minPrice !== undefined) salePriceCondition.gte = minPrice;
+      if (maxPrice !== undefined) salePriceCondition.lte = maxPrice;
+
+      const basePriceCondition: { gte?: number; lte?: number } = {};
+      if (minPrice !== undefined) basePriceCondition.gte = minPrice;
+      if (maxPrice !== undefined) basePriceCondition.lte = maxPrice;
+
+      const priceFilter = {
+        OR: [
+          {
+            AND: [{ salePrice: salePriceCondition }],
+          },
+          {
+            AND: [{ salePrice: null, basePrice: basePriceCondition }],
+          },
+        ],
+      };
+
+      if (filters.OR) {
+        filters.AND = [{ OR: filters.OR }, priceFilter];
+        delete filters.OR;
+      } else {
+        Object.assign(filters, priceFilter);
+      }
     }
 
     // Lọc theo tình trạng tồn kho

@@ -26,10 +26,8 @@ class AddressController {
     try {
       const result = AddressZodSchema.safeParse(request.body);
       if (!result.success) {
-        return reply.badRequest(
-          result.error.errors[0]?.message || 'Invalid address data',
-          ErrorCode.INVALID_ADDRESS_DATA
-        );
+        const messages = result.error.errors.map((e) => e.message).join(', ');
+        return reply.badRequest(messages || 'Invalid address data', ErrorCode.INVALID_ADDRESS_DATA);
       }
 
       const userId = request.user.userId;
@@ -51,10 +49,8 @@ class AddressController {
 
       const result = AddressZodSchema.partial().safeParse(request.body);
       if (!result.success) {
-        return reply.badRequest(
-          result.error.errors[0]?.message || 'Invalid address data',
-          ErrorCode.INVALID_ADDRESS_DATA
-        );
+        const messages = result.error.errors.map((e) => e.message).join(', ');
+        return reply.badRequest(messages || 'Invalid address data', ErrorCode.INVALID_ADDRESS_DATA);
       }
 
       const userId = request.user.userId;

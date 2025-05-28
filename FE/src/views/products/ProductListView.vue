@@ -45,7 +45,7 @@
                 @click="setRating(String(n))">
                 <div class="flex items-center">
                   <StarRating :rating="n" :showCount="false" :readonly="true" />
-                  <span class="ml-2 text-neutral-700 text-xl">and above</span>
+                  <span v-if="n !== 5" class="ml-2 text-neutral-700 text-xl">and above</span>
                 </div>
               </label>
             </div>
@@ -93,9 +93,13 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-0">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-4 sm:px-0">
           <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product"
             class="product-card h-full" />
+        </div>
+
+        <div v-if="!loading && filteredProducts.length === 0" class="text-center text-gray-500 text-3xl py-12">
+          {{ $t('product.noProducts') }}
         </div>
 
         <div v-if="hasMorePages" class="mt-8 flex justify-center">
@@ -311,7 +315,8 @@ const loadProducts = async (page = 1) => {
     totalProducts.value = response?.total ?? products.value.length;
     hasMorePages.value = newProducts.length === pageSize;
   } catch (err) {
-    error.value = t('product.error.loadFailed');
+    const msg = err?.response?.data?.message || err?.response?.data?.code || t('product.error.loadFailed');
+    error.value = msg;
     console.error('Error loading products:', err);
   } finally {
     loading.value = false;

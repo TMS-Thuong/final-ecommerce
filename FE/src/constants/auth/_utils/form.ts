@@ -1,16 +1,16 @@
 export const FORM_FIELDS = {
-  lastName: 'Last name',
-  firstName: 'First name',
-  email: 'Email',
-  password: 'Password',
-  birthDate: 'Birth date',
-  gender: 'Gender',
+  lastName: 'common.form.fields.lastName',
+  firstName: 'common.form.fields.firstName',
+  email: 'common.form.fields.email',
+  password: 'common.form.fields.password',
+  birthDate: 'common.form.fields.birthDate',
+  gender: 'common.form.fields.gender',
 }
 
 export const GENDER_OPTIONS = [
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-  { label: "Other", value: "other" }
+  { label: "common.form.gender.male", value: "male" },
+  { label: "common.form.gender.female", value: "female" },
+  { label: "common.form.gender.other", value: "other" }
 ]
 
 export const DEFAULT_FORM_DATA = {

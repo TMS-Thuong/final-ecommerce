@@ -45,18 +45,18 @@ const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
 }
 
-const handleClickOutside = (event) => {
+const inClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     dropdownVisible.value = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('click', inClickOutside)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('click', inClickOutside)
 })
 
 const inMyOrders = () => {

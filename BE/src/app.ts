@@ -1,9 +1,13 @@
+import { join } from 'path';
+
 import cors from '@fastify/cors';
+import multipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
+import { PrismaClient } from '@prisma/client';
 import fastify from 'fastify';
 
 import AuthController from '@app/services/auth-user.service';
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
-import multipartPlugin from '@plugins/multipart.plugin';
 import staticPlugin from '@plugins/static.plugin';
 
 import { addressRoutes } from './routes/address.routes';
@@ -16,12 +20,14 @@ import { orderRoutes } from './routes/order.routes';
 import { paymentRoutes } from './routes/payment.routes';
 import { productRoutes } from './routes/product.routes';
 import publicPaymentRoutes from './routes/public-payment.routes';
+import { reviewRoutes } from './routes/review.route';
 import shippingRoutes from './routes/shipping.routes';
 import userRoutes from './routes/user.route';
 
 declare module 'fastify' {
   interface FastifyInstance {
     verifyToken: (token: string) => Promise<{ success: boolean; message: string }>;
+    prisma: PrismaClient;
   }
 }
 
@@ -51,7 +57,11 @@ app.register(prismaPlugin);
 app.register(errorHandler);
 app.register(fastifyJwt);
 app.register(zodPlugin);
-app.register(multipartPlugin);
+app.register(multipart, {
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 app.register(staticPlugin);
 
 swagger(app);
@@ -73,6 +83,13 @@ app.register(brandRoutes, { prefix: '/api' });
 app.register(cartRoutes, { prefix: '/api' });
 app.register(favoriteRoutes, { prefix: '/api' });
 app.register(publicPaymentRoutes);
-app.register(userRoutes);
+app.register(userRoutes, { prefix: '/api' });
+app.register(reviewRoutes, { prefix: '/api' });
+
+app.register(fastifyStatic, {
+  root: join(process.cwd(), 'uploads'),
+  prefix: '/images/',
+  decorateReply: false,
+});
 
 export default app;

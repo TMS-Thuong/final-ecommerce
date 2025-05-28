@@ -106,7 +106,7 @@ const genderOptions = GENDER_OPTIONS
 const errors = reactive<{ [key: string]: string }>({})
 const isLoading = ref(false)
 
-const { showToast, toastType, toastMessage, toastMessageStore } = useToast()
+const { showToast } = useToast()
 
 const { t } = useI18n()
 

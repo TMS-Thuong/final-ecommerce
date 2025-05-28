@@ -8,14 +8,9 @@
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2">
-        <AddressSelector
-          :addresses="checkoutStore.addresses"
-          :selected-address-id="checkoutStore.selectedAddressId"
-          :is-loading="addressLoading"
-          @update:selected-address-id="checkoutStore.selectedAddressId = $event"
-          @add-address="toggleAddressModal(true)"
-          @show-all-addresses="toggleAddressListModal(true)"
-        />
+        <AddressSelector :addresses="checkoutStore.addresses" :selected-address-id="checkoutStore.selectedAddressId"
+          :is-loading="addressLoading" @update:selected-address-id="checkoutStore.selectedAddressId = $event"
+          @add-address="toggleAddressModal(true)" @show-all-addresses="toggleAddressListModal(true)" />
 
         <div class="bg-white overflow-hidden border border-gray-200 rounded-md mb-6">
           <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -30,28 +25,20 @@
               <p class="text-gray-500">{{ $t('checkout.noPaymentMethods') }}</p>
             </div>
             <div v-else class="space-y-4">
-              <div
-                v-for="method in checkoutStore.paymentMethods"
-                :key="method.id"
-                class="border border-gray-200 rounded-md p-4 transition-colors"
-                :class="{ 'border-neutral-800 bg-gray-50': checkoutStore.selectedPaymentMethod === method.code.toUpperCase() }"
-              >
-                <div class="flex items-start">
-                  <input
-                    type="radio"
-                    :id="'payment-' + method.code"
-                    name="paymentMethod"
-                    :value="method.code.toUpperCase()"
-                    v-model="checkoutStore.selectedPaymentMethod"
-                    class="h-4 w-4 text-neutral-800 focus:ring-neutral-800 border-gray-300 mt-1"
-                  />
+              <div v-for="method in checkoutStore.paymentMethods" :key="method.id"
+                class="border border-gray-200 rounded-md p-4 transition-colors cursor-pointer"
+                :class="{ 'border-neutral-800 bg-gray-50': checkoutStore.selectedPaymentMethod === method.code.toUpperCase() }">
+                <label :for="'payment-' + method.code" class="flex items-start cursor-pointer">
+                  <input type="radio" :id="'payment-' + method.code" name="paymentMethod"
+                    :value="method.code.toUpperCase()" v-model="checkoutStore.selectedPaymentMethod"
+                    class="h-4 w-4 text-neutral-800 focus:ring-neutral-800 border-gray-300 mt-1" />
                   <div class="ml-3">
-                    <label :for="'payment-' + method.code" class="block text-xl font-medium text-gray-700">
+                    <span class="block text-xl font-medium text-gray-700">
                       {{ method.name }}
-                    </label>
+                    </span>
                     <p class="text-gray-500 text-xl mt-1">{{ method.description }}</p>
                   </div>
-                </div>
+                </label>
               </div>
             </div>
           </div>
@@ -64,19 +51,16 @@
 
           <div class="px-6 py-4">
             <label for="notes" class="block text-xl font-medium text-gray-700">{{ $t('checkout.noteOptional') }}</label>
-            <textarea
-              id="notes"
-              v-model="checkoutStore.orderNotes"
-              rows="3"
+            <textarea id="notes" v-model="checkoutStore.orderNotes" rows="3"
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
-              :placeholder="$t('checkout.notesPlaceholder')"
-            ></textarea>
+              :placeholder="$t('checkout.notesPlaceholder')"></textarea>
           </div>
         </div>
       </div>
 
       <div class="lg:col-span-1">
-        <div class="bg-white overflow-hidden border border-gray-200 rounded-md shadow-sm divide-y divide-gray-200 sticky top-24">
+        <div
+          class="bg-white overflow-hidden border border-gray-200 rounded-md shadow-sm divide-y divide-gray-200 sticky top-24">
           <div class="px-6 py-4">
             <h2 class="text-xl font-medium text-gray-900">{{ $t('checkout.orderSummary') }}</h2>
           </div>
@@ -98,19 +82,15 @@
           </div>
           <div class="px-6 py-4">
             <div class="mb-4">
-              <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('checkout.couponCode') }}</label>
+              <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('checkout.couponCode')
+              }}</label>
               <div class="flex">
-                <input
-                  type="text"
-                  id="coupon"
+                <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
-                  :placeholder="$t('checkout.enterCouponCode')"
-                  v-model="checkoutStore.couponCode"
-                >
+                  :placeholder="$t('checkout.enterCouponCode')" v-model="checkoutStore.couponCode">
                 <button
                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-r-md shadow-sm text-xl font-medium text-white bg-neutral-800 hover:bg-neutral-700"
-                  @click="applyCoupon"
-                >
+                  @click="applyCoupon">
                   {{ $t('checkout.apply') }}
                 </button>
               </div>
@@ -118,13 +98,14 @@
 
             <button
               class="w-full px-6 py-3 bg-neutral-800 text-xl text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
-              @click="placeOrder"
-              :disabled="isPlacingOrder"
-            >
+              @click="placeOrder" :disabled="isPlacingOrder">
               <span v-if="isPlacingOrder" class="mr-2">
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
                 </svg>
               </span>
               {{ $t('checkout.placeOrder') }}
@@ -134,26 +115,14 @@
       </div>
     </div>
 
-    <AddressModal
-      :is-open="showAddressModal"
-      @close="toggleAddressModal(false)"
-      @saved="handleAddressSaved"
-    />
+    <AddressModal :is-open="showAddressModal" @close="toggleAddressModal(false)" @saved="handleAddressSaved" />
 
-    <AddressListModal
-      :is-open="showAddressListModal"
-      :addresses="checkoutStore.addresses"
-      v-model="checkoutStore.selectedAddressId"
-      @close="toggleAddressListModal(false)"
-      @edit-address="handleEditAddress"
-    />
+    <AddressListModal :is-open="showAddressListModal" :addresses="checkoutStore.addresses"
+      v-model="checkoutStore.selectedAddressId" @close="toggleAddressListModal(false)"
+      @edit-address="handleEditAddress" />
 
-    <AddressModal
-      :is-open="showEditAddressModal"
-      :address-to-edit="addressToEdit"
-      @close="toggleEditAddressModal(false)"
-      @saved="handleAddressSaved"
-    />
+    <AddressModal :is-open="showEditAddressModal" :address-to-edit="addressToEdit"
+      @close="toggleEditAddressModal(false)" @saved="handleAddressSaved" />
   </div>
 </template>
 
@@ -163,8 +132,8 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
-import { useCheckoutStore } from '@/stores/checkout';
-import { useCartStore } from '@/stores/cart';
+import { useCheckoutStore } from '@/stores/payment/checkout';
+import { useCartStore } from '@/stores/cart/cart';
 import AddressModal from '@/components/molecules/utils/AddressModal.vue';
 import AddressSelector from '@/components/molecules/checkout/AddressSelector.vue';
 import AddressListModal from '@/components/molecules/checkout/AddressListModal.vue';
@@ -322,5 +291,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-

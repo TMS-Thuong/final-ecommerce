@@ -4,7 +4,7 @@ import addressApi from '@/api/address';
 import shippingApi from '@/api/shipping';
 import orderApi from '@/api/order';
 import paymentApi from '@/api/payment';
-import { useCartStore } from '@/stores/cart';
+import { useCartStore } from '@/stores/cart/cart';
 
 export const useCheckoutStore = defineStore('checkout', () => {
   const addresses = ref<any[]>([]);
@@ -43,7 +43,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
 
   const subtotal = computed(() => {
     cartStore.initializeCartFromLocalStorage();
-    
+
     const selectedCartItemsStr = localStorage.getItem('selectedCartItems');
     if (!selectedCartItemsStr) return cartStore.totalAmount || 0;
 
@@ -52,7 +52,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
       if (!Array.isArray(selectedCartItemIds) || selectedCartItemIds.length === 0) {
         return cartStore.totalAmount || 0;
       }
-      
+
       const total = cartStore.cartItems
         .filter(item => selectedCartItemIds.includes(item.id))
         .reduce((total, item) => total + item.subtotal, 0);

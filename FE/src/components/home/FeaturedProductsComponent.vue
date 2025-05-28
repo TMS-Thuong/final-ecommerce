@@ -4,10 +4,10 @@
       <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
     </div>
     <div v-else-if="error" class="text-center py-8 text-red-500">
-      {{ error }}
+      {{ $t('product.loadError') }}
     </div>
     <div v-else-if="products.length === 0" class="text-center py-8 text-gray-500">
-      No products found
+      {{ $t('product.noProducts') }}
     </div>
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 px-4 sm:px-0">
       <ProductCard v-for="product in products" :key="product.id" :product="product"
@@ -16,17 +16,27 @@
     <div v-if="!loading && products.length > 0" class="mt-8 flex justify-center">
       <router-link :to="{ name: RouterEnum.ProductList }"
         class="px-6 py-2 text-xl bg-neutral-800 text-white rounded-md hover:bg-neutral-700 transition-colors">
-        View All Products
+        {{ $t('product.viewAllProducts') }}
       </router-link>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { RouterEnum } from '@/enums/router'
 import { productApi } from '@/api/product'
 import ProductCard from '@/components/products/ProductCardComponent.vue'
+import { useI18n } from 'vue-i18n'
+import type { Product } from '@/types/product'
+
+const { t } = useI18n()
+
+interface ProductParams {
+  page: number
+  pageSize: number
+  isFeatured?: boolean
+}
 
 const props = defineProps({
   limit: {
@@ -43,8 +53,7 @@ const props = defineProps({
   }
 })
 
-
-const products = ref([])
+const products = ref<Product[]>([])
 const loading = ref(false)
 const error = ref('')
 
@@ -53,7 +62,7 @@ const loadFeaturedProducts = async () => {
   error.value = ''
 
   try {
-    const params = {
+    const params: ProductParams = {
       page: props.page,
       pageSize: props.limit
     }
@@ -62,12 +71,11 @@ const loadFeaturedProducts = async () => {
       params.isFeatured = true
     }
 
-
     const response = await productApi.getProducts(params)
 
     products.value = response ? response.data || [] : [];
   } catch (err) {
-    error.value = 'Failed to load products. Please try again.'
+    error.value = t('product.loadError')
     console.error('Error loading products:', err)
   } finally {
     loading.value = false

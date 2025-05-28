@@ -1,18 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getProfile, updatePassword, updateAvatar } from '@/api/user';
-
-interface UserProfile {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    avatarUrl: string;
-    gender?: number | string;
-    phoneNumber?: string;
-    birthDate?: string;
-    address?: string;
-}
+import type { UserProfile } from '@/types/user';
+import { AxiosError } from 'axios';
 
 interface UpdatePasswordBody {
     currentPassword: string;
@@ -31,8 +21,12 @@ export const useUserStore = defineStore('user', () => {
         try {
             const res = await getProfile();
             profile.value = res.data;
-        } catch (err: any) {
-            error.value = err.response?.data?.message || 'Failed to fetch profile';
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                error.value = err.response?.data?.message || 'Failed to fetch profile';
+            } else {
+                error.value = 'Failed to fetch profile';
+            }
         } finally {
             loading.value = false;
         }
@@ -43,8 +37,12 @@ export const useUserStore = defineStore('user', () => {
         error.value = null;
         try {
             await updatePassword(data);
-        } catch (err: any) {
-            error.value = err.response?.data?.message || 'Failed to update password';
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                error.value = err.response?.data?.message || 'Failed to update password';
+            } else {
+                error.value = 'Failed to update password';
+            }
         } finally {
             loading.value = false;
         }
@@ -56,8 +54,12 @@ export const useUserStore = defineStore('user', () => {
         try {
             const res = await updateAvatar(formData);
             profile.value = res.data;
-        } catch (err: any) {
-            error.value = err.response?.data?.message || 'Failed to update avatar';
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                error.value = err.response?.data?.message || 'Failed to update avatar';
+            } else {
+                error.value = 'Failed to update avatar';
+            }
         } finally {
             loading.value = false;
         }

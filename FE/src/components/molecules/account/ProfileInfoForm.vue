@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="$emit('submit')" class="space-y-8">
+  <form @submit.prevent="onSubmit" class="space-y-8">
     <div class="flex flex-col items-center space-y-4 p-8 bg-white rounded-lg border border-gray-200 shadow-sm">
       <img :src="avatarPreview || (profile && profile.avatarUrl) || '/placeholder.svg?height=120&width=120'"
         class="w-32 h-32 rounded-full border-4 border-gray-200 object-cover" alt="avatar" />
@@ -30,6 +30,7 @@
         <input v-model="form.firstName" :readonly="!isEditing"
           class="p-2.5 text-xl border-2 border-gray-300 focus:border-gray-600 rounded-lg bg-white text-gray-900 font-medium w-full block"
           :placeholder="$t('account.firstName')" />
+        <p v-if="errors.firstName" class="text-red-500 text-xl mt-1">{{ errors.firstName }}</p>
       </div>
       <div class="space-y-3">
         <label class="text-xl font-normal text-gray-600 uppercase tracking-wide flex items-center gap-2">
@@ -38,6 +39,7 @@
         <input v-model="form.lastName" :readonly="!isEditing"
           class="p-2.5 border-2 border-gray-300 focus:border-gray-600 rounded-lg bg-white text-gray-900 font-medium w-full block"
           :placeholder="$t('account.lastName')" />
+        <p v-if="errors.lastName" class="text-red-500 text-xl mt-1">{{ errors.lastName }}</p>
       </div>
     </div>
 
@@ -49,15 +51,17 @@
         </label>
         <input v-model="form.birthDate" :readonly="!isEditing" type="date"
           class="p-2.5 text-xl border-2 border-gray-300 focus:border-gray-600 rounded-lg bg-white text-gray-900 font-medium w-full block" />
+        <p v-if="errors.birthDate" class="text-red-500 text-xl mt-1">{{ errors.birthDate }}</p>
       </div>
       <div class="space-y-3">
         <label class="text-xl font-normal text-gray-600 uppercase tracking-wide flex items-center gap-2">
           <TelephoneIcon size="6" />
           {{ $t('account.phoneNumber') }}
         </label>
-        <input v-model="form.phone" type="tel" :readonly="!isEditing"
+        <input v-model="form.phone" :readonly="!isEditing" inputmode="numeric" pattern="[0-9]*" @input="onInput"
           class="p-2.5 text-xl border-2 border-gray-300 rounded-lg bg-white text-gray-900 font-medium w-full block"
           :placeholder="$t('account.phoneNumber')" />
+        <p v-if="errors.phone" class="text-red-500 text-xl mt-1">{{ errors.phone }}</p>
       </div>
       <div class="space-y-3 text-xl">
         <label class="text-xl font-normal text-gray-600 uppercase tracking-wide flex items-center gap-2">
@@ -93,6 +97,8 @@ import CalendarDotsIcon from '@/components/icons/CalendarDotsIcon.vue';
 import UserCircleIcon from '@/components/icons/UserCircleIcon.vue';
 import TelephoneIcon from '@/components/icons/TelephoneIcon.vue';
 import { ref, defineExpose } from 'vue';
+import { profileSchema } from '@/validations/form';
+
 const props = defineProps({
   profile: Object,
   isEditing: Boolean,
@@ -111,6 +117,8 @@ const props = defineProps({
 const emit = defineEmits(['update-avatar', 'submit', 'cancel-edit']);
 const avatarPreview = ref<string | null>(null);
 const avatarFile = ref<File | null>(null);
+const errors = ref<{ [key: string]: string }>({});
+
 function onAvatarChange(e: Event) {
   const files = (e.target as HTMLInputElement).files;
   if (files && files[0]) {
@@ -125,5 +133,25 @@ function resetAvatarPreview() {
   avatarPreview.value = null;
   avatarFile.value = null;
 }
+
+function onInput(e: Event) {
+  const input = e.target as HTMLInputElement;
+  input.value = input.value.replace(/[^0-9]/g, '');
+  props.form.phone = input.value;
+}
+
+const onSubmit = () => {
+  errors.value = {};
+  const parsed = profileSchema.safeParse(props.form);
+  if (!parsed.success) {
+    parsed.error.errors.forEach((err: any) => {
+      const field = err.path[0];
+      if (field) errors.value[field] = err.message;
+    });
+    return;
+  }
+  emit('submit', props.form);
+};
+
 defineExpose({ resetAvatarPreview });
 </script>

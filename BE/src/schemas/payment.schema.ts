@@ -2,14 +2,6 @@ import { FastifySchema } from 'fastify';
 
 import { errorResponseSchema } from './error.schema';
 
-const successResponseSchema = {
-  type: 'object',
-  properties: {
-    success: { type: 'boolean' },
-    data: {},
-  },
-};
-
 const paymentMethodItemSchema = {
   type: 'object',
   properties: {

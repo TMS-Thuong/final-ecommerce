@@ -199,3 +199,56 @@ export const cancelOrderSchema: FastifySchema = {
     404: errorResponseSchema,
   },
 };
+
+export const getPurchasedProductsSchema: FastifySchema = {
+  summary: 'Get purchased products for review',
+  tags: ['Order'],
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'integer' },
+              orderCode: { type: 'string' },
+              items: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    product: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'integer' },
+                        name: { type: 'string' },
+                        sku: { type: 'string' },
+                        slug: { type: 'string' },
+                        basePrice: { type: 'number' },
+                        salePrice: { type: 'number' },
+                        images: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            properties: {
+                              imageUrl: { type: 'string' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    quantity: { type: 'integer' },
+                    price: { type: 'number' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
