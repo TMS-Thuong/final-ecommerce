@@ -7,7 +7,7 @@
         :class="customClass" />
     </svg>
     <div v-if="showBadge && displayCount > 0"
-      class="absolute -top-2 -right-2 bg-red-600 text-white text-sm rounded-full w-5 h-5 flex items-center justify-center select-none">
+      class="absolute -top-2 -right-2 bg-red-600 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center select-none">
       {{ displayCount > 99 ? '99+' : displayCount }}
     </div>
   </div>

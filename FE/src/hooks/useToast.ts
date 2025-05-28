@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 import { ToastEnum } from '@/enums/toast'
-import { useToastMessageStore } from '@/stores/useToastMessageStore'
+import { useToastMessageStore } from '@/stores/untils/useToastMessageStore'
 
 export const useToast = () => {
   const toastMessageStore = useToastMessageStore()
@@ -19,12 +19,12 @@ export const useToast = () => {
     toastMessageStore.toastType = type
     toastMessageStore.toastMessage = message
     toastMessageStore.isShowToast = true
-    
+
     setTimeout(() => {
       toastMessageStore.isShowToast = false
     }, 3000)
   }
-  
+
   return {
     showToast,
     toastType,

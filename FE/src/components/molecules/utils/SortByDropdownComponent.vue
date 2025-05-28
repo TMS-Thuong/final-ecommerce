@@ -1,24 +1,16 @@
 <template>
   <div ref="dropdownRef" class="relative">
-    <div 
-      @click="toggleDropdown" 
-      class="flex items-center gap-2 px-3 py-2 border border-neutral-300 rounded-md cursor-pointer hover:border-neutral-400 transition-colors"
-    >
+    <div @click="toggleDropdown"
+      class="flex items-center gap-2 px-3 py-2 border border-neutral-300 rounded-md cursor-pointer hover:border-neutral-400 transition-colors">
       <span class="text-lg">{{ $t('product.sort.title') }}: {{ selectedOption.label }}</span>
       <ChevronDownIcon size="5" class="text-neutral-700" />
     </div>
-    <div
-      v-if="dropdownVisible"
-      class="absolute left-0 top-full mt-1 w-64 bg-white border border-neutral-300 shadow-lg rounded-md z-10"
-    >
+    <div v-if="dropdownVisible"
+      class="absolute left-0 top-full mt-1 w-64 bg-white border border-neutral-300 shadow-lg rounded-md z-10">
       <ul class="py-1">
-        <li 
-          v-for="option in sortOptions" 
-          :key="option.value"
-          @click="selectOption(option)"
+        <li v-for="option in sortOptions" :key="option.value" @click="selectOption(option)"
           class="px-4 py-2 hover:bg-neutral-100 cursor-pointer text-lg"
-          :class="{ 'bg-neutral-50': selectedOption.value === option.value }"
-        >
+          :class="{ 'bg-neutral-50': selectedOption.value === option.value }">
           {{ option.label }}
         </li>
       </ul>
@@ -65,17 +57,17 @@ const selectOption = (option) => {
   dropdownVisible.value = false
 }
 
-const handleClickOutside = (event) => {
+const inClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     dropdownVisible.value = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('click', inClickOutside)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('click', inClickOutside)
 })
-</script> 
+</script>

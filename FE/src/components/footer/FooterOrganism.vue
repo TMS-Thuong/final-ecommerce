@@ -4,7 +4,7 @@
       <div v-if="companyName">
         <div class="font-bold text-4xl text-white mb-2">{{ companyName }}</div>
         <p class="mb-4 text-xl">
-          Bringing you an exceptional shopping experience with quality products and dedicated service.
+          {{ $t('footer.companyDescription') }}
         </p>
         <div class="flex space-x-3">
           <a href="#" class="text-gray-300 hover:text-white">
@@ -20,54 +20,57 @@
       </div>
 
       <div>
-        <h4 class="font-bold text-2xl mb-2 text-white">Information</h4>
+        <h4 class="font-bold text-2xl mb-2 text-white">{{ $t('footer.information.title') }}</h4>
         <ul class="space-y-2 text-xl">
-          <li><a href="#" class="text-gray-300 hover:text-white">About Us</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Terms of Use</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Return Policy</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Shipping Policy</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.aboutUs') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.privacyPolicy') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.termsOfUse') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.returnPolicy') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.shippingPolicy') }}</a></li>
         </ul>
       </div>
 
       <div>
-        <h4 class="font-bold text-2xl mb-2 text-white">Account</h4>
+        <h4 class="font-bold text-2xl mb-2 text-white">{{ $t('footer.account.title') }}</h4>
         <ul class="space-y-2 text-xl">
-          <li><a href="#" class="text-gray-300 hover:text-white">Sign In</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Register</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Shopping Cart</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Wishlist</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">Order Tracking</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('auth.login.submitButton') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('auth.register.submitButton') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.shoppingCart') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.wishlist') }}</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.orderTracking') }}</a></li>
         </ul>
       </div>
 
       <div>
-        <h4 class="font-bold text-2xl mb-2 text-white">Contact</h4>
+        <h4 class="font-bold text-2xl mb-2 text-white">{{ $t('footer.contact.title') }}</h4>
         <ul class="space-y-2 text-xl">
           <li class="flex items-center gap-2">
             <LocationIcon size="8" class="text-gray-300" />
-            192 Xo Viet Nghe Tinh, Hoa Cuong Nam, Hai Chau, Da Nang
+            {{ $t('contact.info.address.content') }}
           </li>
           <li class="flex items-center gap-2">
             <TelephoneIcon size="8" class="text-gray-300" />
-            1900 1234
+            {{ $t('contact.info.phone.content') }}
           </li>
           <li class="flex items-center gap-2">
             <MailIcon size="8" class="text-gray-300" />
-            support@hitmdt.com
+            {{ $t('contact.info.email.content') }}
           </li>
         </ul>
       </div>
     </div>
 
     <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-400 text-xl">
-      ©2025 {{ companyName }}. All rights reserved.
+      {{ $t('footer.copyright', { companyName }) }}
     </div>
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 const companyName = ref('H!TMDT');
 
 import FacebookIcon from '@/components/icons/FacebookIcon.vue'

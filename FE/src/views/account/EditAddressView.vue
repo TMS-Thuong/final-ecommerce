@@ -2,7 +2,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center mb-6">
       <button @click="goBack" class="flex items-center text-neutral-600 hover:text-neutral-800 mr-4">
-        <BackIcon size="6"/>
+        <BackIcon size="6" />
       </button>
       <h1 class="text-3xl font-bold text-gray-900">{{ $t('address.edit') }}</h1>
     </div>
@@ -91,7 +91,7 @@
             <input id="isDefaultShipping" type="checkbox" v-model="form.isDefaultShipping"
               class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded">
             <label for="isDefaultShipping" class="ml-2 block text-lg text-gray-900">{{ $t('address.setAsDefault')
-              }}</label>
+            }}</label>
           </div>
         </div>
 
@@ -215,15 +215,23 @@ const saveAddress = async () => {
 
     const response = await addressApi.updateAddress(addressId.value, addressData);
 
-    if (response.data) {
+    if (response?.data) {
       showToast(ToastEnum.Success, t('address.saveSuccess'));
       router.push({ name: RouterEnum.AddressList });
     } else {
       throw new Error('No data returned from server');
     }
-  } catch (error) {
-    console.error('Error updating address:', error);
-    showToast(ToastEnum.Error, t('address.saveError'));
+  } catch (error: any) {
+    let msg = t('address.saveError');
+    if (error?.response?.data?.code === 'INVALID_USER_DATA') {
+      try {
+        const details = JSON.parse(error.response.data.message);
+        if (Array.isArray(details)) {
+          msg = details.map(e => e.message).join(', ');
+        }
+      } catch (e) { }
+    }
+    showToast(ToastEnum.Error, msg);
   } finally {
     isSubmitting.value = false;
   }

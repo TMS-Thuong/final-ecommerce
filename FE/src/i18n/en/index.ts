@@ -6,7 +6,68 @@ const messages = {
       home: "Home",
       products: "Products",
       loading: "Loading...",
-      error: "An error occurred. Please try again."
+      error: "An error occurred. Please try again.",
+      ok: "OK",
+      cancel: "Cancel",
+      confirmRemoveAll: "Are you sure you want to remove all products from your cart?",
+      hero: {
+        summerSale: "Summer Sale",
+        saveUpTo: "Save up to 70% on all products",
+        discoverLatest: "Discover our latest collection with exclusive deals available only this month.",
+        shopNow: "Shop Now",
+        learnMore: "Learn More"
+      },
+      header: {
+        about: "About",
+        products: "Products",
+        contact: "Contact",
+        myAccount: "My Account",
+        myOrders: "My Orders",
+        addresses: "Addresses",
+        logout: "Logout"
+      },
+      homePage: {
+        aboutStore: {
+          title: "About Our Store",
+          description: "Welcome to H!TMDT – Your Destination for Quality Shopping and Great Deals Every Day! We offer high-quality products at affordable prices. Shop with us and enjoy amazing offers every single day!"
+        },
+        featuredProducts: {
+          title: "Featured Products"
+        }
+      },
+      form: {
+        fields: {
+          lastName: "Last name",
+          firstName: "First name",
+          email: "Email",
+          password: "Password",
+          birthDate: "Birth date",
+          gender: "Gender",
+          newPassword: "New password",
+          confirmPassword: "Confirm password"
+        },
+        gender: {
+          male: "Male",
+          female: "Female",
+          other: "Other"
+        },
+        validation: {
+          required: "This field is required",
+          invalidEmail: "Invalid email",
+          invalidDate: "Invalid birthdate",
+          passwordTooShort: "Password must be at least 8 characters long",
+          passwordTooLong: "Password must not exceed 16 characters",
+          passwordNoLowercase: "Password must contain at least one lowercase letter",
+          passwordNoUppercase: "Password must contain at least one uppercase letter",
+          passwordNoSpecialChar: "Password must contain at least one special character",
+          passwordNotMatch: "Password confirmation does not match",
+          dateInFuture: "Birthdate cannot be in the future",
+          lastNameTooLong: "Last name cannot be longer than 50 characters",
+          lastNameTooShort: "Last name must be at least one character",
+          firstNameTooLong: "First name cannot be longer than 50 characters",
+          firstNameTooShort: "First name must be at least one character"
+        }
+      }
     },
     [TransEnum.Cart]: {
       yourCart: "Your Cart",
@@ -34,7 +95,8 @@ const messages = {
       couponFeatureInDevelopment: "Coupon feature is under development",
       checkoutFeatureInDevelopment: "Checkout feature is under development",
       selectItemsToCheckout: "Please select items to checkout",
-      selectAll: "Select All"
+      selectAll: "Select All",
+      confirmRemoveAllTitle: "Confirm Remove All",
     },
     [TransEnum.Checkout]: {
       title: "Checkout",
@@ -186,7 +248,7 @@ const messages = {
       status: "Status",
       total: "Total",
       actions: "Actions",
-      viewDetails: "View Details",
+      viewDetails: "View",
       reorder: "Reorder",
       cancelOrder: "Cancel Order",
       cancelOrderConfirm: "Are you sure you want to cancel this order?",
@@ -344,6 +406,25 @@ const messages = {
       soldOut: 'Sold out',
       bestSeller: 'Best Seller',
       discount: 'Discount',
+      noProducts: 'No products found',
+      viewAllProducts: 'View All Products',
+      loadError: 'Failed to load products. Please try again.',
+      review: {
+        modal: {
+          updateTitle: 'Update Review',
+          writeTitle: 'Write Review',
+          starEvaluation: 'Star evaluation',
+          titleEvaluation: 'Title evaluation',
+          titlePlaceholder: 'Enter the title for your assessment',
+          reviewContent: 'Review content',
+          contentPlaceholder: 'Share your experience about this product ...',
+          image: 'Image',
+          cancel: 'Cancel',
+          update: 'Update',
+          sendReview: 'Send review',
+          characters: '{current}/{max} characters'
+        }
+      },
       filters: {
         title: 'Filters',
         reset: 'Reset',
@@ -457,6 +538,45 @@ const messages = {
       required: "This field is required.",
       updateProfileSuccess: "Profile updated successfully",
       changePasswordSuccess: "Password changed successfully",
+      myPurchasedProducts: "My Purchased Products",
+      myReviews: "My Reviews",
+      myWishlist: "My Wishlist",
+      myAddresses: "My Addresses",
+      myProfile: "My Profile",
+      myAccount: "My Account",
+      viewMyPurchasedProducts: "View My Purchased Products",
+      viewMyReview: "View My Reviews",
+      viewMyWishlist: "View My Wishlist",
+      viewMyAddresses: "View My Addresses",
+      viewMyProfile: "View My Profile",
+      viewMyAccount: "View My Account",
+      updateReview: "Update Review",
+      updateReviewSuccess: "Review updated successfully",
+      reviewed: "Reviewed",
+      notReviewed: "Not Reviewed",
+      purchasedProductsTitle: "Purchased Products",
+      noPurchasedProducts: "You have not purchased any products yet.",
+      writeReview: "Write a Review",
+      writeReviewSuccess: "Review written successfully",
+      writeReviewError: "Failed to write review",
+      products: "Products",
+      updateReviewFailed: "Failed to update review",
+      invalidGender: "Invalid gender",
+      updateFailed: "Failed to update profile",
+      filter: {
+        all: "All",
+        notReviewed: "Not Reviewed",
+        reviewed: "Reviewed"
+      },
+      reviewErrors: {
+        editExpired: "Cannot edit review after 7 days",
+        alreadyEdited: "Review can only be edited once",
+        notFound: "Review not found",
+        updateFailed: "Failed to update review"
+      },
+      currentPasswordPlaceholder: 'Enter your current password',
+      newPasswordPlaceholder: 'Enter your new password',
+      confirmNewPasswordPlaceholder: 'Confirm your new password',
     },
     wishlist: {
       sale: 'Sale',
@@ -478,6 +598,94 @@ const messages = {
       emptyTitle: "Your wishlist is empty",
       emptyDesc: "Start adding items you love to keep track of them",
       startShopping: "Start Shopping",
+      header: {
+        itemsSaved: "{count} {item} saved for later",
+        item: "item",
+        items: "items",
+        total: "Total"
+      }
+    },
+    [TransEnum.Contact]: {
+      title: "Send us a Message",
+      description: "We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.",
+      fullName: "Full Name",
+      emailAddress: "Email Address",
+      phoneNumber: "Phone Number",
+      category: "Category",
+      selectCategory: "Select a category",
+      general: "General Inquiry",
+      support: "Customer Support",
+      orders: "Order Issues",
+      returns: "Returns & Refunds",
+      shipping: "Shipping Questions",
+      partnership: "Business Partnership",
+      subject: "Subject",
+      message: "Message",
+      messagePlaceholder: "Please provide details about your inquiry...",
+      sendMessage: "Send Message",
+      sendingMessage: "Sending Message...",
+      privacyNotice: "By submitting this form, you agree to our Privacy Policy and Terms of Service.",
+      required: "Required",
+      header: {
+        title: "Contact Us",
+        description: "Get in touch with HITMDT. We're here to help with your shopping experience and answer any questions you may have.",
+        successMessage: "Message sent successfully! We'll get back to you soon."
+      },
+      info: {
+        companyName: "H!TMDT",
+        description: "Bringing you an exceptional shopping experience with quality products and dedicated service.",
+        address: {
+          title: "Address",
+          content: "192 Xo Viet Nghe Tinh, Hoa Cuong Nam, Hai Chau, Da Nang",
+          subContent: "Vietnam"
+        },
+        phone: {
+          title: "Phone",
+          content: "1900 1234",
+          subContent: "Mon - Fri: 8:00 AM - 6:00 PM"
+        },
+        email: {
+          title: "Email",
+          content: "support@hitmdt.com",
+          subContent: "We'll respond within 24 hours"
+        },
+        businessHours: {
+          title: "Business Hours",
+          content: "Monday - Friday: 8:00 AM - 6:00 PM",
+          subContent: "Saturday: 9:00 AM - 4:00 PM"
+        }
+      },
+      social: {
+        title: "Follow Us",
+        description: "Stay connected on social media",
+        facebook: "Facebook",
+        instagram: "Instagram",
+        twitter: "Twitter",
+        website: "Website"
+      }
+    },
+    [TransEnum.Footer]: {
+      companyDescription: "Bringing you an exceptional shopping experience with quality products and dedicated service.",
+      information: {
+        title: "Information",
+        aboutUs: "About Us",
+        privacyPolicy: "Privacy Policy",
+        termsOfUse: "Terms of Use",
+        returnPolicy: "Return Policy",
+        shippingPolicy: "Shipping Policy"
+      },
+      account: {
+        title: "Account",
+        signIn: "Sign In",
+        register: "Register",
+        shoppingCart: "Shopping Cart",
+        wishlist: "Wishlist",
+        orderTracking: "Order Tracking"
+      },
+      contact: {
+        title: "Contact"
+      },
+      copyright: "©2025 {companyName}. All rights reserved."
     },
   }
 }

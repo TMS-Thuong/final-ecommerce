@@ -65,15 +65,15 @@ import { toCamelCase } from '@/helpers/stringUtils'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import { useRoute } from 'vue-router'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '@/stores/cart/cart'
 import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
-import { useWishlistStore } from '@/stores/wishlist'
+import { useWishlistStore } from '@/stores/wishlist/wishlist'
 
 const { t } = useI18n()
 const route = useRoute()
 const cartStore = useCartStore()
 const wishlistStore = useWishlistStore()
-const forceHeaderUpdate = inject('forceHeaderUpdate')
+const forceHeaderUpdate = inject<() => void>('forceHeaderUpdate')
 
 const formData = ref(DEFAULT_FORM_DATA)
 const errors = ref<{ [key: string]: string }>({})

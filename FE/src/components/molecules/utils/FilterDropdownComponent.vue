@@ -2,10 +2,12 @@
   <div class="relative" ref="dropdownRef">
     <div @click="toggleDropdown"
       class="flex items-center justify-between w-full p-3 text-left border border-neutral-300 rounded-lg bg-white cursor-pointer hover:border-neutral-400 focus:outline-none">
-      <div class="text-lg text-neutral-700 truncate">
-        <span v-if="selectedItems.length === 1">
-          {{ selectedItems[0].label }}
-        </span>
+      <div class="text-lg text-neutral-700 truncate flex items-center gap-2">
+        <template v-if="selectedItems.length === 1">
+          <img v-if="selectedItems[0].logoPath" :src="selectedItems[0].logoPath" alt="brand logo"
+            class="w-9 h-9 object-contain rounded-full" />
+          <span class="uppercase">{{ selectedItems[0].label }}</span>
+        </template>
         <span v-else>{{ placeholder || `Select ${title}` }}</span>
       </div>
       <svg :class="[isOpen ? 'transform rotate-180' : '', 'w-5 h-5 text-neutral-500']" fill="none" stroke="currentColor"
@@ -26,12 +28,12 @@
         <div v-for="option in options" :key="option.value"
           :class="['px-4 py-2 cursor-pointer', isSelected(option.value) ? 'bg-neutral-100 font-semibold text-neutral-900' : 'hover:bg-neutral-100']"
           @click="toggleOption(option.value)">
-            <div class="flex justify-between w-full items-center">
-              <div class="flex items-center">
-                <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-6 h-6 mr-2 object-contain" />
+          <div class="flex justify-between w-full text-lg items-center">
+            <div class="flex items-center">
+              <img v-if="option.logoPath" :src="option.logoPath" alt="" class="w-10 h-10 mr-2 object-contain" />
               <span class="text-neutral-700" style="text-transform: uppercase;">{{ option.label }}</span>
-              </div>
-              <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
+            </div>
+            <span v-if="option.count && option.count > 0" class="text-neutral-500 text-sm">({{ option.count }})</span>
           </div>
         </div>
       </template>
@@ -95,17 +97,17 @@ const isSelected = (value) => {
   return selectedValues.value.includes(value)
 }
 
-const handleClickOutside = (event) => {
+const inClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     isOpen.value = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('click', inClickOutside)
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('click', inClickOutside)
 })
 </script>

@@ -65,7 +65,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const addToWishlist = async (productId: number) => {
         if (!localStorage.getItem('accessToken')) {
             error.value = 'authentication_required';
-            return false;
+            throw new Error('authentication_required');
         }
         try {
             isLoading.value = true;
@@ -84,7 +84,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const removeFromWishlist = async (productId: number) => {
         if (!localStorage.getItem('accessToken')) {
             error.value = 'authentication_required';
-            return false;
+            throw new Error('authentication_required');
         }
         try {
             isLoading.value = true;
@@ -112,8 +112,10 @@ export const useWishlistStore = defineStore('wishlist', () => {
         }
     };
 
+    const defaultWishlistValue = () => ([]);
+
     const clearWishlist = () => {
-        wishlistProducts.value = [];
+        wishlistProducts.value = defaultWishlistValue();
         localStorage.removeItem('ecommerce_wishlist_data');
     };
 

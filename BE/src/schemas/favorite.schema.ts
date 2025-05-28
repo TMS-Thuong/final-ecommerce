@@ -39,30 +39,6 @@ const productSchema = {
   required: ['id', 'name', 'basePrice', 'stockQuantity'],
 };
 
-const favoriteItemSchema = {
-  type: 'object',
-  properties: {
-    id: { type: 'integer' },
-    productId: { type: 'integer' },
-    product: productSchema,
-  },
-  required: ['id', 'productId', 'product'],
-};
-
-const favoriteListSchema = {
-  type: 'object',
-  properties: {
-    id: { type: 'integer' },
-    userId: { type: 'integer' },
-    createdAt: { type: 'string', format: 'date-time' },
-    items: {
-      type: 'array',
-      items: favoriteItemSchema,
-    },
-  },
-  required: ['id', 'userId', 'createdAt', 'items'],
-};
-
 const wishlistItemWithProductSchema = {
   type: 'object',
   properties: {

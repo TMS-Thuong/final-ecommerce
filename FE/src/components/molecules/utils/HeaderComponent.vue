@@ -24,19 +24,19 @@
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inAbout">
               <GroupUserIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">About</span>
+              <span class="text-lg font-medium">{{ $t('common.header.about') }}</span>
             </div>
 
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inProducts">
               <ProductIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">Products</span>
+              <span class="text-lg font-medium">{{ $t('common.header.products') }}</span>
             </div>
 
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inContact">
               <TelephoneIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">Contact</span>
+              <span class="text-lg font-medium">{{ $t('common.header.contact') }}</span>
             </div>
           </div>
 
@@ -44,27 +44,22 @@
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inAccount">
               <PersonIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">My Account</span>
-            </div>
-            <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
-              @click="inWishlist">
-              <HeartIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">Wishlist</span>
+              <span class="text-lg font-medium">{{ $t('common.header.myAccount') }}</span>
             </div>
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inMyOrders">
               <ShoppingCartIcon customClass="text-gray-700 w-5 h-5" />
-              <span class="text-lg font-medium">My Orders</span>
+              <span class="text-lg font-medium">{{ $t('common.header.myOrders') }}</span>
             </div>
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inAddresses">
               <LocationIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">Addresses</span>
+              <span class="text-lg font-medium">{{ $t('common.header.addresses') }}</span>
             </div>
             <div class="flex items-center space-x-3 px-1 py-2 text-gray-700 hover:text-black cursor-pointer"
               @click="inLogout">
               <LogoutIcon size="6" class="text-gray-700" />
-              <span class="text-lg font-medium">Logout</span>
+              <span class="text-lg font-medium">{{ $t('common.header.logout') }}</span>
             </div>
           </div>
         </nav>
@@ -95,14 +90,14 @@
     </div>
 
     <div ref="searchBoxRef" class="w-full relative flex justify-end">
-      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" @search="handleSearch"
+      <SearchInputComponent v-if="isSearchVisible" v-model="searchQuery" @search="inSearch"
         :placeholder="$t('product.search.placeholder')" :width="'max-w-2xl'"
         class="absolute top-0 w-full md:w-[40rem] bg-white z-50 shadow-md" />
     </div>
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import Logo from '@/components/icons/Logo.vue'
@@ -120,8 +115,8 @@ import SearchInputComponent from '@/components/molecules/utils/SearchInputCompon
 import HeaderSection from '@/components/molecules/utils/HeaderSelectionComponent.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterEnum } from '@/enums/router'
-import { useCartStore } from '@/stores/cart'
-import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart/cart'
+import { useWishlistStore } from '@/stores/wishlist/wishlist'
 import LocationIcon from '@/components/icons/LocationIcon.vue'
 import ShoppingCartIcon from '@/components/icons/ShoppingCartIcon.vue'
 import LogoutIcon from '@/components/icons/LogoutIcon.vue'
@@ -134,13 +129,14 @@ const wishlistStore = useWishlistStore()
 const { totalItems: cartItemsCount } = storeToRefs(cartStore)
 const { totalItems: wishlistItemsCount } = storeToRefs(wishlistStore)
 const imageSrc = new URL('@/assets/logo.png', import.meta.url).href
-const searchBoxRef = ref(null)
+const searchBoxRef = ref<HTMLElement | null>(null)
 const isSearchVisible = ref(false)
 const isMenuOpen = ref(false)
 const searchQuery = ref('')
-const forceHeaderUpdate = inject('forceHeaderUpdate')
+const forceHeaderUpdate = inject<(() => void) | undefined>('forceHeaderUpdate')
+const accessToken = ref<string | null>(localStorage.getItem('accessToken'))
 
-const inToggleSearch = (event) => {
+const inToggleSearch = (event?: Event) => {
   event?.stopPropagation()
   isSearchVisible.value = !isSearchVisible.value
   if (isMenuOpen.value) {
@@ -148,8 +144,8 @@ const inToggleSearch = (event) => {
   }
 }
 
-const handleClickOutside = (event) => {
-  if (searchBoxRef.value && !searchBoxRef.value.contains(event.target)) {
+const handleClickOutside = (event: MouseEvent) => {
+  if (searchBoxRef.value && !searchBoxRef.value.contains(event.target as Node)) {
     isSearchVisible.value = false
   }
 }
@@ -164,10 +160,14 @@ onMounted(async () => {
   })
 
   if (localStorage.getItem('accessToken')) {
-  await wishlistStore.fetchWishlist()
+    await wishlistStore.fetchWishlist()
   } else {
     wishlistStore.clearWishlist()
   }
+
+  window.addEventListener('storage', () => {
+    accessToken.value = localStorage.getItem('accessToken')
+  })
 })
 
 const inHome = () => {
@@ -186,30 +186,35 @@ const inProducts = () => {
 }
 
 const inContact = () => {
-  router.push({ name: RouterEnum.Home })
+  router.push({ name: RouterEnum.Contact })
   isMenuOpen.value = false
 }
 
 const inCart = () => {
   if (localStorage.getItem('accessToken')) {
-    router.push('/cart');
+    router.push(RouterEnum.Cart);
   } else {
-    router.push({ name: RouterEnum.Login, query: { redirect: '/cart' } });
+    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Cart } });
   }
   isMenuOpen.value = false;
 }
 
 const inWishlist = () => {
   if (localStorage.getItem('accessToken')) {
-    router.push('/wishlist');
+    router.push(RouterEnum.Wishlist);
   } else {
-    router.push({ name: RouterEnum.Login, query: { redirect: '/wishlist' } });
+    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Wishlist } });
   }
   isMenuOpen.value = false;
 }
 
 const inAccount = () => {
   isMenuOpen.value = false
+  if (localStorage.getItem('accessToken')) {
+    router.push(RouterEnum.Profile);
+  } else {
+    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Profile } });
+  }
 }
 
 const inMyOrders = () => {
@@ -224,6 +229,7 @@ const inAddresses = () => {
 
 const inLogout = async () => {
   localStorage.removeItem('accessToken')
+  accessToken.value = null
   wishlistStore.clearWishlist()
   await nextTick()
   forceHeaderUpdate && forceHeaderUpdate()
@@ -236,7 +242,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', () => { })
 })
 
-const handleSearch = (query) => {
+const inSearch = (query: string) => {
   isSearchVisible.value = false
   isMenuOpen.value = false
 
@@ -247,4 +253,10 @@ const handleSearch = (query) => {
     })
   }
 }
+
+watch(accessToken, (newVal) => {
+  if (!newVal) {
+    wishlistStore.clearWishlist()
+  }
+})
 </script>

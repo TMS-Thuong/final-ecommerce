@@ -7,7 +7,7 @@
       <component :is="iconComponent" class="w-5 h-5" />
       <span class="sr-only">{{ type }} icon</span>
     </div>
-    <div class="ms-3 font-normal">{{ message }}</div>
+    <div class="ms-3 font-normal">{{ displayMessage }}</div>
     <button @click="$emit('close')"
       class="ms-auto -mx-1.5 -my-1.5 p-1.5 inline-flex items-center justify-center h-8 w-8 rounded-lg focus:ring-2 hover:bg-opacity-80">
       <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
@@ -20,11 +20,18 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { CheckIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/solid'
 
 const props = defineProps({
   type: { type: String, default: 'success' },
   message: { type: String, required: true }
+})
+
+const { t, te } = useI18n()
+
+const displayMessage = computed(() => {
+  return te(props.message) ? t(props.message) : props.message
 })
 
 const iconComponent = computed(() => {

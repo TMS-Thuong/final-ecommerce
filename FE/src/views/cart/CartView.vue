@@ -1,10 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div v-if="cartStore.isLoading" class="flex justify-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-800"></div>
-    </div>
-
-    <div v-else-if="cartStore.isEmpty" class="py-8 text-center">
+    <div v-if="cartStore.isEmpty" class="py-8 text-center">
       <div class="flex justify-center mb-4">
         <img src="@/assets/empty-cart.svg" alt="Empty Cart" class="w-34 h-34 text-gray-300" />
       </div>
@@ -32,68 +28,12 @@
               $t('cart.removeAll') }}</button>
           </div>
           <ul class="divide-y divide-gray-200">
-            <li v-for="item in cartStore.cartItems" :key="item.id" class="px-6 py-4">
-              <div class="flex items-center">
-                <div class="mr-4">
-                  <input type="checkbox" :id="`item-${item.id}`"
-                    class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded cursor-pointer"
-                    v-model="selectedItems[item.id]" @change="updateSelectedState" />
-                </div>
-                <div class="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
-                  <img v-if="item.product.image" :src="item.product.image" :alt="item.product.name"
-                    class="w-full h-full object-center object-cover">
-                  <div v-else class="flex items-center justify-center w-full h-full text-gray-400">
-                    <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div class="ml-4 flex-1">
-                  <div class="flex justify-between">
-                    <div>
-                      <h3 class="text-xl font-medium text-gray-900">{{ item.product.name }}</h3>
-                      <p class="mt-1 text-xl text-gray-500">
-                        <span v-if="item.product.salePrice" class="line-through">{{ formatPrice(item.product.basePrice)
-                          }}</span>
-                        <span class="font-medium ml-1">{{ formatPrice(item.price) }}</span>
-                      </p>
-                    </div>
-                    <button @click="removeItem(item.id)" class="text-gray-400 hover:text-gray-500">
-                      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        aria-hidden="true">
-                        <path fill-rule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clip-rule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="mt-4 sm:flex sm:items-center sm:justify-between">
-                    <div class="flex items-center border border-gray-300 rounded w-28">
-                      <button @click="updateItemQuantity(item.id, item.quantity - 1)"
-                        class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-r border-gray-300"
-                        :disabled="item.quantity <= 1" :class="{ 'opacity-50 cursor-not-allowed': item.quantity <= 1 }">
-                        <span class="text-xl font-medium">-</span>
-                      </button>
-
-                      <input type="number" v-model.number="item.quantity" min="1" :max="item.product.stockQuantity"
-                        class="w-10 text-center border-none py-1 text-gray-700 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        @blur="handleQuantityInput(item.id, item.quantity)"
-                        @keyup.enter="handleQuantityInput(item.id, item.quantity)" />
-
-                      <button @click="updateItemQuantity(item.id, item.quantity + 1)"
-                        class="w-8 px-0 py-1 text-gray-500 hover:text-gray-700 border-l border-gray-300"
-                        :disabled="item.quantity >= item.product.stockQuantity"
-                        :class="{ 'opacity-50 cursor-not-allowed': item.quantity >= item.product.stockQuantity }">
-                        <span class="text-xl font-medium">+</span>
-                      </button>
-                    </div>
-                    <span class="mt-2 sm:mt-0 text-xl font-medium text-gray-900">{{ formatPrice(item.subtotal) }}</span>
-                  </div>
-                </div>
-              </div>
-            </li>
+            <transition-group name="fade" tag="div">
+              <CartItem v-for="item in cartStore.cartItems" :key="item.id" :item="item"
+                :localQuantities="localQuantities" :selectedItems="selectedItems" @update-quantity="updateItemQuantity"
+                @handle-quantity-input="handleQuantityInput" @remove="removeItem"
+                @update-selected="updateSelectedState" />
+            </transition-group>
           </ul>
         </div>
 
@@ -130,7 +70,7 @@
           <div class="px-6 py-4">
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode')
-                }}</label>
+              }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -153,16 +93,22 @@
         </div>
       </div>
     </div>
+
+    <ConfirmModal :visible="showConfirmRemoveAll" :title="t('cart.confirmRemoveAllTitle')"
+      :message="t('cart.confirmRemoveAll')" :confirm-text="t('common.ok')" :cancel-text="t('common.cancel')"
+      @confirm="handleRemoveAll" @cancel="showConfirmRemoveAll = false" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, reactive, watch } from 'vue';
-import { useCartStore } from '@/stores/cart';
+import { useCartStore } from '@/stores/cart/cart';
 import { useRouter } from 'vue-router';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import { useI18n } from 'vue-i18n';
+import CartItem from '@/components/products/CartItem.vue';
+import ConfirmModal from '@/components/molecules/utils/ConfirmModal.vue';
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -170,6 +116,9 @@ const { t } = useI18n();
 const { showToast } = useToast();
 const couponCode = ref('');
 const selectedItems = reactive({});
+const localQuantities = reactive({});
+const itemLoading = reactive({});
+const showConfirmRemoveAll = ref(false);
 
 let updateCartTimer = null;
 
@@ -228,9 +177,10 @@ watch(() => cartStore.cartItems, (newItems) => {
       if (selectedItems[item.id] === undefined) {
         selectedItems[item.id] = true;
       }
+      localQuantities[item.id] = item.quantity;
     });
   }
-}, { deep: true });
+}, { deep: true, immediate: true });
 
 const updateItemQuantity = async (itemId, newQuantity) => {
   const item = cartStore.cartItems.find(item => item.id === itemId);
@@ -238,38 +188,30 @@ const updateItemQuantity = async (itemId, newQuantity) => {
 
   if (newQuantity < 1) {
     showToast(ToastEnum.Warning, t('cart.quantityMinError'));
+    localQuantities[itemId] = 1;
     return;
   }
   if (newQuantity > item.product.stockQuantity) {
     showToast(ToastEnum.Warning, t('cart.quantityMaxError', { max: item.product.stockQuantity }));
+    localQuantities[itemId] = item.product.stockQuantity;
     return;
   }
 
-  const oldQuantity = item.quantity;
-  const oldSubtotal = item.subtotal;
-
-  item.quantity = newQuantity;
-  item.subtotal = item.price * newQuantity;
-
-  if (cartStore.cart.value) {
-    cartStore.cart.value.totalItems += (newQuantity - oldQuantity);
-    cartStore.cart.value.totalAmount += (item.subtotal - oldSubtotal);
-    cartStore.cart.value.updatedAt = new Date().toISOString();
-  }
-
-  cartStore.saveCartToLocalStorage();
-
+  itemLoading[itemId] = true;
   showToast(ToastEnum.Success, t('cart.updateSuccess'));
 
-  if (updateCartTimer) {
-    clearTimeout(updateCartTimer);
-  }
+  if (updateCartTimer) clearTimeout(updateCartTimer);
 
   updateCartTimer = setTimeout(async () => {
     try {
       await cartStore.updateItem(itemId, newQuantity);
+      const updatedItem = cartStore.cartItems.find(item => item.id === itemId);
+      if (updatedItem) localQuantities[itemId] = updatedItem.quantity;
     } catch (error) {
-      console.error(error);
+      const msg = error?.response?.data?.message || error?.response?.data?.code || t('cart.updateError');
+      showToast(ToastEnum.Error, msg);
+    } finally {
+      itemLoading[itemId] = false;
     }
   }, 1000);
 };
@@ -280,7 +222,8 @@ const removeItem = async (itemId) => {
     delete selectedItems[itemId];
     showToast(ToastEnum.Success, t('cart.removeSuccess'));
   } catch (error) {
-    showToast(ToastEnum.Error, t('cart.removeError'));
+    const msg = error?.response?.data?.message || error?.response?.data?.code || t('cart.removeError');
+    showToast(ToastEnum.Error, msg);
   }
 };
 
@@ -289,28 +232,23 @@ const confirmRemoveAll = () => {
     showToast(ToastEnum.Warning, t('cart.emptyCart'));
     return;
   }
+  showConfirmRemoveAll.value = true;
+};
 
-  if (confirm(t('cart.confirmRemoveAll'))) {
-    const items = [...cartStore.cartItems];
-    try {
-      Promise.all(
-        items.map(async (item) => {
-          try {
-            await cartStore.removeItem(item.id);
-            delete selectedItems[item.id];
-          } catch (error) {
-            showToast(ToastEnum.Error, t('cart.removeAllError'));
-            throw error;
-          }
-        })
-      ).then(() => {
-        showToast(ToastEnum.Success, t('cart.removeAllSuccess'));
-      }).catch((error) => {
-        console.error("Failed to remove all items", error);
-      });
-    } catch (error) {
-      console.error("Error initiating remove all operation", error);
-    }
+const handleRemoveAll = async () => {
+  showConfirmRemoveAll.value = false;
+  const items = [...cartStore.cartItems];
+  try {
+    await Promise.all(
+      items.map(async (item) => {
+        await cartStore.removeItem(item.id);
+        delete selectedItems[item.id];
+      })
+    );
+    showToast(ToastEnum.Success, t('cart.removeAllSuccess'));
+  } catch (error) {
+    const msg = error?.response?.data?.message || error?.response?.data?.code || t('cart.removeAllError');
+    showToast(ToastEnum.Error, msg);
   }
 };
 
@@ -347,24 +285,39 @@ const checkout = async () => {
 };
 
 const handleQuantityInput = (itemId, newQuantity) => {
-  const item = cartStore.cartItems.find(item => item.id === itemId);
-  if (!item) return;
-
   let quantity = parseInt(newQuantity);
-
   if (isNaN(quantity) || quantity < 1) {
     quantity = 1;
-    item.quantity = quantity;
-  } else if (quantity > item.product.stockQuantity) {
-    quantity = item.product.stockQuantity;
-    item.quantity = quantity;
-    showToast(ToastEnum.Warning, t('cart.quantityMaxError', { max: item.product.stockQuantity }));
-  }
-
-  if (quantity !== newQuantity) {
-    updateItemQuantity(itemId, quantity);
   } else {
-    updateItemQuantity(itemId, quantity);
+    const item = cartStore.cartItems.find(item => item.id === itemId);
+    if (item && quantity > item.product.stockQuantity) {
+      quantity = item.product.stockQuantity;
+      showToast(ToastEnum.Warning, t('cart.quantityMaxError', { max: item.product.stockQuantity }));
+    }
+  }
+  localQuantities[itemId] = quantity;
+  updateItemQuantity(itemId, quantity);
+};
+
+const updateSelectedState = (itemId, isSelected) => {
+  selectedItems[itemId] = isSelected;
+};
+
+const blockNonNumberInput = (e) => {
+  if (
+    !(
+      (e.key >= '0' && e.key <= '9') ||
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'].includes(e.key)
+    )
+  ) {
+    e.preventDefault();
+  }
+};
+
+const blockPasteNonNumber = (e) => {
+  const paste = (e.clipboardData || window.clipboardData).getData('text');
+  if (!/^[0-9]+$/.test(paste)) {
+    e.preventDefault();
   }
 };
 </script>

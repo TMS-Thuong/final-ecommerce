@@ -149,7 +149,8 @@
               <p class="text-neutral-300 mt-1">Update your security settings</p>
             </div>
             <div class="p-12 bg-neutral-50">
-              <ChangePasswordForm :passwordForm="passwordForm" :errors="errors" @submit="onChangePassword" />
+              <ChangePasswordForm :passwordForm="passwordForm" :errors="errors" @submit="onChangePassword"
+                @cancel="onCancelPasswordChange" />
             </div>
           </div>
         </div>
@@ -160,7 +161,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted, computed } from 'vue';
-import { useUserStore } from '@/stores/user.store';
+import { useUserStore } from '@/stores/user/user.store';
 import { useRouter } from 'vue-router';
 import { useToast } from '@/hooks/useToast';
 import ProfileInfoForm from '@/components/molecules/account/ProfileInfoForm.vue';
@@ -176,15 +177,18 @@ import CalendarDotsIcon from '@/components/icons/CalendarDotsIcon.vue';
 import EditIcon from '@/components/icons/EditIcon.vue';
 import { ToastEnum } from '@/enums/toast';
 import { updateProfile, updateAvatar } from '@/api/user';
-import { z } from 'zod';
 import { resetPasswordSchema } from '@/validations/form';
 import { useI18n } from 'vue-i18n';
+import { toCamelCase } from '@/helpers/stringUtils';
+import { AxiosError } from 'axios';
+import { useAuthStore } from '@/stores/auth/login/token.store';
 
 const userStore = useUserStore();
 const { fetchProfile, updateUserPassword, updateUserAvatar } = userStore;
 const { showToast } = useToast();
 const router = useRouter();
 const { t } = useI18n();
+const authStore = useAuthStore();
 
 const activeTab = ref('profile');
 const isEditing = ref(false);
@@ -247,8 +251,8 @@ const goToPurchasedProducts = () => {
   router.push({ name: 'MyPurchasedProducts' });
 };
 const logout = () => {
-  localStorage.removeItem('accessToken');
-  router.push({ name: 'Login' });
+  authStore.logout(router);
+  showToast(ToastEnum.Success, t('account.logoutSuccess'));
 };
 const cancelEdit = () => {
   isEditing.value = false;
@@ -261,30 +265,43 @@ const cancelEdit = () => {
     form.avatarUrl = userStore.profile.avatarUrl || '';
   }
 };
-const onSubmit = async () => {
-  let gender = form.gender;
-  if (!['male', 'female', 'other'].includes(gender)) {
-    showToast(ToastEnum.Error, t('account.invalidGender'));
-    return;
-  }
-  if (avatarFile.value) {
-    const formData = new FormData();
-    formData.append('file', avatarFile.value);
-    await updateAvatar(formData);
-    avatarFile.value = null;
-  } else {
-    await updateProfile({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      birthDate: form.birthDate,
-      gender: gender,
-      phoneNumber: form.phone,
+
+interface ProfileFormData {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gender: string;
+  phone: string;
+}
+
+const onSubmit = async (formData: ProfileFormData) => {
+  try {
+    const response = await updateProfile({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      birthDate: formData.birthDate,
+      gender: formData.gender,
+      phoneNumber: formData.phone,
     });
+    await fetchProfile();
+    isEditing.value = false;
+    showToast(ToastEnum.Success, t('account.updateProfileSuccess'));
+  } catch (err: unknown) {
+    console.error('Update profile error:', err);
+    const axiosError = err as AxiosError<{ message?: string; code?: string }>;
+    let msg = axiosError?.response?.data?.message || axiosError?.response?.data?.code || t('account.updateFailed');
+    const code = axiosError?.response?.data?.code;
+    if (code) {
+      const i18nKey = `error.${toCamelCase(code)}`;
+      const i18nMsg = t(i18nKey);
+      if (i18nMsg && i18nMsg !== i18nKey) {
+        msg = i18nMsg;
+      }
+    }
+    showToast(ToastEnum.Error, msg);
   }
-  await fetchProfile();
-  isEditing.value = false;
-  showToast(ToastEnum.Success, t('account.updateProfileSuccess'));
 };
+
 const onChangePassword = async (payload: { currentPassword: string; newPassword: string; confirmPassword: string }) => {
   errors.value = {};
 
@@ -317,27 +334,29 @@ const onChangePassword = async (payload: { currentPassword: string; newPassword:
     passwordForm.confirmPassword = '';
     errors.value = {};
     showToast(ToastEnum.Success, t('account.changePasswordSuccess'));
-  } catch (error: any) {
-    if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-      error.response.data.errors.forEach((err: any) => {
-        if (err.path && err.message) {
-          errors.value[err.path[0]] = err.message;
-        }
-      });
-      error.response.data.errors.forEach((err: any) => {
-        if (err.message) {
-          showToast(ToastEnum.Error, err.message);
-        }
-      });
-    } else if (error?.response?.data?.message) {
-      showToast(ToastEnum.Error, error.response.data.message);
-    } else if (error?.message) {
-      showToast(ToastEnum.Error, error.message);
+
+    await fetchProfile();
+    activeTab.value = 'profile';
+  } catch (err: unknown) {
+    if (err instanceof AxiosError) {
+      const axiosError = err as AxiosError<{ code?: string }>;
+      const errorCode = axiosError?.response?.data?.code;
+      const messageKey = `account.passwordErrors.${toCamelCase(errorCode || 'updateFailed')}`;
+      showToast(ToastEnum.Error, t(messageKey));
     } else {
-      showToast(ToastEnum.Error, t('account.changePasswordFailed'));
+      showToast(ToastEnum.Error, t('account.changePasswordError'));
     }
   }
 };
+
+const onCancelPasswordChange = () => {
+  passwordForm.currentPassword = '';
+  passwordForm.newPassword = '';
+  passwordForm.confirmPassword = '';
+  errors.value = {};
+  activeTab.value = 'profile';
+};
+
 const onAvatarChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (files && files[0]) {

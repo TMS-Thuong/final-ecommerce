@@ -35,7 +35,6 @@ const CART_STORAGE_KEY = 'ecommerce_cart_data';
 
 export const useCartStore = defineStore('cart', () => {
   const cart = ref<Cart | null>(null);
-  const isLoading = ref(false);
   const error = ref<string | null>(null);
 
   const defaultCartValue = (): Cart => ({
@@ -94,7 +93,6 @@ export const useCartStore = defineStore('cart', () => {
       return;
     }
     try {
-      isLoading.value = true;
       error.value = null;
       const response = await getCart();
 
@@ -107,8 +105,6 @@ export const useCartStore = defineStore('cart', () => {
     } catch (err) {
       error.value = 'Failed to fetch cart';
       cart.value = defaultCartValue();
-    } finally {
-      isLoading.value = false;
     }
   };
 
@@ -119,18 +115,13 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     try {
-      isLoading.value = true;
       error.value = null;
       await addToCart(productId, quantity);
-
       await fetchCart();
-
       return true;
     } catch (err) {
       error.value = 'Failed to add item to cart';
       throw err;
-    } finally {
-      isLoading.value = false;
     }
   };
 
@@ -141,34 +132,24 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     try {
-      isLoading.value = true;
       error.value = null;
+      await updateCartItem(cartItemId, quantity);
 
       if (cart.value && cart.value.items) {
-        const itemIndex = cart.value.items.findIndex(item => item.id === cartItemId);
-        if (itemIndex !== -1) {
-          const item = cart.value.items[itemIndex];
-          const oldQuantity = item.quantity;
-          const priceDiff = item.price * (quantity - oldQuantity);
-
+        const item = cart.value.items.find(item => item.id === cartItemId);
+        if (item) {
           item.quantity = quantity;
           item.subtotal = item.price * quantity;
-
-          cart.value.totalAmount += priceDiff;
-          cart.value.totalItems += (quantity - oldQuantity);
+          cart.value.totalAmount = cart.value.items.reduce((sum, i) => sum + i.subtotal, 0);
+          cart.value.totalItems = cart.value.items.reduce((sum, i) => sum + i.quantity, 0);
           cart.value.updatedAt = new Date().toISOString();
         }
       }
 
-      await updateCartItem(cartItemId, quantity);
-
       return true;
     } catch (err) {
       error.value = 'Failed to update cart item';
-      await fetchCart();
       throw err;
-    } finally {
-      isLoading.value = false;
     }
   };
 
@@ -179,18 +160,14 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     try {
-      isLoading.value = true;
       error.value = null;
 
       if (cart.value && cart.value.items) {
         const itemIndex = cart.value.items.findIndex(item => item.id === cartItemId);
         if (itemIndex !== -1) {
-          const item = cart.value.items[itemIndex];
-
-          cart.value.totalAmount -= item.subtotal;
-          cart.value.totalItems -= item.quantity;
-
           cart.value.items.splice(itemIndex, 1);
+          cart.value.totalAmount = cart.value.items.reduce((sum, i) => sum + i.subtotal, 0);
+          cart.value.totalItems = cart.value.items.reduce((sum, i) => sum + i.quantity, 0);
           cart.value.updatedAt = new Date().toISOString();
         }
       }
@@ -202,8 +179,6 @@ export const useCartStore = defineStore('cart', () => {
       error.value = 'Failed to remove item from cart';
       await fetchCart();
       throw err;
-    } finally {
-      isLoading.value = false;
     }
   };
 
@@ -255,13 +230,12 @@ export const useCartStore = defineStore('cart', () => {
         saveCartToLocalStorage();
       }
     } catch (error) {
-      console.error('Lỗi khi đồng bộ giỏ hàng:', error);
+      console.error('Error when synchronizing cart:', error);
     }
   };
 
   return {
     cart,
-    isLoading,
     error,
     isEmpty,
     totalItems,

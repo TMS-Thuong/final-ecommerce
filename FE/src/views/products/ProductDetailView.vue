@@ -10,11 +10,7 @@
       </div>
     </div>
 
-    <div v-if="loading" class="mx-auto px-4 sm:px-8 md:px-16 lg:px-[16rem] py-8 sm:py-12 flex justify-center">
-      <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-neutral-800"></div>
-    </div>
-
-    <div v-else-if="error" class="mx-auto px-4 sm:px-8 md:px-16 lg:px-[16rem] py-8 sm:py-12">
+    <div v-if="error" class="mx-auto px-4 sm:px-8 md:px-16 lg:px-[16rem] py-8 sm:py-12">
       <div class="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded">
         {{ error }}
       </div>
@@ -86,7 +82,9 @@
                   -
                 </button>
                 <div class="w-10 sm:w-12 py-1 text-center border-x border-gray-300">
-                  {{ quantity }}
+                  <input type="number" v-model="quantity" min="1"
+                    class="w-full text-center border-0 hover:border-0 focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    @input="onQuantityInput" />
                 </div>
                 <button @click="incrementQuantity"
                   class="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
@@ -99,10 +97,17 @@
 
           <div class="flex space-x-2 sm:space-x-4 mb-6 sm:mb-8">
             <button @click="addToCart"
-              class="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-800  text-lg text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
-              :disabled="product.stockQuantity <= 0"
-              :class="{ 'opacity-50 cursor-not-allowed': product.stockQuantity <= 0 }">
+              class="flex-1 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-800 text-lg text-white rounded-md hover:bg-neutral-700 transition flex items-center justify-center"
+              :disabled="product.stockQuantity <= 0 || loading"
+              :class="{ 'opacity-50 cursor-not-allowed': product.stockQuantity <= 0 || loading }">
               <CartIcon size="8" class="mr-2" />
+              <svg v-if="loading" class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
               {{ $t('product.detail.addToCart') }}
             </button>
             <button
@@ -157,10 +162,10 @@
           class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
         </div>
         <div v-else-if="tab === 'reviews'" class="py-4 sm:py-6">
-          <div v-if="loadingReviews">Đang tải đánh giá...</div>
+          <div v-if="loadingReviews">Loading evaluation ...</div>
           <div v-else-if="errorReviews" class="text-red-500">{{ errorReviews }}</div>
           <div v-else>
-            <div v-if="reviews.length === 0" class="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</div>
+            <div v-if="reviews.length === 0" class="text-gray-500 text-lg">No evaluation for this product.</div>
             <div v-else>
               <div v-for="review in reviews" :key="review.id" class="bg-white rounded-lg shadow p-4 mb-4">
                 <div class="flex items-center mb-2">
@@ -170,13 +175,13 @@
                     class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-600 mr-3">
                     {{ (review.user?.firstName?.[0] || 'U') }}
                   </div>
-                  <div class=text-xl>
+                  <div class="text-xl">
                     <div class="font-semibold">{{ review.user?.firstName }} {{ review.user?.lastName }}</div>
                     <div class="flex items-center space-x-2">
                       <StarRating :size="'6'" :rating="review.rating" :readonly="true" />
                       <span class="font-medium">{{ review.rating }}</span>
                       <span class="text-gray-400 ml-2">{{ new Date(review.createdAt).toLocaleDateString('vi-VN')
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                 </div>
@@ -203,14 +208,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { productApi } from '@/api/product'
 import { categoryApi } from '@/api/category'
 import { brandApi } from '@/api/brand'
-import { useCartStore } from '@/stores/cart'
-import { useWishlistStore } from '@/stores/wishlist'
+import { useCartStore } from '@/stores/cart/cart'
+import { useWishlistStore } from '@/stores/wishlist/wishlist'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import StarRating from '@/components/atoms/StarRatingComponent.vue'
@@ -242,6 +247,7 @@ const reviews = ref([])
 const loadingReviews = ref(false)
 const errorReviews = ref('')
 const zoomImageUrl = ref(null)
+const zoomImageIndex = ref(null)
 
 const discountPercent = computed(() => {
   if (!product.value || !product.value.salePrice) return 0
@@ -297,13 +303,8 @@ const addToCart = async () => {
     showToast(ToastEnum.Success, t('product.detail.addedToCart', { quantity: quantity.value, name: product.value.name }));
     quantity.value = 1;
   } catch (err) {
-    if (err.response?.data?.message === 'PRODUCT_NOT_FOUND') {
-      showToast(ToastEnum.Error, t('product.detail.productNotFound'));
-    } else if (err.response?.data?.message === 'INSUFFICIENT_STOCK') {
-      showToast(ToastEnum.Error, t('product.detail.insufficientStock'));
-    } else {
-      showToast(ToastEnum.Error, t('product.detail.addToCartError'));
-    }
+    const msg = err?.response?.data?.message || err?.response?.data?.code || t('product.detail.addToCartError');
+    showToast(ToastEnum.Error, msg);
   } finally {
     loading.value = false;
   }
@@ -321,11 +322,14 @@ const inWishlist = async () => {
       showToast(ToastEnum.Success, t('wishlist.messages.addedToWishlist'))
     }
   } catch (e) {
-    if (e?.response?.status === 409) {
-      showToast(ToastEnum.Error, t('wishlist.errors.alreadyInWishlist'))
-    } else {
-      showToast(ToastEnum.Error, t('wishlist.errors.addToWishlistFailed'))
-    }
+    const msg =
+      e?.response?.data?.message ||
+      e?.response?.data?.error ||
+      e?.response?.data?.code ||
+      (typeof e?.response?.data === 'string' ? e.response.data : '') ||
+      e?.message ||
+      t('wishlist.errors.addToWishlistFailed');
+    showToast(ToastEnum.Error, msg)
   } finally {
     isWishlistLoading.value = false;
   }
@@ -400,9 +404,7 @@ const loadReviews = async () => {
   errorReviews.value = ''
   try {
     const res = await reviewApi.getProductReviews(productId.value)
-    console.log('API response:', res.data)
     reviews.value = Array.isArray(res.data?.reviews) ? [...res.data.reviews] : []
-    console.log('reviews after set:', reviews.value)
   } catch (e) {
     errorReviews.value = 'Không thể tải đánh giá sản phẩm'
   } finally {
@@ -419,16 +421,78 @@ const handleTabClick = (selectedTab) => {
 
 const handleZoomImage = (url) => {
   zoomImageUrl.value = url
+  if (product.value && product.value.images) {
+    zoomImageIndex.value = product.value.images.findIndex(img => img.imageUrl === url)
+  } else {
+    zoomImageIndex.value = null
+  }
 }
 
 const closeZoom = () => {
   zoomImageUrl.value = null
+  zoomImageIndex.value = null
 }
 
+const prevZoomImage = () => {
+  if (!product.value || !product.value.images || zoomImageIndex.value === null) return
+  const total = product.value.images.length
+  zoomImageIndex.value = (zoomImageIndex.value - 1 + total) % total
+  zoomImageUrl.value = product.value.images[zoomImageIndex.value].imageUrl
+}
+
+const nextZoomImage = () => {
+  if (!product.value || !product.value.images || zoomImageIndex.value === null) return
+  const total = product.value.images.length
+  zoomImageIndex.value = (zoomImageIndex.value + 1) % total
+  zoomImageUrl.value = product.value.images[zoomImageIndex.value].imageUrl
+}
+
+const handleKeydown = (e) => {
+  if (!zoomImageUrl.value) return
+  if (e.key === 'Escape') {
+    closeZoom()
+  } else if (e.key === 'ArrowLeft' && zoomImageIndex.value !== null) {
+    prevZoomImage()
+  } else if (e.key === 'ArrowRight' && zoomImageIndex.value !== null) {
+    nextZoomImage()
+  }
+}
+
+watch(zoomImageUrl, (val) => {
+  if (val) {
+    window.addEventListener('keydown', handleKeydown)
+  } else {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
+
+const onQuantityInput = (e) => {
+  const input = e.target;
+  let value = input.value;
+
+  if (value === '') {
+    quantity.value = '';
+    return;
+  }
+
+  value = parseInt(value);
+  if (isNaN(value) || value < 1) {
+    value = 1;
+  } else if (product.value && value > product.value.stockQuantity) {
+    value = product.value.stockQuantity;
+  }
+  quantity.value = value;
+};
+
 onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
   loadProductData()
   if (localStorage.getItem('accessToken')) {
     wishlistStore.initWishlist()
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>

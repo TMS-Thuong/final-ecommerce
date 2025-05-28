@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useWishlistStore } from '@/stores/wishlist'
+import { useWishlistStore } from '@/stores/wishlist/wishlist'
 
 const props = defineProps({
     item: { type: Object, required: true }

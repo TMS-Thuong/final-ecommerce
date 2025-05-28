@@ -9,6 +9,7 @@ import {
   getProductReviewsSchema,
   uploadReviewImageSchema,
   deleteReviewImageSchema,
+  getMyReviewsSchema,
 } from '@app/schemas/review.schema';
 
 export async function reviewRoutes(fastify: FastifyInstance): Promise<void> {
@@ -47,6 +48,7 @@ export async function reviewRoutes(fastify: FastifyInstance): Promise<void> {
   });
 
   fastify.get('/reviews/me', {
+    schema: getMyReviewsSchema,
     preHandler: verifyUserAuthentication,
     handler: reviewController.getMyReviews.bind(reviewController),
   });

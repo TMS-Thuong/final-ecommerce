@@ -253,3 +253,62 @@ export const deleteReviewImageSchema: FastifySchema = {
     500: errorResponseSchema,
   },
 };
+
+export const getMyReviewsSchema: FastifySchema = {
+  summary: 'Get my reviews',
+  tags: ['Review'],
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'number' },
+              productId: { type: 'number' },
+              userId: { type: 'number' },
+              orderId: { type: 'number' },
+              rating: { type: 'number' },
+              title: { type: 'string' },
+              comment: { type: 'string' },
+              createdAt: { type: 'string', format: 'date-time' },
+              updatedAt: { type: 'string', format: 'date-time' },
+              images: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    reviewId: { type: 'number' },
+                    imageUrl: { type: 'string' },
+                  },
+                },
+              },
+              user: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  firstName: { type: 'string' },
+                  lastName: { type: 'string' },
+                  avatarUrl: { type: 'string' },
+                },
+              },
+              order: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  orderCode: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    401: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};

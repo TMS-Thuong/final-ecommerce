@@ -84,20 +84,17 @@ export class ReviewService {
       throw new Error(ReviewErrorMessages.REVIEW_NOT_FOUND);
     }
 
-    // kiểm tra đánh giá có quá 7 ngày k
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    if (review.createdAt < sevenDaysAgo) {
-      throw new Error(ReviewErrorMessages.REVIEW_EDIT_EXPIRED);
-    }
-
-    // check đánh giá đã cập nhật chưa
     if (review.updatedAt > review.createdAt) {
       throw new Error(ReviewErrorMessages.REVIEW_ALREADY_EDITED);
     }
 
-    // Update review
+    const sevenDaysFromCreation = new Date(review.createdAt);
+    sevenDaysFromCreation.setDate(sevenDaysFromCreation.getDate() + 7);
+
+    if (new Date() > sevenDaysFromCreation) {
+      throw new Error(ReviewErrorMessages.REVIEW_EDIT_EXPIRED);
+    }
+
     const updatedReview = await prisma.review.update({
       where: {
         id: reviewId,
@@ -105,6 +102,7 @@ export class ReviewService {
       data: {
         title: reviewData.title,
         comment: reviewData.comment,
+        updatedAt: new Date(), // Set updatedAt to current time
       },
       include: {
         user: {
@@ -203,12 +201,27 @@ export class ReviewService {
     });
   }
 
-  async getUserReviews(userId: number) {
+  async getUserReviews(userId: number): Promise<IReviewWithUser[]> {
     return await prisma.review.findMany({
       where: { userId },
       include: {
         product: true,
         images: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+          },
+        },
+        order: {
+          select: {
+            id: true,
+            createdAt: true,
+            orderCode: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });

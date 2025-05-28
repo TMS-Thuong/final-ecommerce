@@ -131,7 +131,7 @@ import addressApi from '@/api/address';
 import AddressModal from '@/components/molecules/utils/AddressModal.vue';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 import { RouterEnum } from '@/enums/router';
-import { useCheckoutStore } from '@/stores/checkout';
+import { useCheckoutStore } from '@/stores/payment/checkout';
 import PlusIcon from '@/components/icons/PlusIcon.vue';
 import EditIcon from '@/components/icons/EditIcon.vue';
 import StarIcon from '@/components/icons/StarIcon.vue';

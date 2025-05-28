@@ -8,19 +8,29 @@
             <div>
                 <h2 class="text-3xl font-bold">{{ $t('wishlist.headerTitle') }}</h2>
                 <p class="text-gray-300 mt-2 text-xl">
-                    {{ count }} {{ count === 1 ? 'item' : 'items' }} saved for later
+                    {{ $t('wishlist.header.itemsSaved', { count, item: count === 1 ? $t('wishlist.header.item') : $t('wishlist.header.items') }) }}
                 </p>
             </div>
         </div>
         <div class="text-right">
-            <p class="text-xl font-bold">Total</p>
+            <p class="text-xl font-bold">{{ $t('wishlist.header.total') }}</p>
             <div class="text-2xl font-bold text-white">
                 {{ total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) }}
             </div>
         </div>
     </div>
 </template>
-<script setup>
+
+<script setup lang="ts">
 import HeartIcon from '@/components/icons/HeartIcon.vue'
-const props = defineProps({ count: Number, total: Number })
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+interface Props {
+    count: number
+    total: number
+}
+
+defineProps<Props>()
 </script>

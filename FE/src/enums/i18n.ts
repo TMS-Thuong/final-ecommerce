@@ -22,4 +22,6 @@ export enum TransEnum {
   PaymentStatus = 'paymentStatus',
   ShippingStatus = 'shippingStatus',
   PaymentMethods = 'paymentMethods',
+  Contact = 'contact',
+  Footer = 'footer',
 }
