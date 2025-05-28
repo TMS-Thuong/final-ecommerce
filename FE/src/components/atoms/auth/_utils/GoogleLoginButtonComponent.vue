@@ -76,7 +76,6 @@ const onGoogleSignIn = () => {
       onGoogleLogin(idToken)
     })
     .catch((error) => {
-      console.error(t('error.googleSigninFailed'), error)
       showToast(ToastEnum.Error, t('error.googleSigninFailed'))
     })
 }

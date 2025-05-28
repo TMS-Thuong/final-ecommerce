@@ -218,6 +218,7 @@ const handleSubmitReview = async (reviewData) => {
             await reviewApi.updateReview(selectedReview.value.id, {
                 title: reviewData.title,
                 comment: reviewData.comment,
+                rating: reviewData.rating
             });
             showToast(ToastEnum.Success, t('account.updateReviewSuccess'));
             showReviewModal.value = false;

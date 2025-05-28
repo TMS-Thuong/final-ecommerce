@@ -646,7 +646,7 @@ const messages = {
         },
         email: {
           title: "Email",
-          content: "support@hitmdt.com",
+          content: "support[at]hitmdt[dot]com",
           subContent: "We'll respond within 24 hours"
         },
         businessHours: {

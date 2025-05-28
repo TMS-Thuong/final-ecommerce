@@ -20,7 +20,6 @@ provide('forceHeaderUpdate', forceHeaderUpdate)
 onMounted(() => {
   if (localStorage.getItem('accessToken')) {
     cartStore.initCart().catch(err => {
-      console.error('Failed to initialize cart:', err);
       toastStore.$patch({
         isShowToast: true,
         toastType: ToastEnum.Error,
