@@ -5,7 +5,8 @@
             class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative pointer-events-auto overflow-y-auto max-h-[95vh]">
             <button @click="$emit('close')"
                 class="absolute top-2 right-2 text-2xl text-gray-500 hover:text-black">&times;</button>
-            <h2 class="text-2xl font-bold mb-4">{{ isUpdate ? $t('product.review.modal.updateTitle') : $t('product.review.modal.writeTitle') }}</h2>
+            <h2 class="text-2xl font-bold mb-4">{{ isUpdate ? $t('product.review.modal.updateTitle') :
+                $t('product.review.modal.writeTitle') }}</h2>
             <div class="flex items-center gap-4 mb-4">
                 <img :src="product.images?.[0]?.imageUrl" class="w-16 h-16 object-contain rounded bg-gray-100" />
                 <div>
@@ -16,7 +17,8 @@
                 </div>
             </div>
             <div class="mb-4">
-                <label class="text-lg block font-semibold mb-1">{{ $t('product.review.modal.starEvaluation') }} *</label>
+                <label class="text-lg block font-semibold mb-1">{{ $t('product.review.modal.starEvaluation') }}
+                    *</label>
                 <div class="flex gap-1">
                     <button v-for="star in 5" :key="star" @click="!isUpdate && (form.rating = star)" type="button"
                         class="text-2xl" :class="{ 'cursor-not-allowed': isUpdate }">
@@ -25,16 +27,23 @@
                 </div>
             </div>
             <div class="mb-4">
-                <label class="block text-lg font-semibold mb-1">{{ $t('product.review.modal.titleEvaluation') }} *</label>
+                <label class="block text-lg font-semibold mb-1">{{ $t('product.review.modal.titleEvaluation') }}
+                    *</label>
                 <input v-model="form.title" maxlength="100" class="w-full border rounded px-3 py-2"
                     :placeholder="$t('product.review.modal.titlePlaceholder')" />
-                <div class="text-base text-gray-400 text-right">{{ $t('product.review.modal.characters', { current: form.title.length, max: 100 }) }}</div>
+                <div class="text-base text-gray-400 text-right">{{ $t('product.review.modal.characters', {
+                    current:
+                        form.title.length, max: 100
+                }) }}</div>
             </div>
             <div class="mb-4">
                 <label class="block text-lg font-semibold mb-1">{{ $t('product.review.modal.reviewContent') }} *</label>
                 <textarea v-model="form.comment" maxlength="500" rows="4" class="w-full border rounded px-3 py-2"
                     :placeholder="$t('product.review.modal.contentPlaceholder')" />
-                <div class="text-base text-gray-400 text-right">{{ $t('product.review.modal.characters', { current: form.comment.length, max: 500 }) }}</div>
+                <div class="text-base text-gray-400 text-right">{{ $t('product.review.modal.characters', {
+                    current:
+                        form.comment.length, max: 500
+                }) }}</div>
             </div>
             <div class="mb-4 text-lg">
                 <label class="block font-semibold mb-1">{{ $t('product.review.modal.image') }}</label>
@@ -50,7 +59,8 @@
             </div>
             <div class="flex justify-end gap-2 text-lg mt-6">
                 <button @click="$emit('close')"
-                    class="px-4 py-2 rounded bg-gray-600 text-gray-50 font-semibold hover:bg-gray-700 transition-colors duration-200">{{ $t('product.review.modal.cancel') }}</button>
+                    class="px-4 py-2 rounded bg-gray-600 text-gray-50 font-semibold hover:bg-gray-700 transition-colors duration-200">{{
+                        $t('product.review.modal.cancel') }}</button>
                 <button :disabled="!canSubmit" @click="onSubmit"
                     class="px-4 py-2 rounded bg-neutral-700 text-white font-semibold hover:bg-neutral-800 transition-colors duration-200"
                     :class="{ 'opacity-50 cursor-not-allowed hover:bg-neutral-700': !canSubmit }">
@@ -87,6 +97,7 @@ interface Product {
 }
 
 interface Review {
+    id?: number;
     rating?: number;
     title?: string;
     comment?: string;
@@ -168,7 +179,25 @@ function removeImage(idx: number) {
 }
 
 function onSubmit() {
-    emit('submit', { ...form.value });
+    const oldImages = form.value.images.filter(img => !img.file && img.preview && !img.id).map(img => img.preview);
+    const newImages = form.value.images.filter(img => img.file);
+
+    if (props.isUpdate && newImages.length > 0 && props.review && props.review.id) {
+        const uploadPromises = newImages
+            .filter(img => img.file)
+            .map(img => {
+                const formData = new FormData();
+                formData.append('file', img.file!);
+                return import('@/api/review').then(module => module.reviewApi.uploadReviewImage(props.review!.id!, formData))
+                    .then(res => res.data?.data?.imageUrl || null);
+            });
+        Promise.all(uploadPromises).then(urls => {
+            const allImageUrls = [...oldImages, ...urls.filter(Boolean)];
+            emit('submit', { ...form.value, images: allImageUrls });
+        });
+    } else {
+        emit('submit', { ...form.value });
+    }
 }
 
 function formatPrice(price: number) {

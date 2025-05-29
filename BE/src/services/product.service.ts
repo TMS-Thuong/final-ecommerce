@@ -4,6 +4,7 @@ import { ProductErrorMessages } from '@app/constants/product.message';
 import {
   IProductImage,
   IProductWithImages,
+  IProductDetails,
   PrismaProductResult,
   PrismaProductWithImages,
 } from '@app/types/product.type';
@@ -49,41 +50,7 @@ export class ProductService {
     averageRating?: number,
     sortBy: 'newest' | 'priceAsc' | 'priceDesc' | 'rating' = 'newest'
   ): Promise<IProductWithImages[]> {
-    const filters: {
-      isActive: boolean;
-      OR?: Array<{
-        name?: { contains?: string; mode?: 'insensitive' };
-        sku?: { contains?: string; mode?: 'insensitive' };
-        description?: { contains?: string; mode?: 'insensitive' };
-      }>;
-      AND?: Array<
-        | {
-            OR?: Array<{
-              name?: { contains?: string; mode?: 'insensitive' };
-              sku?: { contains?: string; mode?: 'insensitive' };
-              description?: { contains?: string; mode?: 'insensitive' };
-            }>;
-          }
-        | {
-            OR: Array<{
-              AND: Array<
-                | {
-                    salePrice: { not: null; gte?: number; lte?: number };
-                  }
-                | {
-                    salePrice: null;
-                    basePrice: { gte?: number; lte?: number };
-                  }
-              >;
-            }>;
-          }
-      >;
-      brandId?: number;
-      categoryId?: number;
-      basePrice?: { gte?: number; lte?: number };
-      stockQuantity?: { gt?: number; equals?: number };
-      averageRating?: { gte?: number };
-    } = { isActive: true };
+    const filters: Record<string, unknown> = { isActive: true };
 
     // Tìm kiếm theo từ khóa
     if (searchQuery && searchQuery.trim() !== '') {
@@ -144,11 +111,41 @@ export class ProductService {
       filters.averageRating = { gte: averageRating };
     }
 
+    // Nếu sắp xếp theo giá thực tế
+    if (sortBy === 'priceAsc' || sortBy === 'priceDesc') {
+      const orderDirection = sortBy === 'priceAsc' ? 'ASC' : 'DESC';
+      let whereSQL = 'WHERE "IsActive" = true';
+      if (brandId) whereSQL += ` AND "brandId" = ${brandId}`;
+      if (categoryId) whereSQL += ` AND "categoryId" = ${categoryId}`;
+      if (minPrice !== undefined) whereSQL += ` AND (COALESCE("salePrice", "basePrice") >= ${minPrice})`;
+      if (maxPrice !== undefined) whereSQL += ` AND (COALESCE("salePrice", "basePrice") <= ${maxPrice})`;
+      if (stockStatus === 'inStock') whereSQL += ' AND "stockQuantity" > 0';
+      if (stockStatus === 'outOfStock') whereSQL += ' AND "stockQuantity" = 0';
+      if (averageRating !== undefined && averageRating !== null) whereSQL += ` AND "averageRating" >= ${averageRating}`;
+      if (searchQuery && searchQuery.trim() !== '') {
+        const q = searchQuery.trim().replace(/'/g, "''");
+        whereSQL += ` AND ("name" ILIKE '%${q}%' OR "sku" ILIKE '%${q}%')`;
+      }
+      const offset = (page - 1) * pageSize;
+      const products: unknown = await prisma.$queryRawUnsafe(
+        `SELECT *, COALESCE("SalePrice", "BasePrice") as "displayPrice"
+         FROM "Products"
+         ${whereSQL}
+         ORDER BY "displayPrice" ${orderDirection}
+         LIMIT ${pageSize} OFFSET ${offset}`
+      );
+      return await this.addImagesToProducts(products as PrismaProductResult[]);
+    }
+
     try {
+      const orderBy: Record<string, 'asc' | 'desc'> = {};
+      if (sortBy === 'newest') orderBy.createdAt = 'desc';
+      if (sortBy === 'rating') orderBy.averageRating = 'desc';
       const products = await prisma.product.findMany({
-        skip: 0,
-        take: 1000000,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
         where: filters,
+        orderBy,
         select: {
           id: true,
           sku: true,
@@ -170,35 +167,8 @@ export class ProductService {
           updatedAt: true,
         },
       });
-
-      // Sắp xếp theo giá hiển thị thực tế
-      if (sortBy === 'priceAsc') {
-        products.sort((a, b) => {
-          const priceA = (a.salePrice ? a.salePrice.toNumber?.() : undefined) ?? a.basePrice.toNumber?.();
-          const priceB = (b.salePrice ? b.salePrice.toNumber?.() : undefined) ?? b.basePrice.toNumber?.();
-          return priceA - priceB;
-        });
-      } else if (sortBy === 'priceDesc') {
-        products.sort((a, b) => {
-          const priceA = (a.salePrice ? a.salePrice.toNumber?.() : undefined) ?? a.basePrice.toNumber?.();
-          const priceB = (b.salePrice ? b.salePrice.toNumber?.() : undefined) ?? b.basePrice.toNumber?.();
-          return priceB - priceA;
-        });
-      } else if (sortBy === 'rating') {
-        products.sort(
-          (a, b) =>
-            (b.averageRating ? b.averageRating.toNumber?.() : 0) - (a.averageRating ? a.averageRating.toNumber?.() : 0)
-        );
-      } else if (sortBy === 'newest') {
-        products.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      }
-
-      // Phân trang lại
-      const pagedProducts = products.slice((page - 1) * pageSize, page * pageSize);
-
-      return await this.addImagesToProducts(pagedProducts);
+      return await this.addImagesToProducts(products as PrismaProductResult[]);
     } catch (error) {
-      console.error('Error in getProducts:', error);
       throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }
@@ -315,13 +285,85 @@ export class ProductService {
 
     // Create the result using cached images
     return products.map((product) => {
+      const pid = product.id;
+      const getNumber = (val: unknown): number => {
+        if (val && typeof (val as { toNumber?: () => number }).toNumber === 'function')
+          return (val as { toNumber: () => number }).toNumber();
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string') return parseFloat(val);
+        return 0;
+      };
       return {
-        ...product,
-        basePrice: product.basePrice.toNumber(),
-        salePrice: product.salePrice ? product.salePrice.toNumber() : 0,
-        averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
-        images: this.imageCache[product.id] || [],
+        id: pid,
+        sku: product.sku,
+        name: product.name,
+        slug: product.slug,
+        description: product.description,
+        categoryId: product.categoryId,
+        brandId: product.brandId,
+        basePrice: getNumber(product.basePrice),
+        salePrice: getNumber(product.salePrice),
+        stockQuantity: product.stockQuantity,
+        averageRating: getNumber(product.averageRating),
+        ratingCount: product.ratingCount,
+        viewCount: product.viewCount,
+        soldCount: product.soldCount,
+        isActive: product.isActive,
+        isFeatured: product.isFeatured,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+        images: this.imageCache[pid] || [],
       } as IProductWithImages;
     });
+  }
+
+  async getProductDetails(productId: number): Promise<IProductDetails> {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        productAttributeValues: {
+          include: {
+            attribute: true,
+          },
+        },
+        images: true,
+        category: true,
+        brand: true,
+      },
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    const attributes = product.productAttributeValues.map((pav) => {
+      let parsedValue = {};
+      try {
+        console.log(`DEBUG attribute ID: ${pav.attribute.id}, value: ${pav.attribute.value}`);
+        if (typeof pav.attribute.value === 'string' && pav.attribute.value.trim() !== '') {
+          parsedValue = JSON.parse(pav.attribute.value);
+        } else {
+          console.warn(`Invalid or empty attribute value for ID ${pav.attribute.id}: ${pav.attribute.value}`);
+        }
+      } catch (e) {
+        console.error(`JSON parse error for attribute ID ${pav.attribute.id}:`, pav.attribute.value, e);
+      }
+      return {
+        id: pav.attribute.id,
+        value: parsedValue,
+        isVariantAttribute: pav.attribute.isVariantAttribute,
+      };
+    });
+
+    const result = {
+      ...product,
+      basePrice: product.basePrice.toNumber(),
+      salePrice: product.salePrice ? product.salePrice.toNumber() : null,
+      averageRating: product.averageRating ? product.averageRating.toNumber() : 0,
+      attributes,
+    };
+
+    console.log('DEBUG final attributes:', JSON.stringify(attributes, null, 2));
+    return result;
   }
 }

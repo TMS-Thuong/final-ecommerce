@@ -8,9 +8,10 @@
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2">
-        <AddressSelector :addresses="checkoutStore.addresses" :selected-address-id="checkoutStore.selectedAddressId"
-          :is-loading="addressLoading" @update:selected-address-id="checkoutStore.selectedAddressId = $event"
-          @add-address="toggleAddressModal(true)" @show-all-addresses="toggleAddressListModal(true)" />
+        <AddressSelector :addresses="checkoutStore.addresses"
+          :selected-address-id="checkoutStore.selectedAddressId ?? 0" :is-loading="addressLoading"
+          @update:selected-address-id="checkoutStore.selectedAddressId = $event" @add-address="toggleAddressModal(true)"
+          @show-all-addresses="toggleAddressListModal(true)" />
 
         <div class="bg-white overflow-hidden border border-gray-200 rounded-md mb-6">
           <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -52,7 +53,7 @@
           <div class="px-6 py-4">
             <label for="notes" class="block text-xl font-medium text-gray-700">{{ $t('checkout.noteOptional') }}</label>
             <textarea id="notes" v-model="checkoutStore.orderNotes" rows="3"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 block text-lg w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :placeholder="$t('checkout.notesPlaceholder')"></textarea>
           </div>
         </div>
@@ -118,8 +119,8 @@
     <AddressModal :is-open="showAddressModal" @close="toggleAddressModal(false)" @saved="handleAddressSaved" />
 
     <AddressListModal :is-open="showAddressListModal" :addresses="checkoutStore.addresses"
-      v-model="checkoutStore.selectedAddressId" @close="toggleAddressListModal(false)"
-      @edit-address="handleEditAddress" />
+      v-model="checkoutStore.selectedAddressId" @close="toggleAddressListModal(false)" @edit-address="handleEditAddress"
+      :modelValue="addressListModelValue" />
 
     <AddressModal :is-open="showEditAddressModal" :address-to-edit="addressToEdit"
       @close="toggleEditAddressModal(false)" @saved="handleAddressSaved" />
@@ -127,7 +128,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
@@ -222,6 +223,30 @@ const placeOrder = async () => {
   }
 };
 
+const addressListModelValue = computed(() => {
+  if (!checkoutStore.addresses || checkoutStore.addresses.length === 0) return 0;
+  return checkoutStore.selectedAddressId == null ? 0 : checkoutStore.selectedAddressId;
+});
+
+const getSelectedCartItemsCookie = () => {
+  const cookies = document.cookie.split(';');
+  const selectedCartItemsCookie = cookies.find(cookie => cookie.trim().startsWith('selectedCartItems='));
+  if (selectedCartItemsCookie) {
+    try {
+      return JSON.parse(selectedCartItemsCookie.split('=')[1]);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+};
+
+watch(() => checkoutStore.addresses, (newAddresses) => {
+  if (!newAddresses || newAddresses.length === 0) {
+    checkoutStore.selectedAddressId = 0;
+  }
+});
+
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
 
@@ -230,42 +255,57 @@ onMounted(async () => {
     return;
   }
 
-  const selectedCartItems = localStorage.getItem('selectedCartItems');
-  if (!selectedCartItems || JSON.parse(selectedCartItems).length === 0) {
-    showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
-    router.push('/cart');
-    return;
-  }
-
   try {
-    cartStore.initializeCartFromLocalStorage();
+    await cartStore.fetchCart();
 
     if (cartStore.isEmpty) {
-      await cartStore.fetchCart();
-
-      if (cartStore.isEmpty) {
-        showToast(ToastEnum.Warning, t('cart.emptyCart'));
-        router.push('/cart');
-        return;
-      }
+      showToast(ToastEnum.Warning, t('cart.emptyCart'));
+      router.push('/cart');
+      return;
     }
-  } catch (error) {
-    console.error('Error fetching cart:', error);
-    showToast(ToastEnum.Error, t('error'));
-    return;
-  }
 
-  try {
+    const selectedCartItems = localStorage.getItem('selectedCartItems') || getSelectedCartItemsCookie();
+    if (!selectedCartItems) {
+      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
+      router.push('/cart');
+      return;
+    }
+
+    const selectedItems = typeof selectedCartItems === 'string' ? JSON.parse(selectedCartItems) : selectedCartItems;
+    if (!Array.isArray(selectedItems) || selectedItems.length === 0) {
+      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
+      router.push('/cart');
+      return;
+    }
+
+    const validSelectedItems = selectedItems.filter(id =>
+      cartStore.cartItems.some(item => item.id === id)
+    );
+
+    if (validSelectedItems.length === 0) {
+      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
+      router.push('/cart');
+      return;
+    }
+
+    localStorage.setItem('selectedCartItems', JSON.stringify(validSelectedItems));
+    document.cookie = `selectedCartItems=${JSON.stringify(validSelectedItems)}; path=/; max-age=2592000`;
+
     addressLoading.value = true;
     await checkoutStore.fetchAddresses();
 
-    if (checkoutStore.selectedAddressId === null && checkoutStore.addresses.length > 0) {
+    if ((checkoutStore.selectedAddressId === null || checkoutStore.selectedAddressId === undefined) && checkoutStore.addresses.length > 0) {
       const defaultAddress = checkoutStore.addresses.find(addr => addr.isDefaultShipping || addr.isDefault);
       checkoutStore.selectedAddressId = defaultAddress ? defaultAddress.id : checkoutStore.addresses[0].id;
     }
+    if (checkoutStore.selectedAddressId == null) {
+      checkoutStore.selectedAddressId = 0;
+    }
   } catch (error) {
-    console.error('Error fetching addresses:', error);
+    console.error('Error during checkout initialization:', error);
     showToast(ToastEnum.Error, t('error'));
+    router.push('/cart');
+    return;
   } finally {
     addressLoading.value = false;
   }

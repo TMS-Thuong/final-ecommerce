@@ -26,6 +26,7 @@ import ContactView from '@/views/home/ContactView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
+
   {
     path: '/',
     name: RouterEnum.Home,
@@ -148,6 +149,9 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { left: 0, top: 0 };
+  },
 })
 
 router.beforeEach((to, from, next) => {
