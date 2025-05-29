@@ -14,7 +14,8 @@
     "prepush": "echo Running prepush hook...",
     "dev": "npx tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "prisma:seed": "ts-node prisma/seed.ts"
   },
   "lint-staged": {
     "BE/src/**/*.{ts,js}": [
@@ -87,5 +88,8 @@
     "vnpay": "^2.2.0",
     "winston": "^3.17.0",
     "zod": "^3.24.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
