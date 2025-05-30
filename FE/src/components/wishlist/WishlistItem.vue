@@ -19,7 +19,7 @@
                 class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
                 <span class="bg-gray-800 text-white px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm">{{
                     $t('wishlist.outOfStock')
-                }}</span>
+                    }}</span>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
                         :count="item.product.ratingCount || 0" :showCount="true" :readonly="true" size="6" />
                     <span class="text-sm sm:text-lg text-gray-500">{{ item.product.averageRating || 0 }} ({{
                         item.product.ratingCount || 0
-                        }})</span>
+                    }})</span>
                 </div>
                 <div class="flex items-end gap-1 sm:gap-2">
                     <span class="text-base sm:text-lg md:text-xl font-bold text-gray-900">{{
@@ -66,6 +66,7 @@ import { useCartStore } from '@/stores/cart/cart'
 import { useToast } from '@/hooks/useToast'
 import { ToastEnum } from '@/enums/toast'
 import { useI18n } from 'vue-i18n'
+import { getCookie } from '@/utils/cookie'
 const props = defineProps({ item: Object })
 const wishlistStore = useWishlistStore()
 const cartStore = useCartStore()
@@ -80,10 +81,16 @@ const removeFromWishlist = async () => {
         return
     }
     try {
+        if (!getCookie('accessToken')) {
+            showToast(ToastEnum.Error, t('common.authenticationRequired'));
+            router.push({ name: 'Login', query: { redirect: route.fullPath } });
+            return;
+        }
         await wishlistStore.removeFromWishlist(props.item.favoriteItemId)
         showToast(ToastEnum.Success, t('wishlist.messages.removed'))
     } catch (e) {
-        if (e.message === 'authentication_required') {
+        if (e.message === 'authenticationRequired') {
+            showToast(ToastEnum.Error, t('common.authenticationRequired'));
             router.push({ name: 'Login', query: { redirect: route.fullPath } });
             return;
         }
@@ -102,14 +109,16 @@ const goToDetail = () => {
 }
 const handleAddToCart = async () => {
     try {
-        if (!localStorage.getItem('accessToken')) {
+        if (!getCookie('accessToken')) {
+            showToast(ToastEnum.Error, t('common.authenticationRequired'));
             router.push({ name: 'Login', query: { redirect: route.fullPath } });
             return;
         }
         await cartStore.addItem(props.item.product.id, 1)
         showToast(ToastEnum.Success, t('wishlist.messages.addedToCart'))
     } catch (e) {
-        if (e.message === 'authentication_required') {
+        if (e.message === 'authenticationRequired') {
+            showToast(ToastEnum.Error, t('common.authenticationRequired'));
             router.push({ name: 'Login', query: { redirect: route.fullPath } });
             return;
         }

@@ -2,6 +2,7 @@ import { RouterEnum } from "@/enums/router"
 import router from "@/router"
 import { useAuthStore } from "@/stores/auth/login/token.store"
 import axios from "axios"
+import { getCookie } from '@/utils/cookie'
 
 const instanceAxios = axios.create({
   timeout: 5000,
@@ -14,7 +15,7 @@ const instanceAxios = axios.create({
 
 instanceAxios.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken')
+    const accessToken = getCookie('accessToken')
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }
@@ -55,7 +56,11 @@ instanceAxios.interceptors.response.use(
       case 404:
       case 409:
       case 500:
-        return Promise.reject({ code: error.response?.data?.code || 'error.unexpectedError' })
+        return Promise.reject({
+          code: error.response?.data?.code || 'error.unexpectedError',
+          message: error.response?.data?.message || '',
+          data: error.response?.data
+        })
       case 401:
         authStore.clearTokens()
         router.push({ name: RouterEnum.Login })

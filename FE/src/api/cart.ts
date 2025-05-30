@@ -1,13 +1,12 @@
 import axios from 'axios';
+import { getAuthHeader } from '@/utils/auth';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const getCart = async () => {
   try {
     const response = await axios.get(`${API_URL}/api/cart`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
+      headers: getAuthHeader(),
     });
 
     const cartData = response.data.data || response.data;
@@ -37,9 +36,7 @@ export const addToCart = async (productId: number, quantity: number) => {
       `${API_URL}/api/cart`,
       { productId, quantity },
       {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        headers: getAuthHeader(),
       }
     );
 
@@ -57,9 +54,7 @@ export const updateCartItem = async (cartItemId: number, quantity: number) => {
       `${API_URL}/api/cart/${cartItemId}`,
       { quantity },
       {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        headers: getAuthHeader(),
       }
     );
 
@@ -74,9 +69,7 @@ export const updateCartItem = async (cartItemId: number, quantity: number) => {
 export const removeCartItem = async (cartItemId: number) => {
   try {
     const response = await axios.delete(`${API_URL}/api/cart/${cartItemId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
+      headers: getAuthHeader(),
     });
 
     const responseData = response.data.data || response.data;

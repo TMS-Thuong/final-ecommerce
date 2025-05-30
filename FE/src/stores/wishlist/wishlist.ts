@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { wishlistApi } from '@/api/wishlist';
+import { getCookie, setCookie, removeCookie } from '@/utils/cookie';
 
 export interface WishlistItem {
     id: number;
@@ -36,10 +37,15 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const isLoading = ref(false)
     const error = ref<string | null>(null)
 
+    watch(() => wishlistProducts.value, (newVal) => {
+        setCookie(WISHLIST_STORAGE_KEY, JSON.stringify(newVal));
+    }, { deep: true });
+
     const fetchWishlist = async () => {
-        if (!localStorage.getItem('accessToken')) {
-            wishlistProducts.value = []
-            return
+        if (!getCookie('accessToken')) {
+            wishlistProducts.value = [];
+            setCookie(WISHLIST_STORAGE_KEY, JSON.stringify([]));
+            return;
         }
         try {
             isLoading.value = true;
@@ -47,10 +53,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
             const response = await wishlistApi.getWishlist();
             if (response && response.data && Array.isArray(response.data.data)) {
                 wishlistProducts.value = response.data.data;
-                localStorage.setItem('ecommerce_wishlist_data', JSON.stringify(response.data.data));
             } else if (response && Array.isArray(response.data)) {
                 wishlistProducts.value = response.data;
-                localStorage.setItem('ecommerce_wishlist_data', JSON.stringify(response.data));
             } else {
                 wishlistProducts.value = [];
             }
@@ -63,9 +67,9 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const addToWishlist = async (productId: number) => {
-        if (!localStorage.getItem('accessToken')) {
-            error.value = 'authentication_required';
-            throw new Error('authentication_required');
+        if (!getCookie('accessToken')) {
+            error.value = 'authenticationRequired';
+            throw new Error('authenticationRequired');
         }
         try {
             isLoading.value = true;
@@ -82,9 +86,9 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const removeFromWishlist = async (productId: number) => {
-        if (!localStorage.getItem('accessToken')) {
-            error.value = 'authentication_required';
-            throw new Error('authentication_required');
+        if (!getCookie('accessToken')) {
+            error.value = 'authenticationRequired';
+            throw new Error('authenticationRequired');
         }
         try {
             isLoading.value = true;
@@ -101,22 +105,22 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const initWishlist = async () => {
-        if (localStorage.getItem('accessToken')) {
-            const stored = localStorage.getItem('ecommerce_wishlist_data');
+        if (getCookie('accessToken')) {
+            await fetchWishlist();
+        } else {
+            const stored = getCookie(WISHLIST_STORAGE_KEY);
             if (stored) {
                 wishlistProducts.value = JSON.parse(stored);
+            } else {
+                wishlistProducts.value = [];
             }
-            return await fetchWishlist();
-        } else {
-            return false;
         }
     };
 
-    const defaultWishlistValue = () => ([]);
-
     const clearWishlist = () => {
-        wishlistProducts.value = defaultWishlistValue();
-        localStorage.removeItem('ecommerce_wishlist_data');
+        wishlistProducts.value = [];
+        removeCookie(WISHLIST_STORAGE_KEY);
+        setCookie(WISHLIST_STORAGE_KEY, JSON.stringify([]));
     };
 
     const isInWishlist = (productId: number) => {

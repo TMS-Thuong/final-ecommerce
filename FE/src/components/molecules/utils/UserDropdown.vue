@@ -29,6 +29,7 @@ import { useToast } from '@/hooks/useToast'
 import { useAuthStore } from '@/stores/auth/login/token.store'
 import { useI18n } from 'vue-i18n'
 import router from '@/router'
+import { getCookie } from '@/utils/cookie'
 
 const { t } = useI18n()
 const { showToast } = useToast()
@@ -38,7 +39,7 @@ const dropdownVisible = ref(false)
 const dropdownRef = ref(null)
 
 const isAuthenticated = computed(() => {
-  return !!localStorage.getItem('accessToken')
+  return !!getCookie('accessToken')
 })
 
 const toggleDropdown = () => {
@@ -83,6 +84,7 @@ const inLogout = () => {
   dropdownVisible.value = false
   authStore.logout(router)
   showToast(ToastEnum.Success, t('account.logoutSuccess'))
+  router.push({ name: 'Home' })
 }
 
 const inProfile = () => {

@@ -131,7 +131,7 @@ const prevImageInModal = () => {
 }
 
 const handleKeydownGallery = (e) => {
-  if (showZoomModal.value) return // Đang zoom thì không xử lý ở ngoài
+  if (showZoomModal.value) return
   if (e.key === 'ArrowLeft') {
     emit('prev-image')
   } else if (e.key === 'ArrowRight') {
@@ -146,6 +146,10 @@ watch(showZoomModal, (val) => {
     window.removeEventListener('keydown', handleKeydownGallery)
   }
 })
+
+const handleMouseMove = (event) => {
+  if (showZoomModal.value) return;
+};
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydownGallery)

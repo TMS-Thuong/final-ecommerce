@@ -4,7 +4,8 @@
             <div class="mr-4">
                 <input type="checkbox" :id="`item-${item.id}`"
                     class="h-5 w-5 text-neutral-800 focus:ring-neutral-800 border-gray-300 rounded cursor-pointer"
-                    v-model="selectedItems[item.id]" @change="$emit('update-selected')" />
+                    v-model="selectedItems[item.id]"
+                    @change="$emit('update-selected', item.id, selectedItems[item.id])" />
             </div>
             <div class="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
                 <img v-if="item.product.image" :src="item.product.image" :alt="item.product.name"

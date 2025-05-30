@@ -2,7 +2,7 @@
   <div class="py-8 bg-gray-100 w-full">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/5">
-        <div class="bg-white p-6 rounded-lg shadow-xl mb-6">
+        <div ref="filterSection" class="bg-white p-6 rounded-lg shadow-xl mb-6">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
             <button @click="resetFilters" class="text-blue-600 hover:text-neutral-800 text-lg font-medium">
@@ -140,11 +140,9 @@ const loading = ref(false);
 const error = ref('');
 const currentPage = ref(1);
 const hasMorePages = ref(false);
-const pageSize = 8;
+const pageSize = 10;
 const totalProducts = ref(0);
 const loadingMore = ref(false);
-const observer = ref(null);
-const lastProductRef = ref(null);
 const categoryOptions = ref([]);
 const brandOptions = ref([]);
 const categoriesLoading = ref(false);
@@ -185,10 +183,15 @@ const setRating = (rating) => {
   tempFilters.value.rating = rating;
 };
 
+const filterSection = ref(null)
+
 const applyFilters = () => {
   filters.value = { ...tempFilters.value };
   currentPage.value = 1;
   loadProducts();
+  if (filterSection.value) {
+    filterSection.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 };
 
 const resetFilters = () => {

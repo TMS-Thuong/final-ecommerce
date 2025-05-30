@@ -9,6 +9,7 @@ const messages = {
       error: "An error occurred. Please try again.",
       ok: "OK",
       cancel: "Cancel",
+      retry: "Retry",
       confirmRemoveAll: "Are you sure you want to remove all products from your cart?",
       hero: {
         summerSale: "Summer Sale",
@@ -67,7 +68,8 @@ const messages = {
           firstNameTooLong: "First name cannot be longer than 50 characters",
           firstNameTooShort: "First name must be at least one character"
         }
-      }
+      },
+      authenticationRequired: "You need to login to perform this action.",
     },
     [TransEnum.Cart]: {
       yourCart: "Your Cart",
@@ -97,6 +99,7 @@ const messages = {
       selectItemsToCheckout: "Please select items to checkout",
       selectAll: "Select All",
       confirmRemoveAllTitle: "Confirm Remove All",
+      shopNow: "Shop Now"
     },
     [TransEnum.Checkout]: {
       title: "Checkout",
@@ -257,7 +260,9 @@ const messages = {
       orderCancelled: "Order has been cancelled",
       cannotCancel: "This order cannot be cancelled",
       trackOrder: "Track Order",
-      failedToLoad: "Failed to load orders"
+      failedToLoad: "Failed to load orders",
+      fetchError: "Failed to fetch orders. Please try again.",
+      startShopping: "Start Shopping"
     },
     [TransEnum.Error]: {
       EmailRequired: 'Email is required.',
@@ -572,7 +577,9 @@ const messages = {
         editExpired: "Cannot edit review after 7 days",
         alreadyEdited: "Review can only be edited once",
         notFound: "Review not found",
-        updateFailed: "Failed to update review"
+        updateFailed: "Failed to update review",
+        validationError: "Invalid data!",
+        unrecognizedKey: "There are unrecognized fields in the submitted data!"
       },
       currentPasswordPlaceholder: 'Enter your current password',
       newPasswordPlaceholder: 'Enter your new password',
@@ -646,7 +653,7 @@ const messages = {
         },
         email: {
           title: "Email",
-          content: "support[at]hitmdt[dot]com",
+          content: "support@hitmdt.com",
           subContent: "We'll respond within 24 hours"
         },
         businessHours: {

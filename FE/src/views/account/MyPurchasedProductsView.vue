@@ -217,16 +217,23 @@ const handleSubmitReview = async (reviewData) => {
         try {
             await reviewApi.updateReview(selectedReview.value.id, {
                 title: reviewData.title,
-                comment: reviewData.comment,
-                rating: reviewData.rating
+                comment: reviewData.comment
             });
             showToast(ToastEnum.Success, t('account.updateReviewSuccess'));
             showReviewModal.value = false;
             await fetchProducts();
         } catch (err) {
-            const errorCode = err?.response?.data?.code;
-            const messageKey = reviewErrorMap[errorCode] || 'account.reviewErrors.updateFailed';
-            showToast(ToastEnum.Error, t(messageKey));
+            const errorCode = err?.code;
+            const camelCaseCode = errorCode ? toCamelCase(errorCode) : '';
+            const i18nKey = 'account.reviewErrors.' + camelCaseCode;
+            const i18nMsg = t(i18nKey);
+            if (i18nMsg !== i18nKey) {
+                showToast(ToastEnum.Error, i18nMsg);
+            } else if (err?.message) {
+                showToast(ToastEnum.Error, err.message);
+            } else {
+                showToast(ToastEnum.Error, t('account.reviewErrors.updateFailed'));
+            }
         }
         return;
     }
@@ -268,4 +275,8 @@ const handleRemoveImage = async (imgIdx) => {
         }
     }
 };
+
+function toCamelCase(str) {
+    return str.toLowerCase().replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+}
 </script>
