@@ -253,6 +253,7 @@ const goToPurchasedProducts = () => {
 const logout = () => {
   authStore.logout(router);
   showToast(ToastEnum.Success, t('account.logoutSuccess'));
+  router.push({ name: 'Home' });
 };
 const cancelEdit = () => {
   isEditing.value = false;
