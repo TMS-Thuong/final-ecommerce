@@ -362,6 +362,7 @@ const messages = {
         loginWith: 'Or login with',
         alreadyHaveAccount: 'Already have an account?',
         registerDescription: 'Create your account to get started',
+        login: 'sign in'
       },
       resetPassword: {
         title: 'Reset Password',
