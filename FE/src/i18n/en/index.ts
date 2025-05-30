@@ -44,7 +44,7 @@ const messages = {
           birthDate: "Birth date",
           gender: "Gender",
           newPassword: "New password",
-          confirmPassword: "Confirm password"
+          confirmPassword: "Confirm password",
         },
         gender: {
           male: "Male",

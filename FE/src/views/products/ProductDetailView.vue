@@ -160,6 +160,30 @@
         </div>
         <div v-else-if="tab === 'specifications'"
           class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
+          <div v-if="specificationsLoading">Loading...</div>
+          <table v-else-if="specificationsData && specificationsData.attributes && specificationsData.attributes.length"
+            class="w-full text-xl">
+            <tbody>
+              <tr v-for="(value, key, idx) in specificationsData.attributes[0].value" :key="key"
+                :class="{ 'border-b border-gray-200': idx < Object.keys(specificationsData.attributes[0].value).length - 1 }">
+                <td class="font-semibold pr-6 align-top py-3 w-1/3">
+                  <span v-if="key.includes('-')">
+                    {{ key.split('-')[0] }}<br />- {{ key.split('-').slice(1).join('-').trim() }}
+                  </span>
+                  <span v-else>{{ key }}</span>
+                </td>
+                <td class="py-3 align-top">
+                  <template v-if="typeof value === 'string' && value.includes('-')">
+                    <div v-for="(item, i) in value.split(/\s*-\s+/).filter(Boolean)" :key="i">
+                      - {{ item.trim() }}
+                    </div>
+                  </template>
+                  <template v-else>{{ value }}</template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-else>Không có thông số kỹ thuật</div>
         </div>
         <div v-else-if="tab === 'reviews'" class="py-4 sm:py-6">
           <div v-if="loadingReviews">Loading evaluation ...</div>
@@ -248,6 +272,8 @@ const loadingReviews = ref(false)
 const errorReviews = ref('')
 const zoomImageUrl = ref(null)
 const zoomImageIndex = ref(null)
+const specificationsLoading = ref(false)
+const specificationsData = ref(null)
 
 const discountPercent = computed(() => {
   if (!product.value || !product.value.salePrice) return 0
@@ -412,10 +438,19 @@ const loadReviews = async () => {
   }
 }
 
-const handleTabClick = (selectedTab) => {
+const handleTabClick = async (selectedTab) => {
   tab.value = selectedTab
   if (selectedTab === 'reviews') {
     loadReviews()
+  }
+  if (selectedTab === 'specifications' && !specificationsData.value) {
+    specificationsLoading.value = true
+    try {
+      const res = await productApi.getProductById(productId.value)
+      specificationsData.value = res.data
+    } finally {
+      specificationsLoading.value = false
+    }
   }
 }
 

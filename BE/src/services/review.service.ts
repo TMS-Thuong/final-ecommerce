@@ -102,7 +102,7 @@ export class ReviewService {
       data: {
         title: reviewData.title,
         comment: reviewData.comment,
-        updatedAt: new Date(), // Set updatedAt to current time
+        updatedAt: new Date(),
       },
       include: {
         user: {

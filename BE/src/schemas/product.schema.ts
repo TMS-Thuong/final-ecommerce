@@ -1,146 +1,133 @@
-import { FastifySchema } from 'fastify';
+import { Type } from '@sinclair/typebox';
 
-const errorResponseSchema = {
-  type: 'object',
-  properties: {
-    error: { type: 'boolean' },
-    code: { type: 'string' },
-    message: { type: 'string' },
-  },
-};
+// Base schemas
+export const ErrorResponseSchema = Type.Object({
+  statusCode: Type.Number(),
+  code: Type.String(),
+  message: Type.String(),
+});
 
-const productResponseSchema = {
-  type: 'object',
-  properties: {
-    id: { type: 'integer' },
-    sku: { type: 'string' },
-    name: { type: 'string' },
-    slug: { type: 'string' },
-    description: { type: ['string', 'null'] },
-    categoryId: { type: 'integer' },
-    brandId: { type: 'integer' },
-    basePrice: { type: 'number' },
-    salePrice: { type: ['number', 'null'] },
-    stockQuantity: { type: 'integer' },
-    averageRating: { type: 'number' },
-    ratingCount: { type: 'integer' },
-    viewCount: { type: 'integer' },
-    soldCount: { type: 'integer' },
-    isActive: { type: 'boolean' },
-    isFeatured: { type: 'boolean' },
-    createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
-  },
-};
+export const ProductImageSchema = Type.Object({
+  id: Type.Number(),
+  productId: Type.Number(),
+  imageUrl: Type.String(),
+  isThumbnail: Type.Boolean(),
+  displayOrder: Type.Number(),
+});
 
-const productImageSchema = {
-  type: 'object',
-  properties: {
-    id: { type: 'integer' },
-    productId: { type: 'integer' },
-    imageUrl: { type: 'string' },
-    isThumbnail: { type: 'boolean' },
-    displayOrder: { type: 'integer' },
-  },
-};
+export const ProductBaseSchema = Type.Object({
+  id: Type.Number(),
+  sku: Type.String(),
+  name: Type.String(),
+  slug: Type.String(),
+  description: Type.Union([Type.String(), Type.Null()]),
+  categoryId: Type.Number(),
+  brandId: Type.Number(),
+  basePrice: Type.Number(),
+  salePrice: Type.Union([Type.Number(), Type.Null()]),
+  stockQuantity: Type.Number(),
+  averageRating: Type.Number(),
+  ratingCount: Type.Number(),
+  viewCount: Type.Number(),
+  soldCount: Type.Number(),
+  isActive: Type.Boolean(),
+  isFeatured: Type.Boolean(),
+  createdAt: Type.String({ format: 'date-time' }),
+  updatedAt: Type.String({ format: 'date-time' }),
+});
 
-const productWithImagesResponseSchema = {
-  type: 'object',
-  properties: {
-    ...productResponseSchema.properties,
-    images: {
-      type: 'array',
-      items: productImageSchema,
-    },
-  },
-};
+export const ProductWithImagesSchema = Type.Intersect([
+  ProductBaseSchema,
+  Type.Object({
+    images: Type.Array(ProductImageSchema),
+  }),
+]);
 
-export const getProductsSchema: FastifySchema = {
+export const ProductAttributeSchema = Type.Object({
+  id: Type.Number(),
+  value: Type.Record(Type.String(), Type.Unknown()),
+  isVariantAttribute: Type.Boolean(),
+});
+
+export const CategorySchema = Type.Object({
+  id: Type.Number(),
+  name: Type.String(),
+});
+
+export const BrandSchema = Type.Object({
+  id: Type.Number(),
+  name: Type.String(),
+});
+
+export const ProductDetailsSchema = Type.Intersect([
+  ProductBaseSchema,
+  Type.Object({
+    images: Type.Array(ProductImageSchema),
+    attributes: Type.Array(ProductAttributeSchema),
+    category: CategorySchema,
+    brand: BrandSchema,
+  }),
+]);
+
+// Route schemas
+export const GetProductsSchema = {
   summary: 'Get list of active products',
   tags: ['Product'],
-  querystring: {
-    type: 'object',
-    properties: {
-      page: { type: 'integer', default: 1 },
-      pageSize: { type: 'integer', default: 10 },
-      brandId: { type: 'integer' },
-      categoryId: { type: 'integer' },
-      minPrice: { type: 'number', minimum: 0 },
-      maxPrice: { type: 'number', minimum: 0 },
-      stockStatus: { type: 'string', enum: ['inStock', 'outOfStock'] },
-      searchQuery: { type: 'string' },
-    },
-    required: [],
-  },
+  querystring: Type.Object({
+    page: Type.Number({ default: 1 }),
+    pageSize: Type.Number({ default: 10 }),
+    brandId: Type.Optional(Type.Number()),
+    categoryId: Type.Optional(Type.Number()),
+    minPrice: Type.Optional(Type.Number({ minimum: 0 })),
+    maxPrice: Type.Optional(Type.Number({ minimum: 0 })),
+    stockStatus: Type.Optional(Type.Union([Type.Literal('inStock'), Type.Literal('outOfStock')])),
+    searchQuery: Type.Optional(Type.String()),
+    sortBy: Type.Optional(
+      Type.String({
+        enum: ['newest', 'priceAsc', 'priceDesc', 'rating'],
+        description: 'Sort products by: newest, priceAsc, priceDesc, rating',
+      })
+    ),
+    onSale: Type.Optional(Type.Boolean()),
+    averageRating: Type.Optional(Type.Number({ minimum: 1, maximum: 5 })),
+  }),
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean' },
-        data: {
-          type: 'array',
-          items: productWithImagesResponseSchema,
-        },
-      },
-    },
-    500: errorResponseSchema,
+    200: Type.Object({
+      success: Type.Boolean(),
+      data: Type.Array(ProductWithImagesSchema),
+    }),
+    500: ErrorResponseSchema,
   },
 };
 
-export const getProductByIdSchema: FastifySchema = {
+export const GetProductByIdSchema = {
   summary: 'Get a product by its ID',
   tags: ['Product'],
-  params: {
-    type: 'object',
-    properties: {
-      id: { type: 'integer' },
-    },
-    required: ['id'],
-  },
+  params: Type.Object({
+    id: Type.Number(),
+  }),
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean' },
-        data: {
-          type: ['object', 'null'],
-          properties: productWithImagesResponseSchema.properties,
-        },
-      },
-    },
-    500: errorResponseSchema,
+    200: Type.Object({
+      success: Type.Boolean(),
+      data: Type.Union([ProductDetailsSchema, Type.Null()]),
+    }),
+    404: ErrorResponseSchema,
+    500: ErrorResponseSchema,
   },
 };
 
-export const getProductImagesByProductIdSchema: FastifySchema = {
+export const GetProductImagesSchema = {
   summary: 'Get all images for a product by its ID',
   tags: ['Product'],
-  params: {
-    type: 'object',
-    properties: {
-      productId: { type: 'integer' },
-    },
-    required: ['productId'],
-  },
+  params: Type.Object({
+    productId: Type.Number(),
+  }),
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        data: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              id: { type: 'integer' },
-              productId: { type: 'integer' },
-              imageUrl: { type: 'string' },
-              isThumbnail: { type: 'boolean' },
-              displayOrder: { type: 'integer' },
-            },
-          },
-        },
-      },
-    },
-    500: errorResponseSchema,
+    200: Type.Object({
+      success: Type.Boolean(),
+      data: Type.Array(ProductImageSchema),
+    }),
+    404: ErrorResponseSchema,
+    500: ErrorResponseSchema,
   },
 };

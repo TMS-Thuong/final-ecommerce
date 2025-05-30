@@ -1,4 +1,4 @@
-import { Prisma, Product } from '@prisma/client';
+import { Product, ProductImage, ProductAttributeValue, Category, Brand } from '@prisma/client';
 
 export interface IProductBase {
   id: number;
@@ -33,16 +33,35 @@ export interface IProductImage {
   displayOrder: number;
 }
 
-export interface IProductWithImages extends IProduct {
+export interface IProductWithImages extends Omit<Product, 'basePrice' | 'salePrice' | 'averageRating'> {
+  basePrice: number;
+  salePrice: number;
+  averageRating: number;
   images: IProductImage[];
 }
 
-export type PrismaProductResult = Omit<Product, 'basePrice' | 'salePrice' | 'averageRating'> & {
-  basePrice: Prisma.Decimal;
-  salePrice: Prisma.Decimal | null;
-  averageRating: Prisma.Decimal;
-};
-
-export interface PrismaProductWithImages extends PrismaProductResult {
-  images: IProductImage[];
+export interface IProductAttribute {
+  id: number;
+  value: Record<string, unknown>;
+  isVariantAttribute: boolean;
 }
+
+export interface IProductDetails extends Omit<Product, 'basePrice' | 'salePrice' | 'averageRating'> {
+  basePrice: number;
+  salePrice: number | null;
+  averageRating: number;
+  productAttributeValues: (ProductAttributeValue & {
+    attribute: {
+      id: number;
+      value: string;
+      isVariantAttribute: boolean;
+    };
+  })[];
+  images: ProductImage[];
+  category: Category;
+  brand: Brand;
+  attributes: IProductAttribute[];
+}
+
+export type PrismaProductResult = Product;
+export type PrismaProductWithImages = Product & { images: ProductImage[] };

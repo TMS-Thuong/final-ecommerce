@@ -1,52 +1,52 @@
 <template>
   <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden bg-white">
-    <div class="flex-1 p-6 md:p-8 text-lg">
-      <h1 class="text-3xl md:text-4xl font-bold mb-2">{{ $t('auth.register.title') }}</h1>
-      <p class="mb-6 text-gray-500 text-lg">{{ $t('auth.register.registerDescription') }}</p>
-      <form @submit.prevent="onRegister" class="space-y-4">
+    <div class="flex-1 p-6 md:p-10 flex flex-col justify-center items-center text-lg">
+      <h1 class="text-3xl md:text-5xl font-bold mb-2 text-black text-center">{{ $t('auth.register.title') }}</h1>
+      <p class="mb-8 text-gray-600 text-lg text-center">{{ $t('auth.register.registerDescription') }}</p>
+      <form @submit.prevent="onRegister" class="space-y-4 w-full max-w-md text-center">
         <div class="flex flex-col gap-4 md:flex-row">
-          <div class="w-full md:w-1/2">
+          <div class="w-full md:w-1/2 text-left">
             <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.firstName') }}<span
                 class="text-red-500">*</span></label>
             <InputText id="firstName" :label="$t('auth.register.firstName')" v-model="formData.firstName"
-              :placeholder="$t('auth.register.firstName')" :error="errors.firstName"
-              @input="onClearError('firstName')" />
+              :placeholder="$t('auth.register.firstName')" :error="errors.firstName" @input="onClearError('firstName')"
+              class="w-full" />
           </div>
-          <div class="w-full md:w-1/2">
+          <div class="w-full md:w-1/2 text-left">
             <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.lastName') }}<span
                 class="text-red-500">*</span></label>
             <InputText id="lastName" :label="$t('auth.register.lastName')" v-model="formData.lastName"
-              :placeholder="$t('auth.register.lastName')" :error="errors.lastName" @input="onClearError('lastName')" />
+              :placeholder="$t('auth.register.lastName')" :error="errors.lastName" @input="onClearError('lastName')"
+              class="w-full" />
           </div>
         </div>
-        <div>
+        <div class="text-left">
           <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.email') }}<span
               class="text-red-500">*</span></label>
           <InputText id="email" v-model="formData.email" placeholder="name@example.com" type="email"
             :error="errors.email" @input="onClearError('email')" class="w-full" />
         </div>
-        <div>
+        <div class="text-left">
           <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.password') }}<span
               class="text-red-500">*</span></label>
           <PasswordInput id="password" :label="$t('auth.register.password')" v-model="formData.password"
-            :error="errors.password" @input="onClearError('password')" />
+            :error="errors.password" @input="onClearError('password')" class="w-full" />
         </div>
-        <div>
+        <div class="text-left">
           <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.birthDate') }}<span
               class="text-red-500">*</span></label>
           <InputText id="birthDate" :label="$t('auth.register.birthDate')" v-model="formData.birthDate"
             :placeholder="$t('auth.register.gender')" type="date" :error="errors.birthDate"
-            @input="onClearError('birthDate')" class="text-gray-400" />
+            @input="onClearError('birthDate')" class="w-full text-gray-400" />
         </div>
-        <div>
-          <RadioButtonGroup :label="$t('auth.register.gender')" :options="genderOptions" name="gender"
-            v-model="formData.gender" :error="errors.gender" />
+        <div class="text-left">
+          <label class="block text-lg font-medium text-gray-700">{{ $t('auth.register.gender') }}<span
+              class="text-red-500">*</span></label>
+          <RadioButtonGroup :label="$t('auth.register.gender')" :options="genderOptionsTranslated" name="gender"
+            v-model="formData.gender" :error="errors.gender" class="w-full" />
         </div>
-        <SubmitButton
-          :text="$t('auth.register.submitButton')"
-          :disabled="isLoading"
-          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60"
-        >
+        <SubmitButton :text="$t('auth.register.submitButton')" :disabled="isLoading"
+          class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
           <LoadingSpinner v-if="isLoading" class="absolute inset-0 flex justify-center items-center" />
         </SubmitButton>
       </form>
@@ -54,32 +54,27 @@
         <button class="text-blue-500 hover:underline" :disabled="isLoading" @click="onResentEmailVerify">{{
           $t('auth.register.resendButton') }}</button>
       </p>
-      <div class="mt-6 text-center">
-        <div class="flex items-center my-6">
-          <div class="flex-grow border-t border-gray-200"></div>
-          <span class="mx-4 text-gray-400 text-lg font-medium">{{ $t('auth.register.loginWith') }}</span>
-          <div class="flex-grow border-t border-gray-200"></div>
-        </div>
-        <div class="flex justify-center">
-          <SocialLoginButton />
-        </div>
-        <div class="mt-6 text-center text-gray-600 text-lg w-full max-w-md mx-auto">
-          {{ $t('auth.register.alreadyHaveAccount') }}
-          <Button @click="onLogin" class="text-blue-500 font-semibold hover:underline">Sign in</Button>
-        </div>
+      <div class="flex items-center my-6 w-full max-w-md">
+        <div class="flex-grow border-t border-gray-200"></div>
+        <span class="mx-4 text-gray-400 text-lg">{{ $t('auth.register.loginWith') }}</span>
+        <div class="flex-grow border-t border-gray-200"></div>
+      </div>
+      <SocialLoginButton class="w-full max-w-md mx-auto" />
+      <div class="mt-6 text-center text-gray-600 text-lg w-full max-w-md mx-auto">
+        {{ $t('auth.register.alreadyHaveAccount') }}
+        <Button @click="onLogin" class="text-blue-500 font-semibold hover:underline">Sign in</Button>
       </div>
     </div>
     <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
       <BoxText :text="$t('auth.login.title')" :disabled="isLoading" @click="onLogin" />
-      <div class="flex justify-center">
-        <ImagePlaceholder :src="imageSrc" alt="Description of image" />
-      </div>
+      <ImagePlaceholder :src="imageSrc" alt="Description of image"
+        class="flex justify-center h-80 w-auto object-contain" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref, reactive } from 'vue'
+import { onBeforeUnmount, ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import InputText from '@/components/atoms/InputTextComponent.vue'
 import PasswordInput from '@/components/atoms/auth/_utils/PasswordInputComponent.vue'
@@ -110,6 +105,13 @@ const { showToast } = useToast()
 
 const { t } = useI18n()
 
+const genderOptionsTranslated = computed(() =>
+  GENDER_OPTIONS.map(opt => ({
+    ...opt,
+    label: t(opt.label)
+  }))
+)
+
 const onClearError = (field: string) => {
   delete errors[field]
 }
@@ -137,7 +139,7 @@ const onRegister = async () => {
     if (err instanceof z.ZodError) {
       const newErrors: { [key: string]: string } = {};
       err.errors.forEach((e) => {
-        newErrors[e.path[0]] = e.message;
+        newErrors[e.path[0]] = t(e.message);
       });
       Object.assign(errors, newErrors);
     } else {
