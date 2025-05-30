@@ -14,6 +14,8 @@ interface ProductQuery {
   stockStatus?: string;
   searchQuery?: string;
   sortBy?: string;
+  onSale?: boolean;
+  averageRating?: number;
 }
 
 export class ProductController {
@@ -25,8 +27,19 @@ export class ProductController {
 
   async getProducts(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
     try {
-      const { page, pageSize, brandId, categoryId, minPrice, maxPrice, stockStatus, searchQuery, sortBy } =
-        request.query as ProductQuery;
+      const {
+        page,
+        pageSize,
+        brandId,
+        categoryId,
+        minPrice,
+        maxPrice,
+        stockStatus,
+        searchQuery,
+        sortBy,
+        onSale,
+        averageRating,
+      } = request.query as ProductQuery;
       const products = await this.productService.getProducts(
         page,
         pageSize,
@@ -36,16 +49,19 @@ export class ProductController {
         maxPrice,
         stockStatus,
         searchQuery,
-        undefined,
-        sortBy as 'newest' | 'priceAsc' | 'priceDesc' | 'rating'
+        averageRating,
+        sortBy as 'newest' | 'priceAsc' | 'priceDesc' | 'rating',
+        onSale
       );
       return reply.ok(products);
     } catch (error) {
-      request.log.error(error);
+      request.log.error('Error in getProducts controller:', error);
+      const errorMessage = error instanceof Error ? error.message : ProductErrorMessages.FETCH_PRODUCTS_ERROR;
       return reply.status(500).send({
         statusCode: 500,
         code: 'FETCH_PRODUCTS_ERROR',
-        message: error?.message || ProductErrorMessages.FETCH_PRODUCTS_ERROR,
+        message: errorMessage,
+        details: error instanceof Error ? error.stack : undefined,
       });
     }
   }

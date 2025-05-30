@@ -78,15 +78,18 @@
       <div class="w-full md:w-4/5 mr-6">
         <div class="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center flex-wrap gap-4">
           <div class="flex items-center">
-            <span class="mr-4 text-xl text-neutral-700">{{ $t('product.sort.title') }}:</span>
+            <span class="mr-4 text-base md:text-xl text-neutral-700">
+              {{ $t('product.sort.title') }}:
+            </span>
             <select v-model="sortOption" ref="selectRef" @change="adjustWidth"
-              class="border border-neutral-300 rounded-lg p-2 pr-10 text-xl text-neutral-700 appearance-none focus:ring-neutral-500 focus:border-neutral-500">
+              class="border border-neutral-300 rounded-lg p-2 pr-10 text-base md:text-xl text-neutral-700 appearance-none focus:ring-neutral-500 focus:border-neutral-500">
               <option value="newest">{{ $t('product.sort.newest') }}</option>
               <option value="priceAsc">{{ $t('product.sort.priceLowToHigh') }}</option>
               <option value="priceDesc">{{ $t('product.sort.priceHighToLow') }}</option>
               <option value="rating">{{ $t('product.sort.topRated') }}</option>
             </select>
           </div>
+
           <div>
             <SearchInputComponent v-model="searchQuery" :placeholder="$t('product.search.placeholder')" width="w-full"
               @search="handleSearch" inputClass="border-neutral-300 focus:ring-neutral-500 focus:border-neutral-500" />
@@ -296,10 +299,10 @@ const loadProducts = async (page = 1) => {
     } else if (filters.value.maxPrice > 0) {
       maxPrice = filters.value.maxPrice;
     }
-    const response = await productApi.getProducts({
+
+    const params = {
       page,
       pageSize,
-      searchQuery: searchQuery.value,
       minPrice,
       maxPrice,
       categoryId: getCategoryId(),
@@ -308,7 +311,14 @@ const loadProducts = async (page = 1) => {
       averageRating: filters.value.rating ? Number(filters.value.rating) : undefined,
       onSale: filters.value.onSale ? true : undefined,
       sortBy: sortOption.value
-    });
+    };
+
+    // Only add searchQuery if it has a value
+    if (searchQuery.value && searchQuery.value.trim() !== '') {
+      params.searchQuery = searchQuery.value.trim();
+    }
+
+    const response = await productApi.getProducts(params);
     const newProducts = response?.data || [];
     if (page === 1) {
       products.value = newProducts;

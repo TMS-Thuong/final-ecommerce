@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 import { ProductErrorMessages } from '@app/constants/product.message';
 import {
@@ -48,99 +48,124 @@ export class ProductService {
     stockStatus?: string,
     searchQuery?: string,
     averageRating?: number,
-    sortBy: 'newest' | 'priceAsc' | 'priceDesc' | 'rating' = 'newest'
+    sortBy: 'newest' | 'priceAsc' | 'priceDesc' | 'rating' = 'newest',
+    onSale?: boolean
   ): Promise<IProductWithImages[]> {
-    const filters: Record<string, unknown> = { isActive: true };
-
-    // Tìm kiếm theo từ khóa
-    if (searchQuery && searchQuery.trim() !== '') {
-      filters.OR = [
-        { name: { contains: searchQuery.trim(), mode: 'insensitive' } },
-        { sku: { contains: searchQuery.trim(), mode: 'insensitive' } },
-      ];
-    }
-
-    // Lọc theo thương hiệu
-    if (brandId) {
-      filters.brandId = brandId;
-    }
-    // Lọc theo danh mục
-    if (categoryId) {
-      filters.categoryId = categoryId;
-    }
-
-    // Lọc theo khoảng giá
-    if (minPrice !== undefined || maxPrice !== undefined) {
-      const salePriceCondition: { not: null; gte?: number; lte?: number } = { not: null };
-      if (minPrice !== undefined) salePriceCondition.gte = minPrice;
-      if (maxPrice !== undefined) salePriceCondition.lte = maxPrice;
-
-      const basePriceCondition: { gte?: number; lte?: number } = {};
-      if (minPrice !== undefined) basePriceCondition.gte = minPrice;
-      if (maxPrice !== undefined) basePriceCondition.lte = maxPrice;
-
-      const priceFilter = {
-        OR: [
-          {
-            AND: [{ salePrice: salePriceCondition }],
-          },
-          {
-            AND: [{ salePrice: null, basePrice: basePriceCondition }],
-          },
-        ],
-      };
-
-      if (filters.OR) {
-        filters.AND = [{ OR: filters.OR }, priceFilter];
-        delete filters.OR;
-      } else {
-        Object.assign(filters, priceFilter);
-      }
-    }
-
-    // Lọc theo tình trạng tồn kho
-    if (stockStatus) {
-      if (stockStatus === 'inStock') {
-        filters.stockQuantity = { gt: 0 };
-      } else if (stockStatus === 'outOfStock') {
-        filters.stockQuantity = { equals: 0 };
-      }
-    }
-
-    if (averageRating !== undefined && averageRating !== null) {
-      filters.averageRating = { gte: averageRating };
-    }
-
-    // Nếu sắp xếp theo giá thực tế
-    if (sortBy === 'priceAsc' || sortBy === 'priceDesc') {
-      const orderDirection = sortBy === 'priceAsc' ? 'ASC' : 'DESC';
-      let whereSQL = 'WHERE "IsActive" = true';
-      if (brandId) whereSQL += ` AND "brandId" = ${brandId}`;
-      if (categoryId) whereSQL += ` AND "categoryId" = ${categoryId}`;
-      if (minPrice !== undefined) whereSQL += ` AND (COALESCE("salePrice", "basePrice") >= ${minPrice})`;
-      if (maxPrice !== undefined) whereSQL += ` AND (COALESCE("salePrice", "basePrice") <= ${maxPrice})`;
-      if (stockStatus === 'inStock') whereSQL += ' AND "stockQuantity" > 0';
-      if (stockStatus === 'outOfStock') whereSQL += ' AND "stockQuantity" = 0';
-      if (averageRating !== undefined && averageRating !== null) whereSQL += ` AND "averageRating" >= ${averageRating}`;
-      if (searchQuery && searchQuery.trim() !== '') {
-        const q = searchQuery.trim().replace(/'/g, "''");
-        whereSQL += ` AND ("name" ILIKE '%${q}%' OR "sku" ILIKE '%${q}%')`;
-      }
-      const offset = (page - 1) * pageSize;
-      const products: unknown = await prisma.$queryRawUnsafe(
-        `SELECT *, COALESCE("SalePrice", "BasePrice") as "displayPrice"
-         FROM "Products"
-         ${whereSQL}
-         ORDER BY "displayPrice" ${orderDirection}
-         LIMIT ${pageSize} OFFSET ${offset}`
-      );
-      return await this.addImagesToProducts(products as PrismaProductResult[]);
-    }
-
     try {
+      // Nếu sắp xếp theo giá thực tế
+      if (sortBy === 'priceAsc' || sortBy === 'priceDesc') {
+        const orderDirection = sortBy === 'priceAsc' ? 'ASC' : 'DESC';
+        let whereSQL = 'WHERE "IsActive" = true';
+        if (brandId) whereSQL += ` AND "BrandID" = ${brandId}`;
+        if (categoryId) whereSQL += ` AND "CategoryID" = ${categoryId}`;
+        if (minPrice !== undefined) whereSQL += ` AND (COALESCE("SalePrice", "BasePrice") >= ${minPrice})`;
+        if (maxPrice !== undefined) whereSQL += ` AND (COALESCE("SalePrice", "BasePrice") <= ${maxPrice})`;
+        if (stockStatus === 'inStock') whereSQL += ' AND "StockQuantity" > 0';
+        if (stockStatus === 'outOfStock') whereSQL += ' AND "StockQuantity" = 0';
+        if (averageRating !== undefined && averageRating !== null) {
+          whereSQL += ` AND "AverageRating" >= ${averageRating} AND "RatingCount" > 0`;
+        }
+        if (onSale) {
+          whereSQL += ' AND "SalePrice" IS NOT NULL AND "SalePrice" > 0';
+        }
+        if (searchQuery && searchQuery.trim() !== '') {
+          const q = searchQuery.trim().replace(/'/g, "''");
+          whereSQL += ` AND ("Name" ILIKE '%${q}%' OR "SKU" ILIKE '%${q}%')`;
+        }
+        const offset = (page - 1) * pageSize;
+        const products: unknown = await prisma.$queryRawUnsafe(
+          `SELECT 
+            "ProductID" as "id", "SKU" as "sku", "Name" as "name", "Slug" as "slug", 
+            "Description" as "description", "CategoryID" as "categoryId", 
+            "BrandID" as "brandId", "BasePrice" as "basePrice", "SalePrice" as "salePrice", 
+            "StockQuantity" as "stockQuantity", "AverageRating" as "averageRating", 
+            "RatingCount" as "ratingCount", "ViewCount" as "viewCount", 
+            "SoldCount" as "soldCount", "IsActive" as "isActive", 
+            "IsFeatured" as "isFeatured", "CreatedAt" as "createdAt", 
+            "UpdatedAt" as "updatedAt",
+            COALESCE("SalePrice", "BasePrice") as "displayPrice"
+           FROM "Products"
+           ${whereSQL}
+           ORDER BY "displayPrice" ${orderDirection}
+           LIMIT ${pageSize} OFFSET ${offset}`
+        );
+        return await this.addImagesToProducts(products as PrismaProductResult[]);
+      }
+
       const orderBy: Record<string, 'asc' | 'desc'> = {};
       if (sortBy === 'newest') orderBy.createdAt = 'desc';
-      if (sortBy === 'rating') orderBy.averageRating = 'desc';
+      if (sortBy === 'rating') {
+        orderBy.averageRating = 'desc';
+      }
+
+      const filters: Prisma.ProductWhereInput = { isActive: true };
+
+      // Tìm kiếm theo từ khóa
+      if (searchQuery && searchQuery.trim() !== '') {
+        filters.OR = [
+          { name: { contains: searchQuery.trim(), mode: 'insensitive' } },
+          { sku: { contains: searchQuery.trim(), mode: 'insensitive' } },
+        ];
+      }
+
+      // Lọc theo thương hiệu
+      if (brandId) {
+        filters.brandId = brandId;
+      }
+      // Lọc theo danh mục
+      if (categoryId) {
+        filters.categoryId = categoryId;
+      }
+
+      // Lọc theo khoảng giá
+      if (minPrice !== undefined || maxPrice !== undefined) {
+        const salePriceCondition: { not: null; gte?: number; lte?: number } = { not: null };
+        if (minPrice !== undefined) salePriceCondition.gte = minPrice;
+        if (maxPrice !== undefined) salePriceCondition.lte = maxPrice;
+
+        const basePriceCondition: { gte?: number; lte?: number } = {};
+        if (minPrice !== undefined) basePriceCondition.gte = minPrice;
+        if (maxPrice !== undefined) basePriceCondition.lte = maxPrice;
+
+        const priceFilter = {
+          OR: [
+            {
+              AND: [{ salePrice: salePriceCondition }],
+            },
+            {
+              AND: [{ salePrice: null, basePrice: basePriceCondition }],
+            },
+          ],
+        };
+
+        if (filters.OR) {
+          filters.AND = [{ OR: filters.OR }, priceFilter];
+          delete filters.OR;
+        } else {
+          Object.assign(filters, priceFilter);
+        }
+      }
+
+      // Lọc theo tình trạng tồn kho
+      if (stockStatus) {
+        if (stockStatus === 'inStock') {
+          filters.stockQuantity = { gt: 0 };
+        } else if (stockStatus === 'outOfStock') {
+          filters.stockQuantity = { equals: 0 };
+        }
+      }
+
+      // Lọc theo rating
+      if (averageRating !== undefined && averageRating !== null) {
+        filters.averageRating = { gte: averageRating };
+        filters.ratingCount = { gt: 0 };
+      }
+
+      // Lọc theo sản phẩm đang giảm giá
+      if (onSale) {
+        filters.salePrice = { gt: 0 };
+      }
+
       const products = await prisma.product.findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -169,6 +194,10 @@ export class ProductService {
       });
       return await this.addImagesToProducts(products as PrismaProductResult[]);
     } catch (error) {
+      console.error('Error in getProducts:', error);
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch products: ${error.message}`);
+      }
       throw new Error(ProductErrorMessages.FETCH_PRODUCTS_ERROR);
     }
   }

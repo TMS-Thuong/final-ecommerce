@@ -88,6 +88,8 @@ export const GetProductsSchema = {
         description: 'Sort products by: newest, priceAsc, priceDesc, rating',
       })
     ),
+    onSale: Type.Optional(Type.Boolean()),
+    averageRating: Type.Optional(Type.Number({ minimum: 1, maximum: 5 })),
   }),
   response: {
     200: Type.Object({

@@ -59,11 +59,11 @@
             <div class="flex space-x-3">
               <button @click.stop="handleEditAddress(address.id)" class="text-neutral-600 hover:text-neutral-800"
                 title="Edit">
-                <EditIcon size="8" />
+                <EditIcon size="6" />
               </button>
               <button v-if="!(address.isDefaultShipping || address.isDefault)" @click.stop="deleteAddress(address.id)"
                 class="text-red-600 hover:text-red-800" title="Delete">
-                <TrashIcon size="8" />
+                <TrashIcon size="6" />
               </button>
             </div>
           </div>
