@@ -97,6 +97,7 @@ const messages = {
       selectItemsToCheckout: "Please select items to checkout",
       selectAll: "Select All",
       confirmRemoveAllTitle: "Confirm Remove All",
+      shopNow: "Shop Now"
     },
     [TransEnum.Checkout]: {
       title: "Checkout",
