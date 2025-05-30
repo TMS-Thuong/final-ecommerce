@@ -568,6 +568,7 @@ const messages = {
       updateReviewFailed: "Failed to update review",
       invalidGender: "Invalid gender",
       updateFailed: "Failed to update profile",
+      updateAvatarSuccess: "Avatar updated successfully",
       filter: {
         all: "All",
         notReviewed: "Not Reviewed",
