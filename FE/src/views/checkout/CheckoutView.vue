@@ -83,7 +83,7 @@
           <div class="px-6 py-4">
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('checkout.couponCode')
-              }}</label>
+                }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -238,7 +238,7 @@ onMounted(async () => {
   }
 
   try {
-    cartStore.initializeCartFromLocalStorage();
+    cartStore.initializeCartFromCookie();
 
     if (cartStore.isEmpty) {
       await cartStore.fetchCart();
@@ -249,45 +249,17 @@ onMounted(async () => {
         return;
       }
     }
-  } catch (error) {
-    console.error('Error fetching cart:', error);
-    showToast(ToastEnum.Error, t('error'));
-    return;
-  }
 
-  try {
-    addressLoading.value = true;
-    await checkoutStore.fetchAddresses();
+    // Fetch necessary data
+    await Promise.all([
+      checkoutStore.fetchAddresses(),
+      checkoutStore.fetchShippingMethods(),
+      checkoutStore.fetchPaymentMethods()
+    ]);
 
-    if (checkoutStore.selectedAddressId === null && checkoutStore.addresses.length > 0) {
-      const defaultAddress = checkoutStore.addresses.find(addr => addr.isDefaultShipping || addr.isDefault);
-      checkoutStore.selectedAddressId = defaultAddress ? defaultAddress.id : checkoutStore.addresses[0].id;
-    }
   } catch (error) {
-    console.error('Error fetching addresses:', error);
-    showToast(ToastEnum.Error, t('error'));
-  } finally {
-    addressLoading.value = false;
-  }
-
-  try {
-    shippingLoading.value = true;
-    await checkoutStore.fetchShippingMethods();
-  } catch (error) {
-    console.error('Error fetching shipping methods:', error);
-    showToast(ToastEnum.Error, t('error'));
-  } finally {
-    shippingLoading.value = false;
-  }
-
-  try {
-    paymentLoading.value = true;
-    await checkoutStore.fetchPaymentMethods();
-  } catch (error) {
-    console.error('Error fetching payment methods:', error);
-    showToast(ToastEnum.Error, t('error'));
-  } finally {
-    paymentLoading.value = false;
+    console.error('Error initializing checkout:', error);
+    showToast(ToastEnum.Error, t('checkout.initializationError'));
   }
 });
 </script>

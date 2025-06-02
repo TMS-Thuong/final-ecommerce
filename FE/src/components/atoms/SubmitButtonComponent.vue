@@ -1,9 +1,5 @@
 <template>
-  <button
-    :type="type"
-    :class="$attrs.class"
-    :disabled="disabled"
-  >
+  <button :type="type" :class="$attrs.class" :disabled="disabled">
     {{ text }}
     <slot></slot>
   </button>

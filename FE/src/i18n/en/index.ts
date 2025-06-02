@@ -5,6 +5,8 @@ const messages = {
     [TransEnum.Common]: {
       home: "Home",
       products: "Products",
+      about: "About",
+      contact: "Contact",
       loading: "Loading...",
       error: "An error occurred. Please try again.",
       ok: "OK",
@@ -655,7 +657,7 @@ const messages = {
         },
         email: {
           title: "Email",
-          content: "support@hitmdt.com",
+          content: "'support@hitmdt.com'",
           subContent: "We'll respond within 24 hours"
         },
         businessHours: {

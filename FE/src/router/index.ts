@@ -23,6 +23,7 @@ import ProfileView from '@/views/account/ProfileView.vue'
 import WishlistView from '@/views/wishlist/WishlistView.vue'
 import MyPurchasedProductsView from '@/views/account/MyPurchasedProductsView.vue'
 import ContactView from '@/views/home/ContactView.vue'
+import AboutView from '@/views/about/AboutView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -109,6 +110,11 @@ const routes = [
     name: 'Wishlist',
     component: WishlistView,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/about',
+    name: RouterEnum.About,
+    component: AboutView
   },
   {
     path: '/user',

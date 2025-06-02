@@ -42,7 +42,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
   });
 
   const subtotal = computed(() => {
-    cartStore.initializeCartFromLocalStorage();
+    cartStore.initializeCartFromCookie();
 
     const selectedCartItemsStr = localStorage.getItem('selectedCartItems');
     if (!selectedCartItemsStr) return cartStore.totalAmount || 0;
@@ -202,7 +202,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
       isLoading.value = true;
       error.value = null;
 
-      cartStore.initializeCartFromLocalStorage();
+      cartStore.initializeCartFromCookie();
 
       const orderData = {
         addressId: selectedAddressId.value,

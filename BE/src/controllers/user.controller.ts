@@ -25,10 +25,22 @@ class UserController {
       if (!user) {
         return reply.notFound('User not found', 'USER_NOT_FOUND');
       }
-
-      const { ...userData } = user;
-
-      return reply.ok(userData);
+      const plainUser = JSON.parse(JSON.stringify(user));
+      return reply.ok({
+        data: {
+          id: plainUser.id,
+          email: plainUser.email,
+          firstName: plainUser.firstName,
+          lastName: plainUser.lastName,
+          avatarUrl: plainUser.avatarUrl,
+          gender: plainUser.gender,
+          birthDate: plainUser.birthDate,
+          phoneNumber: plainUser.phoneNumber,
+          createdAt: plainUser.createdAt,
+          updatedAt: plainUser.updatedAt,
+          hasPassword: !!plainUser.password,
+        },
+      });
     } catch (error) {
       console.error('Error in profile:', error);
       return reply.internalError('Failed to get user profile', 'GET_PROFILE_ERROR');

@@ -8,4 +8,5 @@ export interface UserProfile {
     phoneNumber?: string;
     birthDate?: string;
     address?: string;
+    hasPassword?: boolean;
 } 

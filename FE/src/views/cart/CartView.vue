@@ -70,7 +70,7 @@
           <div class="px-6 py-4">
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode')
-              }}</label>
+                }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -268,20 +268,19 @@ const checkout = async () => {
     return;
   }
 
-  if (selectedItemCount.value === 0) {
-    showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
+  const selectedItemsList = cartStore.cartItems.filter(item => selectedItems[item.id]);
+  if (selectedItemsList.length === 0) {
+    showToast(ToastEnum.Warning, t('cart.selectItems'));
     return;
   }
 
-  cartStore.initializeCartFromLocalStorage();
-
-  const selectedProductIds = cartStore.cartItems
-    .filter(item => selectedItems[item.id])
-    .map(item => item.id);
-
-  localStorage.setItem('selectedCartItems', JSON.stringify(selectedProductIds));
-
-  router.push({ name: 'Checkout' });
+  try {
+    const selectedProductIds = selectedItemsList.map(item => item.id);
+    localStorage.setItem('selectedCartItems', JSON.stringify(selectedProductIds));
+    router.push({ name: 'Checkout' });
+  } catch (error) {
+    showToast(ToastEnum.Error, t('cart.checkoutError'));
+  }
 };
 
 const handleQuantityInput = (itemId, newQuantity) => {

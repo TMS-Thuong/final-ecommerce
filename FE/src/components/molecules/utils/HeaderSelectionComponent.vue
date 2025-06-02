@@ -25,7 +25,7 @@ import MailIcon from '@/components/icons/MailIcon.vue'
 import router from '@/router'
 
 const inHome = () => {
-  router.push({ name: RouterEnum.Home })
+  router.push({ name: RouterEnum.About })
 }
 
 const inProducts = () => {

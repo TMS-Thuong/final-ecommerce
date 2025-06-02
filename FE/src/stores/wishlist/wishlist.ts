@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { wishlistApi } from '@/api/wishlist';
+import Cookies from 'js-cookie';
 
 export interface WishlistItem {
     id: number;
@@ -29,7 +30,7 @@ export interface Wishlist {
     createdAt: string;
 }
 
-const WISHLIST_STORAGE_KEY = 'ecommerce_wishlist_data';
+const WISHLIST_COOKIE_KEY = 'ecommerce_wishlist_data';
 
 export const useWishlistStore = defineStore('wishlist', () => {
     const wishlistProducts = ref<any[]>([])
@@ -47,10 +48,10 @@ export const useWishlistStore = defineStore('wishlist', () => {
             const response = await wishlistApi.getWishlist();
             if (response && response.data && Array.isArray(response.data.data)) {
                 wishlistProducts.value = response.data.data;
-                localStorage.setItem('ecommerce_wishlist_data', JSON.stringify(response.data.data));
+                Cookies.set(WISHLIST_COOKIE_KEY, JSON.stringify(response.data.data), { expires: 7 });
             } else if (response && Array.isArray(response.data)) {
                 wishlistProducts.value = response.data;
-                localStorage.setItem('ecommerce_wishlist_data', JSON.stringify(response.data));
+                Cookies.set(WISHLIST_COOKIE_KEY, JSON.stringify(response.data), { expires: 7 });
             } else {
                 wishlistProducts.value = [];
             }
@@ -102,7 +103,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
 
     const initWishlist = async () => {
         if (localStorage.getItem('accessToken')) {
-            const stored = localStorage.getItem('ecommerce_wishlist_data');
+            const stored = Cookies.get(WISHLIST_COOKIE_KEY);
             if (stored) {
                 wishlistProducts.value = JSON.parse(stored);
             }
@@ -116,7 +117,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
 
     const clearWishlist = () => {
         wishlistProducts.value = defaultWishlistValue();
-        localStorage.removeItem('ecommerce_wishlist_data');
+        Cookies.remove(WISHLIST_COOKIE_KEY);
     };
 
     const isInWishlist = (productId: number) => {
