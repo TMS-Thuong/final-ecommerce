@@ -5,16 +5,19 @@ import { errorResponseSchema } from './error.schema';
 const userProfileSchema = {
   type: 'object',
   properties: {
-    id: { type: 'integer' },
-    email: { type: 'string' },
-    firstName: { type: 'string' },
-    lastName: { type: 'string' },
-    avatarUrl: { type: 'string', nullable: true },
-    gender: { type: 'integer' },
-    birthDate: { type: 'string', format: 'date-time' },
-    phoneNumber: { type: 'string', nullable: true },
-    createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    data: {
+      id: { type: 'integer' },
+      email: { type: 'string' },
+      firstName: { type: 'string' },
+      lastName: { type: 'string' },
+      avatarUrl: { type: 'string', nullable: true },
+      gender: { type: 'integer' },
+      birthDate: { type: 'string', format: 'date-time' },
+      phoneNumber: { type: 'string', nullable: true },
+      createdAt: { type: 'string', format: 'date-time' },
+      updatedAt: { type: 'string', format: 'date-time' },
+      hasPassword: { type: 'boolean' },
+    },
   },
 };
 

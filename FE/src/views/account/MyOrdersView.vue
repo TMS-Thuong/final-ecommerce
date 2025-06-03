@@ -16,8 +16,10 @@
 
     <div v-else-if="error" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
       <p class="text-red-500 text-lg">{{ error }}</p>
-      <button @click="fetchOrders"
-        class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+      <button
+        @click="fetchOrders"
+        class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700"
+      >
         {{ $t('common.retry') }}
       </button>
     </div>
@@ -33,8 +35,7 @@
       </div>
       <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $t('orders.noOrders') }}</h3>
       <p class="text-gray-500 mb-4">{{ $t('orders.startShopping') }}</p>
-      <router-link to="/products"
-        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800">
+      <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700">
         {{ $t('cart.shopNow') }}
       </router-link>
     </div>
@@ -97,12 +98,13 @@
             class="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-1">
             <div class="flex items-center justify-between mb-1">
               <div class="font-semibold text-xl text-gray-700">#{{ order.orderCode || order.id }}</div>
-              <span class="px-2 py-1 text-lg font-medium rounded-full" :class="{
-                'text-yellow-500 bg-yellow-50': order.status === 'Pending',
-                'text-blue-500 bg-blue-50': order.status === 'Processing',
-                'text-green-500 bg-green-50': order.status === 'Completed',
-                'text-red-500 bg-red-50': order.status === 'Cancelled'
-              }">
+              <span class="px-2 py-1 text-lg font-medium rounded-full"
+                :class="{
+                  'text-yellow-500 bg-yellow-50': order.status === 'Pending',
+                  'text-blue-500 bg-neutral-50': order.status === 'Processing',
+                  'text-green-500 bg-green-50': order.status === 'Completed',
+                  'text-red-500 bg-red-50': order.status === 'Cancelled'
+                }">
                 {{ order.status }}
               </span>
             </div>

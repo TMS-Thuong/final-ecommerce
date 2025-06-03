@@ -3,10 +3,10 @@ import { RouterView } from 'vue-router'
 import { onMounted, ref, provide } from 'vue'
 import Toast from '@/components/molecules/utils/ToastComponent.vue'
 import { useToastMessageStore } from '@/stores/untils/useToastMessageStore'
-import HeaderComponent from '@/components/molecules/utils/HeaderComponent.vue'
+import HeaderComponent from '@/components/header/HeaderComponent.vue'
 import { useCartStore } from '@/stores/cart/cart'
 import { ToastEnum } from '@/enums/toast'
-import FooterOrganism from '@/components/footer/FooterOrganism.vue'
+import FooterOrganism from '@/components/footer/FooterOrganismComponent.vue'
 
 const toastStore = useToastMessageStore()
 const cartStore = useCartStore()

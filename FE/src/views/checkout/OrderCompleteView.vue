@@ -198,15 +198,9 @@
       </div>
     </div>
 
-    <ConfirmModal
-      :visible="showConfirmCancelOrder"
-      :title="t('orders.cancelOrder')"
-      :message="t('orders.cancelOrderConfirm')"
-      :confirm-text="t('common.ok')"
-      :cancel-text="t('common.cancel')"
-      @confirm="handleCancelOrder"
-      @cancel="showConfirmCancelOrder = false"
-    />
+    <ConfirmModal :visible="showConfirmCancelOrder" :title="t('orders.cancelOrder')"
+      :message="t('orders.cancelOrderConfirm')" :confirm-text="t('common.ok')" :cancel-text="t('common.cancel')"
+      @confirm="handleCancelOrder" @cancel="showConfirmCancelOrder = false" />
   </div>
 </template>
 
@@ -221,7 +215,7 @@ import addressApi from '@/api/address';
 import { productApi } from '@/api/product';
 import axios from 'axios';
 import.meta.env ? import.meta.env.VITE_API_BASE_URL : process.env.VUE_APP_API_BASE_URL;
-import ConfirmModal from '@/components/molecules/utils/ConfirmModal.vue';
+import ConfirmModal from '@/components/molecules/utils/ConfirmModalComponent.vue';
 
 const { t } = useI18n();
 const route = useRoute();

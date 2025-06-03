@@ -20,39 +20,29 @@
             </div>
           </div>
           <div class="p-0 text-xl">
-            <nav class="space-y-1 mt-2">
-              <button
-                :class="tabClass('profile') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
-                @click="activeTab = 'profile'">
+            <div class="flex flex-col gap-2">
+              <button :class="tabClass('profile')" @click="activeTab = 'profile'">
                 <UserCircleIcon size="6" />
-                <span class="font-medium">Account info</span>
+                {{ $t('account.profile') }}
               </button>
-              <button
-                :class="tabClass('orders') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
-                @click="goToOrders">
-                <UserBagIcon size="6" />
-                <span class="font-medium">My Orders</span>
-              </button>
-              <button
-                :class="tabClass('password') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
+              <button v-if="userStore.profile?.hasPassword" :class="tabClass('password')"
                 @click="activeTab = 'password'">
                 <UserLockIcon size="6" />
-                <span class="font-medium">Change Password</span>
+                {{ $t('account.changePassword') }}
               </button>
-              <button
-                :class="tabClass('purchased-products') + ' w-full flex items-center gap-3 px-6 py-4 text-left transition-all duration-300'"
-                @click="goToPurchasedProducts">
+              <button :class="tabClass('orders')" @click="goToOrders">
                 <UserBagIcon size="6" />
-                <span class="font-medium">Purchased Products</span>
+                {{ $t('account.myOrders') }}
               </button>
-            </nav>
-            <div class="px-4 pb-6 mt-6">
+              <button :class="tabClass('purchased')" @click="goToPurchasedProducts">
+                <UserBagIcon size="6" />
+                {{ $t('account.myPurchasedProducts') }}
+              </button>
               <button
-                class="w-full flex items-center justify-center gap-2 border border-neutral-300 text-neutral-800 hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-300 rounded py-2"
+                class="flex items-center gap-3 px-4 py-2 rounded cursor-pointer transition hover:bg-gray-50 text-gray-600"
                 @click="logout">
                 <LogoutIcon size="6" />
-                <i class="fa-solid fa-arrow-right-from-bracket w-4 h-4"></i>
-                <span>{{ $t('account.logout') }}</span>
+                {{ $t('account.logout') }}
               </button>
             </div>
           </div>
@@ -164,8 +154,8 @@ import { ref, reactive, watch, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/user/user.store';
 import { useRouter } from 'vue-router';
 import { useToast } from '@/hooks/useToast';
-import ProfileInfoForm from '@/components/molecules/account/ProfileInfoForm.vue';
-import ChangePasswordForm from '@/components/molecules/account/ChangePasswordForm.vue';
+import ProfileInfoForm from '@/components/molecules/account/ProfileInfoFormComponent.vue';
+import ChangePasswordForm from '@/components/molecules/account/ChangePasswordFormComponent.vue';
 import DefaultAvatarIcon from '@/components/icons/DefaultAvatarIcon.vue';
 import UserCircleIcon from '@/components/icons/UserCircleIcon.vue';
 import UserBagIcon from '@/components/icons/UserBagIcon.vue';
@@ -242,7 +232,7 @@ onMounted(() => {
 });
 
 const tabClass = (tab: string) =>
-  `px-4 py-2 rounded cursor-pointer transition ${activeTab.value === tab ? 'bg-neutral-200 font-normal text-black' : 'hover:bg-gray-50 text-gray-600'}`;
+  `flex items-center gap-3 px-4 py-2 rounded cursor-pointer transition ${activeTab.value === tab ? 'bg-neutral-200 font-normal text-black' : 'hover:bg-gray-50 text-gray-600'}`;
 
 const goToOrders = () => {
   router.push({ name: 'MyOrders' });

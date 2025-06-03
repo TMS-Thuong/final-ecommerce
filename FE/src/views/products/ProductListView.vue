@@ -2,7 +2,7 @@
   <div class="py-8 bg-gray-100 w-full">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="w-full md:w-1/5">
-        <div ref="filterSection" class="bg-white p-6 rounded-lg shadow-xl mb-6">
+        <div class="bg-white p-6 rounded-lg shadow-xl mb-6 h-[calc(100vh-64px)] overflow-y-auto sticky top-16">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-neutral-800">{{ $t('product.filters.title') }}</h2>
             <button @click="resetFilters" class="text-blue-600 hover:text-neutral-800 text-lg font-medium">
@@ -12,7 +12,7 @@
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.categories.title') }}</h3>
-            <FilterDropdown v-model="tempFilters.categories" :options="categoryOptions"
+            <FilterDropdown v-model="filters.categories" :options="categoryOptions"
               :title="$t('product.filters.categories.title')" :loading="categoriesLoading"
               @change="handleFilterChange" />
           </div>
@@ -22,7 +22,7 @@
             <div class="space-y-3">
               <label v-for="range in priceRanges" :key="range.value"
                 class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.priceRange === range.value ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                :class="filters.priceRange === range.value ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
                 @click="setPriceRange(range.value)">
                 <span class="text-neutral-700 text-xl">
                   {{ $t(range.label) }} {{ range.display }}
@@ -33,15 +33,15 @@
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.brands.title') }}</h3>
-            <FilterDropdown v-model="tempFilters.brands" :options="brandOptions"
-              :title="$t('product.filters.brands.title')" :loading="brandsLoading" @change="handleFilterChange" />
+            <FilterDropdown v-model="filters.brands" :options="brandOptions" :title="$t('product.filters.brands.title')"
+              :loading="brandsLoading" @change="handleFilterChange" />
           </div>
 
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.rating.title') }}</h3>
             <div class="space-y-3">
               <label v-for="n in [5, 4, 3, 2, 1]" :key="n" class="flex items-center p-2 rounded-md cursor-pointer"
-                :class="tempFilters.rating === String(n) ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
+                :class="filters.rating === String(n) ? 'bg-neutral-100' : 'hover:bg-neutral-100'"
                 @click="setRating(String(n))">
                 <div class="flex items-center">
                   <StarRating :rating="n" :showCount="false" :readonly="true" />
@@ -54,7 +54,8 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.stock.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-600" v-model="tempFilters.inStock">
+              <input type="checkbox" id="inStock" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.inStock"
+                @change="handleFilterChange">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.stock.inStockOnly') }}</span>
             </label>
           </div>
@@ -62,15 +63,10 @@
           <div class="mb-8">
             <h3 class="font-semibold mb-4 text-xl text-neutral-700">{{ $t('product.filters.promotion.title') }}</h3>
             <label class="flex items-center p-2 rounded-md hover:bg-neutral-100 cursor-pointer">
-              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-600" v-model="tempFilters.onSale">
+              <input type="checkbox" id="onSale" class="mr-3 w-4 h-4 accent-neutral-600" v-model="filters.onSale"
+                @change="handleFilterChange">
               <span class="text-neutral-700 text-xl">{{ $t('product.filters.promotion.onSaleOnly') }}</span>
             </label>
-          </div>
-
-          <div class="mt-8">
-            <button @click="applyFilters"
-              class="w-full flex justify-center items-center gap-2 py-2.5 mt-2 bg-neutral-800 hover:bg-neutral-900 text-white font-semibold rounded-lg transition disabled:opacity-60">
-              {{ $t('product.filters.apply') }} </button>
           </div>
         </div>
       </div>
@@ -144,6 +140,7 @@ const error = ref('');
 const currentPage = ref(1);
 const hasMorePages = ref(false);
 const pageSize = 10;
+const pageSize = 10;
 const totalProducts = ref(0);
 const loadingMore = ref(false);
 const categoryOptions = ref([]);
@@ -161,7 +158,6 @@ const filters = ref({
   onSale: false,
 });
 
-const tempFilters = ref({ ...filters.value });
 const searchQuery = ref('');
 const sortOption = ref('newest');
 
@@ -177,19 +173,31 @@ const priceRanges = [
   { value: '5000000-', label: 'product.filters.priceRange.above', display: '5.000.000đ' }
 ];
 
+const scrollToTop = () => {
+  const productList = document.querySelector('.product-card');
+  if (productList) {
+    window.scrollTo({ top: productList.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
 const setPriceRange = (range) => {
-  tempFilters.value.priceRange = range;
-  tempFilters.value.maxPrice = 0;
+  filters.value.priceRange = range;
+  filters.value.maxPrice = 0;
+  debouncedLoadProducts();
+  scrollToTop();
 };
 
 const setRating = (rating) => {
-  tempFilters.value.rating = rating;
+  filters.value.rating = rating;
+  debouncedLoadProducts();
+  scrollToTop();
 };
 
 const filterSection = ref(null)
 
 const applyFilters = () => {
-  filters.value = { ...tempFilters.value };
   currentPage.value = 1;
   loadProducts();
   if (filterSection.value) {
@@ -198,7 +206,7 @@ const applyFilters = () => {
 };
 
 const resetFilters = () => {
-  tempFilters.value = {
+  filters.value = {
     categories: [],
     brands: [],
     priceRange: '',
@@ -207,7 +215,8 @@ const resetFilters = () => {
     inStock: false,
     onSale: false,
   };
-  applyFilters();
+  debouncedLoadProducts();
+  scrollToTop();
 };
 
 const formatPrice = (price) => {
@@ -280,6 +289,7 @@ const handleScroll = () => {
 
 const handleFilterChange = () => {
   debouncedLoadProducts();
+  scrollToTop();
 };
 
 const loadProducts = async (page = 1) => {

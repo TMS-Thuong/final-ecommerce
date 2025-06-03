@@ -16,9 +16,9 @@
 import { computed } from 'vue'
 import { useWishlistStore } from '@/stores/wishlist/wishlist'
 import { storeToRefs } from 'pinia'
-import WishlistHeader from '@/components/wishlist/WishlistHeader.vue'
-import WishlistGrid from '@/components/wishlist/WishlistGrid.vue'
-import WishlistEmpty from '@/components/wishlist/WishlistEmpty.vue'
+import WishlistHeader from '@/components/molecules/wishlist/WishlistHeaderComponent.vue'
+import WishlistGrid from '@/components/molecules/wishlist/WishlistGridComponent.vue'
+import WishlistEmpty from '@/components/molecules/wishlist/WishlistEmptyComponent.vue'
 
 const wishlistStore = useWishlistStore()
 const { wishlistItems } = storeToRefs(wishlistStore)

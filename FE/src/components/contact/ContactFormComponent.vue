@@ -8,7 +8,6 @@
         </div>
         <div class="p-8 bg-gray-50">
             <div class="space-y-6">
-                <!-- Personal Information -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <label class="text-xl font-semibold text-gray-600 uppercase tracking-wide">{{

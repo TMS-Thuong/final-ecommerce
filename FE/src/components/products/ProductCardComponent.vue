@@ -45,7 +45,7 @@
         <div class="mt-1 flex items-center">
           <span class="text-xl font-bold text-red-500">{{
             formatPrice(product.salePrice || product.basePrice)
-          }}</span>
+            }}</span>
           <span v-if="product.salePrice" class="ml-2 text-xl text-gray-500 line-through">{{
             formatPrice(product.basePrice) }}</span>
         </div>
@@ -53,9 +53,6 @@
         <div class="mt-2 flex items-center">
           <StarRating :size="'6'" :rating="product.averageRating || 0" :count="product.ratingCount || 0"
             :readonly="true" />
-          <span class="ml-2 text-neutral-600 text-xl">
-            {{ (product.averageRating || 0).toFixed(1) }}
-          </span>
         </div>
 
         <div class="mt-2 min-h-[40px] flex items-center">

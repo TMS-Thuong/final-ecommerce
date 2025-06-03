@@ -16,13 +16,14 @@ import CheckoutView from '@/views/checkout/CheckoutView.vue'
 import OrderCompleteView from '@/views/checkout/OrderCompleteView.vue'
 import PaymentCallbackView from '@/views/checkout/PaymentCallbackView.vue'
 import MyOrdersView from '@/views/account/MyOrdersView.vue'
-import AddressListView from '@/views/account/AddressListView.vue'
-import AddAddressView from '@/views/account/AddAddressView.vue'
-import EditAddressView from '@/views/account/EditAddressView.vue'
+import AddressListView from '@/views/address/AddressListView.vue'
+import AddAddressView from '@/views/address/AddAddressView.vue'
+import EditAddressView from '@/views/address/EditAddressView.vue'
 import ProfileView from '@/views/account/ProfileView.vue'
 import WishlistView from '@/views/wishlist/WishlistView.vue'
 import MyPurchasedProductsView from '@/views/account/MyPurchasedProductsView.vue'
 import ContactView from '@/views/home/ContactView.vue'
+import AboutView from '@/views/about/AboutView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
@@ -112,6 +113,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/about',
+    name: RouterEnum.About,
+    component: AboutView
+  },
+  {
     path: '/user',
     children: [
       {
@@ -149,9 +155,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+
   scrollBehavior(to, from, savedPosition) {
     return { left: 0, top: 0 };
   },
+
 })
 
 router.beforeEach((to, from, next) => {

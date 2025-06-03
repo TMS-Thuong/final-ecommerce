@@ -20,7 +20,7 @@ export const useUserStore = defineStore('user', () => {
         error.value = null;
         try {
             const res = await getProfile();
-            profile.value = res.data;
+            profile.value = res.data.data;
         } catch (err) {
             if (err instanceof AxiosError) {
                 error.value = err.response?.data?.message || 'Failed to fetch profile';

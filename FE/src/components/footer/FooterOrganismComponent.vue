@@ -22,7 +22,8 @@
       <div>
         <h4 class="font-bold text-2xl mb-2 text-white">{{ $t('footer.information.title') }}</h4>
         <ul class="space-y-2 text-xl">
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.aboutUs') }}</a></li>
+          <li><router-link :to="{ name: RouterEnum.About }" class="text-gray-300 hover:text-white">{{
+            $t('footer.information.aboutUs') }}</router-link></li>
           <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.privacyPolicy') }}</a></li>
           <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.termsOfUse') }}</a></li>
           <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.information.returnPolicy') }}</a></li>
@@ -33,11 +34,16 @@
       <div>
         <h4 class="font-bold text-2xl mb-2 text-white">{{ $t('footer.account.title') }}</h4>
         <ul class="space-y-2 text-xl">
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('auth.login.submitButton') }}</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('auth.register.submitButton') }}</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.shoppingCart') }}</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.wishlist') }}</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white">{{ $t('footer.account.orderTracking') }}</a></li>
+          <li><router-link :to="{ name: AuthRouterEnum.Login }" class="text-gray-300 hover:text-white">{{
+            $t('auth.login.submitButton') }}</router-link></li>
+          <li><router-link :to="{ name: AuthRouterEnum.Register }" class="text-gray-300 hover:text-white">{{
+            $t('auth.register.submitButton') }}</router-link></li>
+          <li><router-link :to="{ name: RouterEnum.Cart }" class="text-gray-300 hover:text-white">{{
+            $t('footer.account.shoppingCart') }}</router-link></li>
+          <li><router-link :to="{ name: RouterEnum.Wishlist }" class="text-gray-300 hover:text-white">{{
+            $t('footer.account.wishlist') }}</router-link></li>
+          <li><router-link :to="{ name: RouterEnum.MyOrders }" class="text-gray-300 hover:text-white">{{
+            $t('footer.account.orderTracking') }}</router-link></li>
         </ul>
       </div>
 
@@ -69,6 +75,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterEnum, AuthRouterEnum } from '@/enums/router';
 const { t } = useI18n();
 
 const companyName = ref('H!TMDT');

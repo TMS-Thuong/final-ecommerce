@@ -1,8 +1,6 @@
 <template>
   <div>
-    <label class="block text-lg font-semibold text-gray-700 mb-1">
-      {{ label }} <span class="text-red-500">*</span>
-    </label>
+
     <div class="flex space-x-4 mt-1">
       <div v-for="option in options" :key="option.value" class="flex items-center">
         <input :id="option.value" type="radio" :value="option.value" :name="name"

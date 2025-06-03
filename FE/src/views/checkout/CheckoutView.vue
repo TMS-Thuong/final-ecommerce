@@ -135,9 +135,9 @@ import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import { useCheckoutStore } from '@/stores/payment/checkout';
 import { useCartStore } from '@/stores/cart/cart';
-import AddressModal from '@/components/molecules/utils/AddressModal.vue';
-import AddressSelector from '@/components/molecules/checkout/AddressSelector.vue';
-import AddressListModal from '@/components/molecules/checkout/AddressListModal.vue';
+import AddressModal from '@/components/molecules/address/AddressModalComponent.vue';
+import AddressSelector from '@/components/molecules/checkout/AddressSelectorComponent.vue';
+import AddressListModal from '@/components/molecules/checkout/AddressListModalComponent.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -255,79 +255,36 @@ onMounted(async () => {
     return;
   }
 
-  try {
-    await cartStore.fetchCart();
-
-    if (cartStore.isEmpty) {
-      showToast(ToastEnum.Warning, t('cart.emptyCart'));
-      router.push('/cart');
-      return;
-    }
-
-    const selectedCartItems = localStorage.getItem('selectedCartItems') || getSelectedCartItemsCookie();
-    if (!selectedCartItems) {
-      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
-      router.push('/cart');
-      return;
-    }
-
-    const selectedItems = typeof selectedCartItems === 'string' ? JSON.parse(selectedCartItems) : selectedCartItems;
-    if (!Array.isArray(selectedItems) || selectedItems.length === 0) {
-      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
-      router.push('/cart');
-      return;
-    }
-
-    const validSelectedItems = selectedItems.filter(id =>
-      cartStore.cartItems.some(item => item.id === id)
-    );
-
-    if (validSelectedItems.length === 0) {
-      showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
-      router.push('/cart');
-      return;
-    }
-
-    localStorage.setItem('selectedCartItems', JSON.stringify(validSelectedItems));
-    document.cookie = `selectedCartItems=${JSON.stringify(validSelectedItems)}; path=/; max-age=2592000`;
-
-    addressLoading.value = true;
-    await checkoutStore.fetchAddresses();
-
-    if ((checkoutStore.selectedAddressId === null || checkoutStore.selectedAddressId === undefined) && checkoutStore.addresses.length > 0) {
-      const defaultAddress = checkoutStore.addresses.find(addr => addr.isDefaultShipping || addr.isDefault);
-      checkoutStore.selectedAddressId = defaultAddress ? defaultAddress.id : checkoutStore.addresses[0].id;
-    }
-    if (checkoutStore.selectedAddressId == null) {
-      checkoutStore.selectedAddressId = 0;
-    }
-  } catch (error) {
-    console.error('Error during checkout initialization:', error);
-    showToast(ToastEnum.Error, t('error'));
+  const selectedCartItems = localStorage.getItem('selectedCartItems');
+  if (!selectedCartItems || JSON.parse(selectedCartItems).length === 0) {
+    showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
     router.push('/cart');
     return;
-  } finally {
-    addressLoading.value = false;
   }
 
   try {
-    shippingLoading.value = true;
-    await checkoutStore.fetchShippingMethods();
-  } catch (error) {
-    console.error('Error fetching shipping methods:', error);
-    showToast(ToastEnum.Error, t('error'));
-  } finally {
-    shippingLoading.value = false;
-  }
+    cartStore.initializeCartFromCookie();
 
-  try {
-    paymentLoading.value = true;
-    await checkoutStore.fetchPaymentMethods();
+    if (cartStore.isEmpty) {
+      await cartStore.fetchCart();
+
+      if (cartStore.isEmpty) {
+        showToast(ToastEnum.Warning, t('cart.emptyCart'));
+        router.push('/cart');
+        return;
+      }
+    }
+
+    // Fetch necessary data
+    await Promise.all([
+      checkoutStore.fetchAddresses(),
+      checkoutStore.fetchShippingMethods(),
+      checkoutStore.fetchPaymentMethods()
+    ]);
+
   } catch (error) {
-    console.error('Error fetching payment methods:', error);
-    showToast(ToastEnum.Error, t('error'));
-  } finally {
-    paymentLoading.value = false;
+    console.error('Error initializing checkout:', error);
+    showToast(ToastEnum.Error, t('checkout.initializationError'));
   }
 });
 </script>

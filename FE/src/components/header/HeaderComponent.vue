@@ -3,8 +3,8 @@
     <div class="md:hidden">
       <div class="flex items-center justify-between px-4 py-3">
         <button @click="isMenuOpen = !isMenuOpen" class="text-gray-700 focus:outline-none">
-          <MenuIcon v-if="!isMenuOpen" size="9" class="text-gray-700" />
-          <XIcon v-else size="9" class="text-gray-700" />
+          <MenuIcon v-if="!isMenuOpen" size="8" class="text-gray-700" />
+          <XIcon v-else size="8" class="text-gray-700" />
         </button>
 
         <div class="flex-1 flex justify-center">
@@ -12,9 +12,9 @@
         </div>
 
         <div class="flex items-center space-x-4">
-          <SearchIcon size="9" class="text-gray-700" @click.stop="inToggleSearch" />
-          <CartIcon size="9" class="text-gray-700" @click="inCart" :item-count="cartItemsCount" />
-          <HeartIcon size="9" class="text-gray-700" @click="inWishlist" :item-count="wishlistItemsCount" />
+          <SearchIcon size="8" class="text-gray-700" @click.stop="inToggleSearch" />
+          <CartIcon size="8" class="text-gray-700" @click="inCart" :item-count="cartItemsCount" />
+          <HeartIcon size="8" class="text-gray-700" @click="inWishlist" :item-count="wishlistItemsCount" />
         </div>
       </div>
 
@@ -76,14 +76,14 @@
       </div>
 
       <div class="flex items-center space-x-4 lg:space-x-8 relative">
-        <SearchIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer"
+        <SearchIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer"
           @click.stop="inToggleSearch" />
-        <CartIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inCart"
+        <CartIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inCart"
           :item-count="cartItemsCount" />
-        <HeartIcon size="9" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inWishlist"
+        <HeartIcon size="8" class="text-gray-700 hover:text-black transition cursor-pointer" @click="inWishlist"
           :item-count="wishlistItemsCount" />
         <div class="flex items-center">
-          <PersonIcon size="9" class="text-gray-700 hover:text-black transition" @click="inAccount" />
+          <PersonIcon size="8" class="text-gray-700 hover:text-black transition" @click="inAccount" />
           <UserDropdown />
         </div>
       </div>
@@ -110,9 +110,9 @@ import ProductIcon from '@/components/icons/ProductIcon.vue'
 import TelephoneIcon from '@/components/icons/TelephoneIcon.vue'
 import XIcon from '@/components/icons/XIcon.vue'
 import PersonIcon from '@/components/icons/PersonIcon.vue'
-import UserDropdown from '@/components/molecules/utils/UserDropdown.vue'
+import UserDropdown from '@/components/molecules/header/_utils/UserDropdownComponent.vue'
 import SearchInputComponent from '@/components/molecules/utils/SearchInputComponent.vue'
-import HeaderSection from '@/components/molecules/utils/HeaderSelectionComponent.vue'
+import HeaderSection from '@/components/molecules/header/_utils/HeaderSelectionComponent.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterEnum } from '@/enums/router'
 import { useCartStore } from '@/stores/cart/cart'
@@ -196,7 +196,7 @@ const inContact = () => {
 }
 
 const inCart = () => {
-  if (getCookie('accessToken')) {
+  if (localStorage.getItem('accessToken')) {
     router.push({ name: RouterEnum.Cart });
   } else {
     router.push({ name: 'Login', query: { redirect: '/cart' } });
@@ -205,7 +205,7 @@ const inCart = () => {
 }
 
 const inWishlist = () => {
-  if (getCookie('accessToken')) {
+  if (localStorage.getItem('accessToken')) {
     router.push({ name: RouterEnum.Wishlist });
   } else {
     router.push({ name: 'Login', query: { redirect: '/wishlist' } });
@@ -216,6 +216,7 @@ const inWishlist = () => {
 const inAccount = () => {
   isMenuOpen.value = false
   if (localStorage.getItem('accessToken')) {
+    router.push({ name: RouterEnum.Profile });
     router.push({ name: RouterEnum.Profile });
   } else {
     router.push({ name: 'Login', query: { redirect: '/account/profile' } });

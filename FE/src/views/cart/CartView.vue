@@ -71,6 +71,7 @@
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode')
                 }}</label>
+                }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -107,8 +108,8 @@ import { useRouter } from 'vue-router';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import { useI18n } from 'vue-i18n';
-import CartItem from '@/components/products/CartItem.vue';
-import ConfirmModal from '@/components/molecules/utils/ConfirmModal.vue';
+import CartItem from '@/components/cart/CartItemComponent.vue';
+import ConfirmModal from '@/components/molecules/utils/ConfirmModalComponent.vue';
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -299,24 +300,19 @@ const checkout = async () => {
     return;
   }
 
-  if (selectedItemCount.value === 0) {
-    showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
+  const selectedItemsList = cartStore.cartItems.filter(item => selectedItems[item.id]);
+  if (selectedItemsList.length === 0) {
+    showToast(ToastEnum.Warning, t('cart.selectItems'));
     return;
   }
 
-  const validSelectedItems = cartStore.cartItems
-    .filter(item => selectedItems[item.id])
-    .map(item => item.id);
-
-  if (validSelectedItems.length === 0) {
-    showToast(ToastEnum.Warning, t('cart.selectItemsToCheckout'));
-    return;
+  try {
+    const selectedProductIds = selectedItemsList.map(item => item.id);
+    localStorage.setItem('selectedCartItems', JSON.stringify(selectedProductIds));
+    router.push({ name: 'Checkout' });
+  } catch (error) {
+    showToast(ToastEnum.Error, t('cart.checkoutError'));
   }
-
-  localStorage.setItem('selectedCartItems', JSON.stringify(validSelectedItems));
-  setSelectedCartItemsCookie(validSelectedItems);
-
-  router.push({ name: 'Checkout' });
 };
 
 const handleQuantityInput = (itemId, newQuantity) => {

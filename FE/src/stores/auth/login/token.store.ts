@@ -3,7 +3,6 @@ import { authApi } from '@/api/auth'
 import type { Router } from 'vue-router'
 import { AuthRouterEnum } from '@/enums/router'
 import { useCartStore } from '@/stores/cart/cart'
-import { getCookie, setCookie, removeCookie } from '@/utils/cookie'
 import { useWishlistStore } from '@/stores/wishlist/wishlist'
 
 interface AuthState {
@@ -62,6 +61,9 @@ export const useAuthStore = defineStore('auth', {
       this.clearTokens()
       const cartStore = useCartStore()
       cartStore.clearCart()
+      const wishlistStore = useWishlistStore()
+      wishlistStore.clearWishlist()
+      window.location.reload()
       router.push({
         name: AuthRouterEnum.Login,
         query: { redirect: currentPath }

@@ -15,6 +15,7 @@ export enum RouterEnum {
   Wishlist = "Wishlist",
   MyPurchasedProducts = "MyPurchasedProducts",
   Contact = "Contact",
+  About = 'about',
 }
 
 export enum AuthRouterEnum {

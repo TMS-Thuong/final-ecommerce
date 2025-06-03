@@ -115,6 +115,10 @@ const onLogin = async () => {
       password: formData.value.password,
     }
 
+    useAuthStore().clearTokens();
+    cartStore.clearCart();
+    wishlistStore.clearWishlist();
+
     const response = await authApi.login(formDataToSend)
 
     const responseData = response?.data
