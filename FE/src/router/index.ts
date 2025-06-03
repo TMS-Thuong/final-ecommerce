@@ -27,6 +27,7 @@ import AboutView from '@/views/about/AboutView.vue'
 import { AuthRouterEnum, RouterEnum, } from '@/enums/router'
 
 const routes = [
+
   {
     path: '/',
     name: RouterEnum.Home,

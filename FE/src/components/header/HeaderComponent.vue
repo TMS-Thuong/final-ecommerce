@@ -121,6 +121,7 @@ import LocationIcon from '@/components/icons/LocationIcon.vue'
 import ShoppingCartIcon from '@/components/icons/ShoppingCartIcon.vue'
 import LogoutIcon from '@/components/icons/LogoutIcon.vue'
 import { storeToRefs } from 'pinia'
+import { getCookie } from '@/utils/cookie'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -160,9 +161,13 @@ onMounted(async () => {
   })
 
   if (localStorage.getItem('accessToken')) {
-    await wishlistStore.fetchWishlist()
+    await Promise.all([
+      wishlistStore.fetchWishlist(),
+      cartStore.fetchCart()
+    ])
   } else {
     wishlistStore.clearWishlist()
+    cartStore.clearCart()
   }
 
   window.addEventListener('storage', () => {
@@ -194,7 +199,7 @@ const inCart = () => {
   if (localStorage.getItem('accessToken')) {
     router.push({ name: RouterEnum.Cart });
   } else {
-    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Cart } });
+    router.push({ name: 'Login', query: { redirect: '/cart' } });
   }
   isMenuOpen.value = false;
 }
@@ -203,7 +208,7 @@ const inWishlist = () => {
   if (localStorage.getItem('accessToken')) {
     router.push({ name: RouterEnum.Wishlist });
   } else {
-    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Wishlist } });
+    router.push({ name: 'Login', query: { redirect: '/wishlist' } });
   }
   isMenuOpen.value = false;
 }
@@ -212,8 +217,9 @@ const inAccount = () => {
   isMenuOpen.value = false
   if (localStorage.getItem('accessToken')) {
     router.push({ name: RouterEnum.Profile });
+    router.push({ name: RouterEnum.Profile });
   } else {
-    router.push({ name: RouterEnum.Login, query: { redirect: RouterEnum.Profile } });
+    router.push({ name: 'Login', query: { redirect: '/account/profile' } });
   }
 }
 
@@ -231,6 +237,7 @@ const inLogout = async () => {
   localStorage.removeItem('accessToken')
   accessToken.value = null
   wishlistStore.clearWishlist()
+  cartStore.clearCart()
   await nextTick()
   forceHeaderUpdate && forceHeaderUpdate()
   router.push({ name: 'Login' })
@@ -257,6 +264,7 @@ const inSearch = (query: string) => {
 watch(accessToken, (newVal) => {
   if (!newVal) {
     wishlistStore.clearWishlist()
+    cartStore.clearCart()
   }
 })
 </script>

@@ -71,6 +71,7 @@
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('cart.couponCode')
                 }}</label>
+                }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -122,6 +123,24 @@ const showConfirmRemoveAll = ref(false);
 
 let updateCartTimer = null;
 
+const setSelectedCartItemsCookie = (items) => {
+  const itemsStr = JSON.stringify(items);
+  document.cookie = `selectedCartItems=${itemsStr}; path=/; max-age=2592000`;
+};
+
+const getSelectedCartItemsCookie = () => {
+  const cookies = document.cookie.split(';');
+  const selectedCartItemsCookie = cookies.find(cookie => cookie.trim().startsWith('selectedCartItems='));
+  if (selectedCartItemsCookie) {
+    try {
+      return JSON.parse(selectedCartItemsCookie.split('=')[1]);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+};
+
 const formatPrice = (price) => {
   if (price === undefined || price === null) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(0);
@@ -135,7 +154,7 @@ const isAllSelected = computed(() => {
 });
 
 const selectedItemCount = computed(() => {
-  return Object.values(selectedItems).filter(Boolean).length;
+  return Object.values(selectedItems).filter(v => v === true).length;
 });
 
 const selectedTotalAmount = computed(() => {
@@ -163,9 +182,17 @@ onMounted(async () => {
 
   try {
     await cartStore.fetchCart();
-    cartStore.cartItems.forEach(item => {
-      selectedItems[item.id] = true;
-    });
+
+    const savedSelectedItems = getSelectedCartItemsCookie();
+    if (savedSelectedItems && Array.isArray(savedSelectedItems)) {
+      cartStore.cartItems.forEach(item => {
+        selectedItems[item.id] = savedSelectedItems.includes(item.id);
+      });
+    } else {
+      cartStore.cartItems.forEach(item => {
+        selectedItems[item.id] = true;
+      });
+    }
   } catch (error) {
     showToast(ToastEnum.Error, t('cart.loadError'));
   }
@@ -173,8 +200,13 @@ onMounted(async () => {
 
 watch(() => cartStore.cartItems, (newItems) => {
   if (newItems && newItems.length > 0) {
+    Object.keys(selectedItems).forEach(id => {
+      if (!newItems.find(item => item.id == id)) {
+        delete selectedItems[id];
+      }
+    });
     newItems.forEach(item => {
-      if (selectedItems[item.id] === undefined) {
+      if (typeof selectedItems[item.id] !== 'boolean') {
         selectedItems[item.id] = true;
       }
       localQuantities[item.id] = item.quantity;
@@ -299,7 +331,7 @@ const handleQuantityInput = (itemId, newQuantity) => {
 };
 
 const updateSelectedState = (itemId, isSelected) => {
-  selectedItems[itemId] = isSelected;
+  selectedItems[itemId] = !!isSelected;
 };
 
 const blockNonNumberInput = (e) => {

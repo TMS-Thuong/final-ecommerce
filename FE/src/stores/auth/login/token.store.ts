@@ -12,8 +12,8 @@ interface AuthState {
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
-    accessToken: localStorage.getItem('accessToken'),
-    refreshToken: localStorage.getItem('refreshToken'),
+    accessToken: getCookie('accessToken'),
+    refreshToken: getCookie('refreshToken'),
   }),
 
   getters: {
@@ -24,15 +24,19 @@ export const useAuthStore = defineStore('auth', {
     setTokens(accessToken: string, refreshToken: string) {
       this.accessToken = accessToken
       this.refreshToken = refreshToken
-      localStorage.setItem('accessToken', accessToken)
-      localStorage.setItem('refreshToken', refreshToken)
+      setCookie('accessToken', accessToken)
+      setCookie('refreshToken', refreshToken)
     },
 
     clearTokens() {
       this.accessToken = null
       this.refreshToken = null
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      removeCookie('accessToken')
+      removeCookie('refreshToken')
+      removeCookie('ecommerce_cart_data')
+      removeCookie('ecommerce_wishlist_data')
+      const wishlistStore = useWishlistStore();
+      wishlistStore.wishlistProducts = [];
     },
 
     async refreshAccessToken() {
@@ -55,7 +59,6 @@ export const useAuthStore = defineStore('auth', {
     logout(router: Router) {
       const currentPath = router.currentRoute.value.fullPath
       this.clearTokens()
-      localStorage.removeItem('ecommerce_cart_data')
       const cartStore = useCartStore()
       cartStore.clearCart()
       const wishlistStore = useWishlistStore()

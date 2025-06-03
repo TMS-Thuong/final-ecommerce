@@ -75,28 +75,24 @@ export const useCartStore = defineStore('cart', () => {
     if (!cart.value || !cart.value.items) {
       return 0;
     }
-
-    const total = cart.value.items.reduce((sum: number, item: CartItem) => sum + (item.quantity || 0), 0);
-    return total;
+    return cart.value.items.reduce((sum: number, item: CartItem) => sum + (item.quantity || 0), 0);
   });
   const totalAmount = computed(() => {
     if (!cart.value || !cart.value.items) {
       return 0;
     }
-
     return cart.value.items.reduce((sum: number, item: CartItem) => sum + (item.subtotal || 0), 0);
   });
   const cartItems = computed(() => cart.value?.items || []);
 
   const fetchCart = async () => {
-    if (!localStorage.getItem('accessToken')) {
+    if (!getCookie('accessToken')) {
       cart.value = defaultCartValue();
       return;
     }
     try {
       error.value = null;
       const response = await getCart();
-
       if (response) {
         cart.value = response;
         Cookies.set(CART_COOKIE_KEY, JSON.stringify(response), { expires: 7 });
@@ -110,8 +106,8 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const addItem = async (productId: number, quantity: number) => {
-    if (!localStorage.getItem('accessToken')) {
-      error.value = 'authentication_required';
+    if (!getCookie('accessToken')) {
+      error.value = 'authenticationRequired';
       return false;
     }
 
@@ -127,26 +123,15 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const updateItem = async (cartItemId: number, quantity: number) => {
-    if (!localStorage.getItem('accessToken')) {
-      error.value = 'authentication_required';
+    if (!getCookie('accessToken')) {
+      error.value = 'authenticationRequired';
       return false;
     }
 
     try {
       error.value = null;
       await updateCartItem(cartItemId, quantity);
-
-      if (cart.value && cart.value.items) {
-        const item = cart.value.items.find(item => item.id === cartItemId);
-        if (item) {
-          item.quantity = quantity;
-          item.subtotal = item.price * quantity;
-          cart.value.totalAmount = cart.value.items.reduce((sum, i) => sum + i.subtotal, 0);
-          cart.value.totalItems = cart.value.items.reduce((sum, i) => sum + i.quantity, 0);
-          cart.value.updatedAt = new Date().toISOString();
-        }
-      }
-
+      await fetchCart();
       return true;
     } catch (err) {
       error.value = 'Failed to update cart item';
@@ -155,30 +140,18 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const removeItem = async (cartItemId: number) => {
-    if (!localStorage.getItem('accessToken')) {
-      error.value = 'authentication_required';
+    if (!getCookie('accessToken')) {
+      error.value = 'authenticationRequired';
       return false;
     }
 
     try {
       error.value = null;
-
-      if (cart.value && cart.value.items) {
-        const itemIndex = cart.value.items.findIndex(item => item.id === cartItemId);
-        if (itemIndex !== -1) {
-          cart.value.items.splice(itemIndex, 1);
-          cart.value.totalAmount = cart.value.items.reduce((sum, i) => sum + i.subtotal, 0);
-          cart.value.totalItems = cart.value.items.reduce((sum, i) => sum + i.quantity, 0);
-          cart.value.updatedAt = new Date().toISOString();
-        }
-      }
-
       await removeCartItem(cartItemId);
-
+      await fetchCart();
       return true;
     } catch (err) {
       error.value = 'Failed to remove item from cart';
-      await fetchCart();
       throw err;
     }
   };
@@ -188,10 +161,9 @@ export const useCartStore = defineStore('cart', () => {
       const storedCart = Cookies.get(CART_COOKIE_KEY);
       if (storedCart) {
         cart.value = JSON.parse(storedCart);
+      } else {
+        cart.value = defaultCartValue();
       }
-
-      return await fetchCart();
-    } else {
       return false;
     }
   };
@@ -228,7 +200,6 @@ export const useCartStore = defineStore('cart', () => {
         }
 
         cart.value = serverCart;
-        saveCartToLocalStorage();
       }
     } catch (error) {
       console.error('Error when synchronizing cart:', error);

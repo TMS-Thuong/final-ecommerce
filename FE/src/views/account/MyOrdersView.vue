@@ -3,12 +3,8 @@
     <h1 class="text-4xl font-bold text-gray-900 mb-6">{{ $t('account.myOrders') }}</h1>
 
     <div class="mb-6 max-w-md">
-      <SearchInputComponent
-        v-model="searchOrderCode"
-        :placeholder="$t('orders.orderCode') + '... eg: ORD123456'"
-        @search="onSearchOrderCode"
-        :width="'w-full'"
-      />
+      <SearchInputComponent v-model="searchOrderCode" :placeholder="$t('orders.orderCode') + '... eg: ORD123456'"
+        @search="onSearchOrderCode" :width="'w-full'" />
     </div>
 
     <div v-if="isLoading" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
@@ -30,8 +26,11 @@
 
     <div v-else-if="orders.length === 0" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center">
       <div class="flex justify-center mb-4">
-        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+          </path>
         </svg>
       </div>
       <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $t('orders.noOrders') }}</h3>
@@ -73,13 +72,12 @@
                   <div class="text-gray-500">{{ formatDate(order.createdAt) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 py-1 font-medium rounded-full"
-                    :class="{
-                      'text-yellow-500': order.status === 'Pending',
-                      'text-blue-500': order.status === 'Processing',
-                      'text-green-500': order.status === 'Completed',
-                      'text-red-500': order.status === 'Cancelled'
-                    }">
+                  <span class="px-2 py-1 font-medium rounded-full" :class="{
+                    'text-yellow-500': order.status === 'Pending',
+                    'text-blue-500': order.status === 'Processing',
+                    'text-green-500': order.status === 'Completed',
+                    'text-red-500': order.status === 'Cancelled'
+                  }">
                     {{ order.status }}
                   </span>
                 </td>
@@ -96,7 +94,8 @@
           </table>
         </div>
         <div class="md:hidden space-y-4 p-1">
-          <div v-for="order in orders" :key="order.id" class="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-1">
+          <div v-for="order in orders" :key="order.id"
+            class="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-1">
             <div class="flex items-center justify-between mb-1">
               <div class="font-semibold text-xl text-gray-700">#{{ order.orderCode || order.id }}</div>
               <span class="px-2 py-1 text-lg font-medium rounded-full"
@@ -110,9 +109,11 @@
               </span>
             </div>
             <div class="text-base text-gray-500 mb-1">{{ formatDate(order.createdAt) }}</div>
-            <div class="text-lg text-gray-700 mb-2">{{ $t('orders.total') }}: <span class="font-semibold">{{ formatPrice(order.totalAmount) }}</span></div>
+            <div class="text-lg text-gray-700 mb-2">{{ $t('orders.total') }}: <span class="font-semibold">{{
+              formatPrice(order.totalAmount) }}</span></div>
             <div class="flex justify-end">
-              <router-link :to="`/order-complete/${order.id}`" class="text-blue-600 hover:text-blue-900 text-lg font-medium">
+              <router-link :to="`/order-complete/${order.id}`"
+                class="text-blue-600 hover:text-blue-900 text-lg font-medium">
                 {{ $t('orders.viewDetails') }}
               </router-link>
             </div>
@@ -246,7 +247,16 @@ const fetchOrders = async () => {
   }
 };
 
-onMounted(() => {
-  fetchOrders();
+onMounted(async () => {
+  isLoading.value = true;
+  error.value = null;
+  try {
+    const response = await orderApi.getUserOrders();
+    orders.value = response.data?.data || response.data || [];
+  } catch (err) {
+    error.value = t('orders.fetchError') || 'Lỗi khi lấy đơn hàng';
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>

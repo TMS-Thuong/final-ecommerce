@@ -18,12 +18,12 @@
 
     <div v-else-if="product" class="mx-auto px-4 sm:px-8 md:px-16 lg:px-[16rem]">
       <div class="flex flex-col lg:flex-row gap-4 sm:gap-8">
-        <div class="w-full lg:w-1/2">
+        <div class="w-full lg:w-1/2 lg:pr-8">
           <ProductImageGallery :images="product.images || []" :thumbnailIndex="currentImageIndex"
             @select-image="selectImage" @next-image="nextImage" @prev-image="prevImage" />
         </div>
 
-        <div class="w-full lg:w-1/2">
+        <div class="w-full lg:w-1/2 lg:pl-8">
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{{ product.name }}</h1>
 
           <div class="flex flex-wrap items-center mb-2 text-xl">
@@ -128,14 +128,14 @@
         <div class="border-b border-gray-200 text-base sm:text-xl">
           <nav class="flex flex-wrap space-x-4 sm:space-x-8">
             <button
-              :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'description' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
-              @click="handleTabClick('description')">
-              {{ $t('product.tabs.description') }}
-            </button>
-            <button
               :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'specifications' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
               @click="handleTabClick('specifications')">
               {{ $t('product.tabs.specifications') }}
+            </button>
+            <button
+              :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'description' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
+              @click="handleTabClick('description')">
+              {{ $t('product.tabs.description') }}
             </button>
             <button
               :class="['py-2 sm:py-4 px-1 border-b-2 font-medium', tab === 'reviews' ? 'border-neutral-800 text-neutral-800' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300']"
@@ -144,10 +144,26 @@
             </button>
           </nav>
         </div>
-
-        <div v-if="tab === 'description'" class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
+        <div v-if="tab === 'specifications'" class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
+          <table class="w-full border-collapse">
+            <tbody>
+              <template v-for="(value, key) in product?.attributes[0]?.value" :key="key">
+                <tr class="border-b border-gray-200 text-xl">
+                  <td class="py-3 px-4 font-medium text-gray-900 w-1/3">{{ key }}</td>
+                  <td class="py-3 px-4 text-gray-700">
+                    <template v-for="(line, idx) in value.split(/(?=- )/)" :key="idx">
+                      <div v-if="line.trim()">{{ line.trim() }}</div>
+                    </template>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+        <div v-else-if="tab === 'description'" class="py-4 sm:py-6 prose max-w-none text-gray-700 text-base sm:text-lg">
           <div v-if="product.description" class="text-justify text-xl prose"
-            v-html="formatDescription(product.description)"></div>
+            v-html="formatDescription(product.description)">
+          </div>
           <div v-else class="text-justify text-gray-500">{{ $t('product.detail.updating') }}</div>
           <div v-if="product.features && product.features.length > 0" class="mt-6 sm:mt-8">
             <h3 class="text-lg sm:text-xl font-semibold mb-2 sm:mb-4">{{ $t('product.detail.features') }}</h3>
@@ -248,6 +264,7 @@ import CartIcon from '@/components/icons/CartIcon.vue'
 import HeartIcon from '@/components/icons/HeartIcon.vue'
 import ShareIcon from '@/components/icons/ShareIcon.vue'
 import { reviewApi } from '@/api/review'
+import { getCookie } from '@/utils/cookie'
 
 const route = useRoute()
 const router = useRouter()
@@ -266,7 +283,7 @@ const categoryData = ref(null)
 const brandData = ref(null)
 const isWishlistLoading = ref(false)
 const isInWishlist = computed(() => wishlistStore.isInWishlist(productId.value))
-const tab = ref('description')
+const tab = ref('specifications')
 const reviews = ref([])
 const loadingReviews = ref(false)
 const errorReviews = ref('')
@@ -312,20 +329,17 @@ const prevImage = () => {
 }
 
 const addToCart = async () => {
+  if (!getCookie('accessToken')) {
+    showToast(ToastEnum.Error, t('common.authenticationRequired'));
+    router.push({ name: 'Login', query: { redirect: route.fullPath } });
+    return;
+  }
   if (!product.value || product.value.stockQuantity <= 0) {
     return
   }
-
   try {
     loading.value = true
-
-    if (!localStorage.getItem('accessToken')) {
-      router.push({ name: 'Login', query: { redirect: route.fullPath } });
-      return;
-    }
-
     await cartStore.addItem(product.value.id, quantity.value);
-
     showToast(ToastEnum.Success, t('product.detail.addedToCart', { quantity: quantity.value, name: product.value.name }));
     quantity.value = 1;
   } catch (err) {
@@ -337,6 +351,11 @@ const addToCart = async () => {
 }
 
 const inWishlist = async () => {
+  if (!getCookie('accessToken')) {
+    showToast(ToastEnum.Error, t('common.authenticationRequired'));
+    router.push({ name: 'Login', query: { redirect: route.fullPath } });
+    return;
+  }
   if (isWishlistLoading.value) return;
   isWishlistLoading.value = true;
   try {
@@ -523,7 +542,7 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   loadProductData()
   if (localStorage.getItem('accessToken')) {
-    wishlistStore.initWishlist()
+    wishlistStore.fetchWishlist()
   }
 })
 

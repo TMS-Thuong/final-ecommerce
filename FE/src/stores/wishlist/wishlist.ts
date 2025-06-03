@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { wishlistApi } from '@/api/wishlist';
 import Cookies from 'js-cookie';
 
@@ -37,10 +37,15 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const isLoading = ref(false)
     const error = ref<string | null>(null)
 
+    watch(() => wishlistProducts.value, (newVal) => {
+        setCookie(WISHLIST_STORAGE_KEY, JSON.stringify(newVal));
+    }, { deep: true });
+
     const fetchWishlist = async () => {
-        if (!localStorage.getItem('accessToken')) {
-            wishlistProducts.value = []
-            return
+        if (!getCookie('accessToken')) {
+            wishlistProducts.value = [];
+            setCookie(WISHLIST_STORAGE_KEY, JSON.stringify([]));
+            return;
         }
         try {
             isLoading.value = true;
@@ -64,9 +69,9 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const addToWishlist = async (productId: number) => {
-        if (!localStorage.getItem('accessToken')) {
-            error.value = 'authentication_required';
-            throw new Error('authentication_required');
+        if (!getCookie('accessToken')) {
+            error.value = 'authenticationRequired';
+            throw new Error('authenticationRequired');
         }
         try {
             isLoading.value = true;
@@ -83,9 +88,9 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const removeFromWishlist = async (productId: number) => {
-        if (!localStorage.getItem('accessToken')) {
-            error.value = 'authentication_required';
-            throw new Error('authentication_required');
+        if (!getCookie('accessToken')) {
+            error.value = 'authenticationRequired';
+            throw new Error('authenticationRequired');
         }
         try {
             isLoading.value = true;
@@ -106,14 +111,11 @@ export const useWishlistStore = defineStore('wishlist', () => {
             const stored = Cookies.get(WISHLIST_COOKIE_KEY);
             if (stored) {
                 wishlistProducts.value = JSON.parse(stored);
+            } else {
+                wishlistProducts.value = [];
             }
-            return await fetchWishlist();
-        } else {
-            return false;
         }
     };
-
-    const defaultWishlistValue = () => ([]);
 
     const clearWishlist = () => {
         wishlistProducts.value = defaultWishlistValue();

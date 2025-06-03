@@ -29,48 +29,46 @@
     </div>
 
     <div v-else class="space-y-4">
-      <div v-for="address in addresses" :key="address.id"
-        class="bg-white rounded-lg shadow-sm p-6 border border-gray-200"
+      <label v-for="address in addresses" :key="address.id"
+        class="flex cursor-pointer bg-white rounded-lg shadow-sm p-6 border border-gray-200"
         :class="{ 'border-neutral-500': selectedAddressId == address.id }">
-        <div class="flex">
-          <div class="mr-4 flex items-center">
-            <div class="relative flex items-center justify-center w-6 h-6">
-              <input type="radio" :id="`address-${address.id}`" :value="address.id" v-model="selectedAddressId"
-                class="w-5 h-5 text-neutral-800 border-gray-300 focus:ring-neutral-800"
-                @change="handleAddressSelection(address.id)" />
-            </div>
+        <div class="mr-4 flex items-center">
+          <div class="relative flex items-center justify-center w-6 h-6">
+            <input type="radio" :id="`address-${address.id}`" :value="address.id" v-model="selectedAddressId"
+              class="w-5 h-5 text-neutral-800 border-gray-300 focus:ring-neutral-800"
+              @change="handleAddressSelection(address.id)" />
           </div>
-          <div class="flex-1">
-            <div class="flex justify-between text-lg">
-              <div>
-                <div class="flex items-center">
-                  <h3 class="text-xl font-medium text-gray-900">
-                    {{ address.recipientName || address.fullName }}
-                  </h3>
-                  <span v-if="address.isDefaultShipping || address.isDefault"
-                    class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-base font-medium bg-green-100 text-green-800">
-                    {{ $t('address.default') }}
-                  </span>
-                </div>
-                <p class="text-gray-500 mt-1">{{ address.phoneNumber || address.phone }}</p>
-                <p class="text-gray-500">
-                  {{ address.streetAddress }}, {{ address.ward }}, {{ address.district }}, {{ address.province }}
-                </p>
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between text-lg">
+            <div>
+              <div class="flex items-center">
+                <h3 class="text-xl font-medium text-gray-900">
+                  {{ address.recipientName || address.fullName }}
+                </h3>
+                <span v-if="address.isDefaultShipping || address.isDefault"
+                  class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-base font-medium bg-green-100 text-green-800">
+                  {{ $t('address.default') }}
+                </span>
               </div>
-              <div class="flex space-x-3">
-                <button @click="handleEditAddress(address.id)" class="text-neutral-600 hover:text-neutral-800"
-                  title="Edit">
-                  <EditIcon size="6" />
-                </button>
-                <button v-if="!(address.isDefaultShipping || address.isDefault)" @click="deleteAddress(address.id)"
-                  class="text-red-600 hover:text-red-800" title="Delete">
-                  <TrashIcon size="6" />
-                </button>
-              </div>
+              <p class="text-lg text-gray-500 mt-1">{{ address.phoneNumber || address.phone }}</p>
+              <p class="text-lg text-gray-500">
+                {{ address.streetAddress }}, {{ address.ward }}, {{ address.district }}, {{ address.province }}
+              </p>
+            </div>
+            <div class="flex space-x-3">
+              <button @click.stop="handleEditAddress(address.id)" class="text-neutral-600 hover:text-neutral-800"
+                title="Edit">
+                <EditIcon size="6" />
+              </button>
+              <button v-if="!(address.isDefaultShipping || address.isDefault)" @click.stop="deleteAddress(address.id)"
+                class="text-red-600 hover:text-red-800" title="Delete">
+                <TrashIcon size="6" />
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </label>
     </div>
 
     <AddressModal :is-open="showAddressModal" :address-to-edit="addressToEdit" @close="toggleAddressModal(false)"
@@ -154,7 +152,7 @@ const addressToEdit = ref(null);
 const showDeleteConfirmation = ref(false);
 const addressToDeleteId = ref(null);
 const isDeleting = ref(false);
-const selectedAddressId = ref(null);
+const selectedAddressId = ref(0);
 const fromCheckout = ref(false);
 
 const showSaveButton = computed(() => {
@@ -164,7 +162,9 @@ const showSaveButton = computed(() => {
 const fetchAddresses = async () => {
   isLoading.value = true;
   try {
+    console.log('Calling addressApi.getAddresses...');
     const response = await addressApi.getAddresses();
+    console.log('API response:', response);
     addresses.value = response.data || [];
     if (addresses.value.length > 0) {
       const defaultAddress = addresses.value.find(a => a.isDefaultShipping || a.isDefault);
@@ -176,6 +176,7 @@ const fetchAddresses = async () => {
       }
     }
   } catch (error) {
+    console.error('Error in fetchAddresses:', error);
     showToast(ToastEnum.Error, t('error'));
   } finally {
     isLoading.value = false;
@@ -240,7 +241,8 @@ const inBack = () => {
   router.back();
 };
 
-onMounted(async () => {
-  await fetchAddresses();
+onMounted(() => {
+  console.log('Mounted AddressListView, fetching addresses...');
+  fetchAddresses();
 });
 </script>

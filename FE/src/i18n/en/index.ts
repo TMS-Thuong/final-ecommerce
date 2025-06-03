@@ -12,6 +12,7 @@ const messages = {
       ok: "OK",
       cancel: "Cancel",
       retry: "Retry",
+      retry: "Retry",
       confirmRemoveAll: "Are you sure you want to remove all products from your cart?",
       hero: {
         summerSale: "Summer Sale",
@@ -72,6 +73,8 @@ const messages = {
         }
       },
       authenticationRequired: "You need to login to perform this action.",
+      },
+      authenticationRequired: "You need to login to perform this action.",
     },
     [TransEnum.Cart]: {
       yourCart: "Your Cart",
@@ -101,6 +104,7 @@ const messages = {
       selectItemsToCheckout: "Please select items to checkout",
       selectAll: "Select All",
       confirmRemoveAllTitle: "Confirm Remove All",
+      shopNow: "Shop Now"
       shopNow: "Shop Now"
     },
     [TransEnum.Checkout]: {
@@ -265,6 +269,9 @@ const messages = {
       failedToLoad: "Failed to load orders",
       fetchError: "Failed to fetch orders. Please try again.",
       startShopping: "Start Shopping"
+      failedToLoad: "Failed to load orders",
+      fetchError: "Failed to fetch orders. Please try again.",
+      startShopping: "Start Shopping"
     },
     [TransEnum.Error]: {
       EmailRequired: 'Email is required.',
@@ -364,6 +371,7 @@ const messages = {
         loginWith: 'Or login with',
         alreadyHaveAccount: 'Already have an account?',
         registerDescription: 'Create your account to get started',
+        login: 'sign in'
         login: 'sign in'
       },
       resetPassword: {
@@ -572,6 +580,7 @@ const messages = {
       invalidGender: "Invalid gender",
       updateFailed: "Failed to update profile",
       updateAvatarSuccess: "Avatar updated successfully",
+      updateAvatarSuccess: "Avatar updated successfully",
       filter: {
         all: "All",
         notReviewed: "Not Reviewed",
@@ -581,6 +590,9 @@ const messages = {
         editExpired: "Cannot edit review after 7 days",
         alreadyEdited: "Review can only be edited once",
         notFound: "Review not found",
+        updateFailed: "Failed to update review",
+        validationError: "Invalid data!",
+        unrecognizedKey: "There are unrecognized fields in the submitted data!"
         updateFailed: "Failed to update review",
         validationError: "Invalid data!",
         unrecognizedKey: "There are unrecognized fields in the submitted data!"

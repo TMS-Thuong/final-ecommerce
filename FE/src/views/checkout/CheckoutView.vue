@@ -8,9 +8,10 @@
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2">
-        <AddressSelector :addresses="checkoutStore.addresses" :selected-address-id="checkoutStore.selectedAddressId"
-          :is-loading="addressLoading" @update:selected-address-id="checkoutStore.selectedAddressId = $event"
-          @add-address="toggleAddressModal(true)" @show-all-addresses="toggleAddressListModal(true)" />
+        <AddressSelector :addresses="checkoutStore.addresses"
+          :selected-address-id="checkoutStore.selectedAddressId ?? 0" :is-loading="addressLoading"
+          @update:selected-address-id="checkoutStore.selectedAddressId = $event" @add-address="toggleAddressModal(true)"
+          @show-all-addresses="toggleAddressListModal(true)" />
 
         <div class="bg-white overflow-hidden border border-gray-200 rounded-md mb-6">
           <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -52,7 +53,7 @@
           <div class="px-6 py-4">
             <label for="notes" class="block text-xl font-medium text-gray-700">{{ $t('checkout.noteOptional') }}</label>
             <textarea id="notes" v-model="checkoutStore.orderNotes" rows="3"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
+              class="mt-1 block text-lg w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-neutral-800 focus:border-neutral-800"
               :placeholder="$t('checkout.notesPlaceholder')"></textarea>
           </div>
         </div>
@@ -118,8 +119,8 @@
     <AddressModal :is-open="showAddressModal" @close="toggleAddressModal(false)" @saved="handleAddressSaved" />
 
     <AddressListModal :is-open="showAddressListModal" :addresses="checkoutStore.addresses"
-      v-model="checkoutStore.selectedAddressId" @close="toggleAddressListModal(false)"
-      @edit-address="handleEditAddress" />
+      v-model="checkoutStore.selectedAddressId" @close="toggleAddressListModal(false)" @edit-address="handleEditAddress"
+      :modelValue="addressListModelValue" />
 
     <AddressModal :is-open="showEditAddressModal" :address-to-edit="addressToEdit"
       @close="toggleEditAddressModal(false)" @saved="handleAddressSaved" />
@@ -127,7 +128,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
@@ -221,6 +222,30 @@ const placeOrder = async () => {
     isPlacingOrder.value = false;
   }
 };
+
+const addressListModelValue = computed(() => {
+  if (!checkoutStore.addresses || checkoutStore.addresses.length === 0) return 0;
+  return checkoutStore.selectedAddressId == null ? 0 : checkoutStore.selectedAddressId;
+});
+
+const getSelectedCartItemsCookie = () => {
+  const cookies = document.cookie.split(';');
+  const selectedCartItemsCookie = cookies.find(cookie => cookie.trim().startsWith('selectedCartItems='));
+  if (selectedCartItemsCookie) {
+    try {
+      return JSON.parse(selectedCartItemsCookie.split('=')[1]);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+};
+
+watch(() => checkoutStore.addresses, (newAddresses) => {
+  if (!newAddresses || newAddresses.length === 0) {
+    checkoutStore.selectedAddressId = 0;
+  }
+});
 
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');

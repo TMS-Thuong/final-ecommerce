@@ -65,7 +65,9 @@
         <Button @click="onLogin" class="text-blue-500 font-semibold hover:underline">Sign in</Button>
       </div>
     </div>
-    <div class="flex-1 bg-neutral-800 text-white p-6 md:p-10 font-sans flex flex-col justify-center items-center">
+
+    <!-- Right side - Image -->
+    <div class="hidden md:block md:w-1/2 bg-neutral-800 text-white p-10 flex flex-col justify-center items-center">
       <BoxText :text="$t('auth.login.title')" :disabled="isLoading" @click="onLogin" />
       <ImagePlaceholder :src="imageSrc" alt="Description of image"
         class="flex justify-center h-80 w-auto object-contain" />
@@ -78,7 +80,6 @@ import { onBeforeUnmount, ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import InputText from '@/components/atoms/InputTextComponent.vue'
 import PasswordInput from '@/components/atoms/auth/_utils/PasswordInputComponent.vue'
-import RadioButtonGroup from '@/components/molecules/auth/_utils/RadioButtonGroupComponent.vue'
 import SubmitButton from '@/components/atoms/SubmitButtonComponent.vue'
 import BoxText from '@/components/molecules/auth/_utils/BoxTextComponent.vue'
 import LoadingSpinner from '@/components/atoms/LoadingComponent.vue'
@@ -97,12 +98,10 @@ import { ToastEnum } from '@/enums/toast'
 
 const authStore = useAuthStore()
 const formData = reactive({ ...DEFAULT_FORM_DATA })
-const genderOptions = GENDER_OPTIONS
 const errors = reactive<{ [key: string]: string }>({})
 const isLoading = ref(false)
 
 const { showToast } = useToast()
-
 const { t } = useI18n()
 
 const genderOptionsTranslated = computed(() =>
@@ -130,11 +129,13 @@ const onRegister = async () => {
 
     if (response.data && response.data.code) {
       showToast(ToastEnum.Success, t(`success.${toCamelCase(response.data.code)}`));
+      router.push({ name: AuthRouterEnum.Login });
+      authStore.setEmail(formData.email);
     } else {
       showToast(ToastEnum.Success, t('success.registrationSuccess'));
+      router.push({ name: AuthRouterEnum.Login });
+      authStore.setEmail(formData.email);
     }
-    router.push({ name: AuthRouterEnum.Login })
-    authStore.setEmail(formData.email);
   } catch (err) {
     if (err instanceof z.ZodError) {
       const newErrors: { [key: string]: string } = {};
@@ -142,10 +143,13 @@ const onRegister = async () => {
         newErrors[e.path[0]] = t(e.message);
       });
       Object.assign(errors, newErrors);
-    } else {
-      const code = (err as any).code || 'unexpectedError';
-      const msg = t(`error.${toCamelCase(code)}`) || t('error.unexpectedError');
+    } else if (err && typeof err === 'object' && 'response' in err) {
+      const errorResponse = err.response as { data?: { code?: string; message?: string } };
+      const code = errorResponse.data?.code || 'unexpectedError';
+      const msg = t(`error.${toCamelCase(code)}`) || errorResponse.data?.message || t('error.unexpectedError');
       showToast(ToastEnum.Error, msg);
+    } else {
+      showToast(ToastEnum.Error, t('error.unexpectedError'));
     }
   } finally {
     isLoading.value = false;
@@ -179,3 +183,11 @@ onBeforeUnmount(() => {
   Object.keys(errors).forEach(key => delete errors[key])
 })
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+  .max-w-md {
+    width: 100%;
+  }
+}
+</style>
