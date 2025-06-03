@@ -5,7 +5,7 @@ import axios from "axios"
 import { getCookie } from '@/utils/cookie'
 
 const instanceAxios = axios.create({
-  timeout: 5000,
+  timeout: 10000,
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -15,13 +15,19 @@ const instanceAxios = axios.create({
 
 instanceAxios.interceptors.request.use(
   (config) => {
-    const accessToken = getCookie('accessToken')
-    if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`
+    try {
+      const accessToken = getCookie('accessToken')
+      if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`
+      }
+      return config
+    } catch (error) {
+      console.error('Error in request interceptor:', error)
+      return Promise.reject(error)
     }
-    return config
   },
   (error) => {
+    console.error('Request interceptor error:', error)
     return Promise.reject(error)
   }
 )
@@ -45,28 +51,50 @@ instanceAxios.interceptors.response.use(
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError)
         authStore.clearTokens()
-        router.push({ name: RouterEnum.Login })
+        router.replace({ name: RouterEnum.Login })
         return Promise.reject({ code: 'error.tokenRefreshFailed' })
       }
     }
 
     switch (status) {
       case 400:
-      case 403:
-      case 404:
-      case 409:
-      case 500:
         return Promise.reject({
-          code: error.response?.data?.code || 'error.unexpectedError',
-          message: error.response?.data?.message || '',
+          code: error.response?.data?.code || 'error.badRequest',
+          message: error.response?.data?.message || 'Invalid request',
           data: error.response?.data
         })
       case 401:
         authStore.clearTokens()
-        router.push({ name: RouterEnum.Login })
-        break;
+        router.replace({ name: RouterEnum.Login })
+        return Promise.reject({
+          code: 'error.unauthorized',
+          message: 'Please login to continue'
+        })
+      case 403:
+        return Promise.reject({
+          code: 'error.forbidden',
+          message: 'You do not have permission to perform this action'
+        })
+      case 404:
+        return Promise.reject({
+          code: 'error.notFound',
+          message: 'The requested resource was not found'
+        })
+      case 409:
+        return Promise.reject({
+          code: 'error.conflict',
+          message: 'There was a conflict with the current state'
+        })
+      case 500:
+        return Promise.reject({
+          code: 'error.serverError',
+          message: 'An unexpected error occurred'
+        })
       default:
-        return Promise.reject({ code: 'error.unexpectedError' })
+        return Promise.reject({
+          code: 'error.unexpectedError',
+          message: 'An unexpected error occurred'
+        })
     }
   }
 )

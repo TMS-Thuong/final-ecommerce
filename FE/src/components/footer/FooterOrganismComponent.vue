@@ -60,7 +60,7 @@
           </li>
           <li class="flex items-center gap-2">
             <MailIcon size="8" class="text-gray-300" />
-            {{ $t('contact.info.email.content') }}
+            <a href="mailto:support@hitmdt.com" class="text-gray-300 hover:text-white">support@hitmdt.com</a>
           </li>
         </ul>
       </div>

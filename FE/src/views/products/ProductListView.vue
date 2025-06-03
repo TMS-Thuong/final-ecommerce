@@ -140,7 +140,6 @@ const error = ref('');
 const currentPage = ref(1);
 const hasMorePages = ref(false);
 const pageSize = 10;
-const pageSize = 10;
 const totalProducts = ref(0);
 const loadingMore = ref(false);
 const categoryOptions = ref([]);

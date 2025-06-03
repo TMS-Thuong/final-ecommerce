@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { wishlistApi } from '@/api/wishlist';
-import Cookies from 'js-cookie';
+import { getCookie, setCookie, removeCookie } from '@/utils/cookie';
 
 export interface WishlistItem {
     id: number;
@@ -38,13 +38,13 @@ export const useWishlistStore = defineStore('wishlist', () => {
     const error = ref<string | null>(null)
 
     watch(() => wishlistProducts.value, (newVal) => {
-        setCookie(WISHLIST_STORAGE_KEY, JSON.stringify(newVal));
+        setCookie(WISHLIST_COOKIE_KEY, JSON.stringify(newVal), 7);
     }, { deep: true });
 
     const fetchWishlist = async () => {
         if (!getCookie('accessToken')) {
             wishlistProducts.value = [];
-            setCookie(WISHLIST_STORAGE_KEY, JSON.stringify([]));
+            setCookie(WISHLIST_COOKIE_KEY, JSON.stringify([]), 7);
             return;
         }
         try {
@@ -53,10 +53,10 @@ export const useWishlistStore = defineStore('wishlist', () => {
             const response = await wishlistApi.getWishlist();
             if (response && response.data && Array.isArray(response.data.data)) {
                 wishlistProducts.value = response.data.data;
-                Cookies.set(WISHLIST_COOKIE_KEY, JSON.stringify(response.data.data), { expires: 7 });
+                setCookie(WISHLIST_COOKIE_KEY, JSON.stringify(response.data.data), 7);
             } else if (response && Array.isArray(response.data)) {
                 wishlistProducts.value = response.data;
-                Cookies.set(WISHLIST_COOKIE_KEY, JSON.stringify(response.data), { expires: 7 });
+                setCookie(WISHLIST_COOKIE_KEY, JSON.stringify(response.data), 7);
             } else {
                 wishlistProducts.value = [];
             }
@@ -107,10 +107,15 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const initWishlist = async () => {
-        if (localStorage.getItem('accessToken')) {
-            const stored = Cookies.get(WISHLIST_COOKIE_KEY);
+        if (getCookie('accessToken')) {
+            const stored = getCookie(WISHLIST_COOKIE_KEY);
             if (stored) {
-                wishlistProducts.value = JSON.parse(stored);
+                try {
+                    wishlistProducts.value = JSON.parse(stored);
+                } catch (err) {
+                    console.error('Error parsing wishlist data:', err);
+                    wishlistProducts.value = [];
+                }
             } else {
                 wishlistProducts.value = [];
             }
@@ -118,8 +123,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
     };
 
     const clearWishlist = () => {
-        wishlistProducts.value = defaultWishlistValue();
-        Cookies.remove(WISHLIST_COOKIE_KEY);
+        wishlistProducts.value = [];
+        removeCookie(WISHLIST_COOKIE_KEY);
     };
 
     const isInWishlist = (productId: number) => {
@@ -144,4 +149,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
         clearWishlist,
         isInWishlist
     };
-}); 
+});
+
+function defaultWishlistValue(): any[] {
+    throw new Error('Function not implemented.');
+}

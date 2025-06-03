@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { getCart, addToCart, updateCartItem, removeCartItem } from '@/api/cart';
-import Cookies from 'js-cookie';
+import { getCookie, setCookie, removeCookie } from '@/utils/cookie';
 
 export interface CartItem {
   id: number;
@@ -34,6 +34,16 @@ export interface Cart {
 
 const CART_COOKIE_KEY = 'ecommerce_cart_data';
 
+const isValidCart = (cart: any): cart is Cart => {
+  return (
+    cart &&
+    typeof cart === 'object' &&
+    Array.isArray(cart.items) &&
+    typeof cart.totalAmount === 'number' &&
+    typeof cart.totalItems === 'number'
+  );
+};
+
 export const useCartStore = defineStore('cart', () => {
   const cart = ref<Cart | null>(null);
   const error = ref<string | null>(null);
@@ -50,23 +60,42 @@ export const useCartStore = defineStore('cart', () => {
 
   const initializeCartFromCookie = () => {
     try {
-      const storedCart = Cookies.get(CART_COOKIE_KEY);
+      const storedCart = getCookie(CART_COOKIE_KEY);
       if (storedCart) {
-        cart.value = JSON.parse(storedCart);
+        try {
+          const parsedCart = JSON.parse(storedCart);
+          if (isValidCart(parsedCart)) {
+            cart.value = parsedCart;
+          } else {
+            console.warn('Invalid cart data in cookie, resetting to default');
+            cart.value = defaultCartValue();
+            removeCookie(CART_COOKIE_KEY);
+          }
+        } catch (parseError) {
+          console.error('Error parsing cart data from cookie:', parseError);
+          cart.value = defaultCartValue();
+          removeCookie(CART_COOKIE_KEY);
+        }
       } else {
         cart.value = defaultCartValue();
       }
     } catch (err) {
       console.error('Error loading cart from cookie:', err);
       cart.value = defaultCartValue();
+      removeCookie(CART_COOKIE_KEY);
     }
   };
 
+  // Initialize cart when store is created
   initializeCartFromCookie();
 
   watch(() => cart.value, (newCart) => {
-    if (newCart) {
-      Cookies.set(CART_COOKIE_KEY, JSON.stringify(newCart), { expires: 7 });
+    if (newCart && isValidCart(newCart)) {
+      try {
+        setCookie(CART_COOKIE_KEY, JSON.stringify(newCart), 7);
+      } catch (err) {
+        console.error('Error saving cart to cookie:', err);
+      }
     }
   }, { deep: true });
 
@@ -93,9 +122,13 @@ export const useCartStore = defineStore('cart', () => {
     try {
       error.value = null;
       const response = await getCart();
-      if (response) {
+      if (response && isValidCart(response)) {
         cart.value = response;
-        Cookies.set(CART_COOKIE_KEY, JSON.stringify(response), { expires: 7 });
+        try {
+          setCookie(CART_COOKIE_KEY, JSON.stringify(response), 7);
+        } catch (err) {
+          console.error('Error saving cart to cookie:', err);
+        }
       } else {
         cart.value = defaultCartValue();
       }
@@ -157,12 +190,31 @@ export const useCartStore = defineStore('cart', () => {
   };
 
   const initCart = async () => {
-    if (localStorage.getItem('accessToken')) {
-      const storedCart = Cookies.get(CART_COOKIE_KEY);
-      if (storedCart) {
-        cart.value = JSON.parse(storedCart);
-      } else {
+    if (getCookie('accessToken')) {
+      try {
+        const storedCart = getCookie(CART_COOKIE_KEY);
+        if (storedCart) {
+          try {
+            const parsedCart = JSON.parse(storedCart);
+            if (isValidCart(parsedCart)) {
+              cart.value = parsedCart;
+            } else {
+              console.warn('Invalid cart data in cookie, resetting to default');
+              cart.value = defaultCartValue();
+              removeCookie(CART_COOKIE_KEY);
+            }
+          } catch (parseError) {
+            console.error('Error parsing cart data:', parseError);
+            cart.value = defaultCartValue();
+            removeCookie(CART_COOKIE_KEY);
+          }
+        } else {
+          cart.value = defaultCartValue();
+        }
+      } catch (err) {
+        console.error('Error initializing cart:', err);
         cart.value = defaultCartValue();
+        removeCookie(CART_COOKIE_KEY);
       }
       return false;
     }
@@ -170,12 +222,16 @@ export const useCartStore = defineStore('cart', () => {
 
   const clearCart = () => {
     cart.value = defaultCartValue();
-    Cookies.remove(CART_COOKIE_KEY);
+    removeCookie(CART_COOKIE_KEY);
   };
 
   const saveCartToLocalStorage = () => {
-    if (cart.value) {
-      Cookies.set(CART_COOKIE_KEY, JSON.stringify(cart.value), { expires: 7 });
+    if (cart.value && isValidCart(cart.value)) {
+      try {
+        setCookie(CART_COOKIE_KEY, JSON.stringify(cart.value), 7);
+      } catch (err) {
+        console.error('Error saving cart to cookie:', err);
+      }
     }
   };
 
@@ -185,7 +241,7 @@ export const useCartStore = defineStore('cart', () => {
     try {
       const serverCart = await getCart();
 
-      if (serverCart && serverCart.items && serverCart.items.length > 0) {
+      if (serverCart && isValidCart(serverCart)) {
         if (cart.value && cart.value.items && cart.value.items.length > 0) {
           serverCart.items.forEach((serverItem: any) => {
             const localItem = cart.value?.items.find(item => item.id === serverItem.id);
