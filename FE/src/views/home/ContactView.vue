@@ -21,11 +21,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import ContactHeader from '@/components/contact/ContactHeader.vue'
-import ContactInfo from '@/components/contact/ContactInfo.vue'
-import SocialMedia from '@/components/contact/SocialMedia.vue'
-import ContactForm from '@/components/contact/ContactForm.vue'
-import FooterOrganism from '@/components/footer/FooterOrganism.vue'
+import ContactHeader from '@/components/contact/ContactHeaderComponent.vue'
+import ContactInfo from '@/components/contact/ContactInfoComponent.vue'
+import SocialMedia from '@/components/contact/SocialMediaComponent.vue'
+import ContactForm from '@/components/contact/ContactFormComponent.vue'
+import FooterOrganism from '@/components/footer/FooterOrganismComponent.vue'
 
 const success = ref(false)
 

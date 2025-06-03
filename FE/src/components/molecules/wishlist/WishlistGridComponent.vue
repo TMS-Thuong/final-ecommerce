@@ -4,7 +4,7 @@
     </div>
 </template>
 <script setup>
-import WishlistItem from './WishlistItem.vue'
+import WishlistItem from '@/components/wishlist/WishlistItemComponent.vue'
 const props = defineProps({ items: Array })
 const emit = defineEmits(['update'])
 </script>

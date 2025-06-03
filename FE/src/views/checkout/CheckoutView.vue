@@ -83,7 +83,7 @@
           <div class="px-6 py-4">
             <div class="mb-4">
               <label for="coupon" class="block text-xl font-medium text-gray-700 mb-1">{{ $t('checkout.couponCode')
-                }}</label>
+              }}</label>
               <div class="flex">
                 <input type="text" id="coupon"
                   class="flex-1 min-w-0 border border-gray-300 focus:ring-neutral-800 focus:border-neutral-800 rounded-l-md sm:text-xl px-3 py-2"
@@ -134,9 +134,9 @@ import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import { useCheckoutStore } from '@/stores/payment/checkout';
 import { useCartStore } from '@/stores/cart/cart';
-import AddressModal from '@/components/molecules/utils/AddressModal.vue';
-import AddressSelector from '@/components/molecules/checkout/AddressSelector.vue';
-import AddressListModal from '@/components/molecules/checkout/AddressListModal.vue';
+import AddressModal from '@/components/molecules/address/AddressModalComponent.vue';
+import AddressSelector from '@/components/molecules/checkout/AddressSelectorComponent.vue';
+import AddressListModal from '@/components/molecules/checkout/AddressListModalComponent.vue';
 
 const { t } = useI18n();
 const router = useRouter();

@@ -128,7 +128,7 @@ import { useI18n } from 'vue-i18n';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import addressApi from '@/api/address';
-import AddressModal from '@/components/molecules/utils/AddressModal.vue';
+import AddressModal from '@/components/molecules/address/AddressModalComponent.vue';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 import { RouterEnum } from '@/enums/router';
 import { useCheckoutStore } from '@/stores/payment/checkout';

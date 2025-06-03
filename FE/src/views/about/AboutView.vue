@@ -335,7 +335,7 @@ import ShieldIcon from '@/components/icons/ShieldIcon.vue'
 import HeadphonesIcon from '@/components/icons/HeadphonesIcon.vue'
 import TrendingUpIcon from '@/components/icons/TrendingUpIcon.vue'
 import DeliveryIcon from '@/components/icons/DeliveryIcon.vue'
-import FooterOrganism from '@/components/footer/FooterOrganism.vue'
+import FooterOrganism from '@/components/footer/FooterOrganismComponent.vue'
 
 const stats = [
     { icon: StarIcon, label: "Happy Customers", value: "50,000+", description: "Satisfied customers nationwide" },

@@ -107,8 +107,8 @@ import { useRouter } from 'vue-router';
 import { useToast } from '@/hooks/useToast';
 import { ToastEnum } from '@/enums/toast';
 import { useI18n } from 'vue-i18n';
-import CartItem from '@/components/products/CartItem.vue';
-import ConfirmModal from '@/components/molecules/utils/ConfirmModal.vue';
+import CartItem from '@/components/cart/CartItemComponent.vue';
+import ConfirmModal from '@/components/molecules/utils/ConfirmModalComponent.vue';
 
 const cartStore = useCartStore();
 const router = useRouter();

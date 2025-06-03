@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import FeatureSection from '@/components/home/FeatureSelectionComponent.vue'
 import HeroSection from '@/components/home/HeroSectionComponent.vue'
-import FooterOrganism from '@/components/footer/FooterOrganism.vue'
+import FooterOrganism from '@/components/footer/FooterOrganismComponent.vue'
 import FeaturedProducts from '@/components/home/FeaturedProductsComponent.vue'
 
 const { t } = useI18n();
