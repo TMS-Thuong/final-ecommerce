@@ -13,8 +13,8 @@
     "precommit": "lint-staged",
     "prepush": "echo Running prepush hook...",
     "dev": "node --loader tsx ./src/server.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node -r tsconfig-paths/register dist/server.js",
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "node dist/server.js",
     "start:dev": "ts-node -r tsconfig-paths/register src/server.ts"
   },
   "lint-staged": {
