@@ -61,3 +61,4 @@ profile*
 /prisma/migrations/
 
 /uploads/
+/dist/

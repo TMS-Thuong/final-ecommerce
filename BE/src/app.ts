@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 import fastify from 'fastify';
 
 import AuthController from '@app/services/auth-user.service';
+
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
 import staticPlugin from '@plugins/static.plugin';
 
@@ -34,7 +35,7 @@ declare module 'fastify' {
 declare module '@fastify/jwt' {
   interface FastifyJWT {
     payload: { email: string; userId: number };
-    user: { email: string; userId: number };
+    user: { id: number; email: string; userId: number };
   }
 }
 

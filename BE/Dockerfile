@@ -19,10 +19,10 @@ COPY --from=builder /app/package*.json ./
 
 ENV NODE_ENV=production
 
-RUN npm install --omit=dev
+RUN npm install --omit=dev --ignore-scripts
 
 COPY --from=builder /app .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

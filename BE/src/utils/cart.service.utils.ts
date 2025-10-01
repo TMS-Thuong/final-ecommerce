@@ -4,7 +4,7 @@ import { FastifyRequest } from 'fastify';
 import { CartService } from '@app/services/cart.service';
 
 export const getUserId = (req: FastifyRequest): number | null => {
-  const userId = req.user.id || req.user.userId;
+  const userId = req.user.userId;
   if (!userId) {
     return null;
   }

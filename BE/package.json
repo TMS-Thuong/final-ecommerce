@@ -7,14 +7,15 @@
     "test": "node --test test/**/*.test.js",
     "prettier:check": "prettier --check ./**/*.{ts,js,json,*rc}",
     "format": "prettier --write \"./**/*.{ts,js,json,*rc}\"",
-    "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix",
-    "lint:check": "eslint \"{src,apps,libs}/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs}/*.ts\" --fix",
+    "lint:check": "eslint \"{src,apps,libs}/*.ts\"",
     "prepare": "cd .. && husky install",
     "precommit": "lint-staged",
     "prepush": "echo Running prepush hook...",
-    "dev": "npx tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "dev": "node --loader tsx ./src/server.ts",
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "node -r tsconfig-paths/register dist/server.js",
+    "start:dev": "ts-node -r tsconfig-paths/register src/server.ts"
   },
   "lint-staged": {
     "BE/src/**/*.{ts,js}": [
@@ -44,11 +45,12 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.5.0",
     "prettier": "^2.7.1",
-    "prisma": "^4.16.2",
+    "prisma": "^6.16.3",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.11.0",
-    "typescript": "^4.2.3"
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^3.15.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.18.6",
@@ -63,7 +65,7 @@
     "@fastify/swagger": "^9.5.0",
     "@fastify/swagger-ui": "^5.2.2",
     "@fastify/type-provider-typebox": "^5.1.0",
-    "@prisma/client": "^4.15.0",
+    "@prisma/client": "^6.16.3",
     "@sinclair/typebox": "^0.34.33",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
@@ -81,8 +83,6 @@
     "nodemailer": "^7.0.2",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.11.0",
-    "typescript": "^4.2.3",
     "undici-types": "^6.21.0",
     "vnpay": "^2.2.0",
     "winston": "^3.17.0",
