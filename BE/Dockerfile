@@ -9,10 +9,11 @@ RUN npm install
 
 COPY . .
 
-RUN npx prisma generate && npm run build
+RUN npx prisma generate
+RUN npm run build
 
-# Stage 2: Runtime Stage (Production)
-FROM node:20-slim AS production
+# Stage 2: Runtime Stage
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
