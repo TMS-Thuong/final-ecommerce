@@ -22,8 +22,9 @@ ENV NODE_ENV=production
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma  
 RUN mkdir -p /app/uploads
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["sh","-lc","npx prisma migrate deploy || npx prisma db push; npm run start"]
