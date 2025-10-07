@@ -7,7 +7,6 @@ import { PrismaClient } from '@prisma/client';
 import fastify from 'fastify';
 
 import AuthController from '@app/services/auth-user.service';
-
 import { swagger, prismaPlugin, errorHandler, fastifyJwt, zodPlugin } from '@plugins/index';
 import staticPlugin from '@plugins/static.plugin';
 
@@ -71,6 +70,10 @@ app.decorate('verifyToken', AuthController.verifyToken);
 
 app.get('/', async () => {
   return { message: 'Fastify Blog API is running' };
+});
+
+app.get('/api/health', async () => {
+  return { status: 'ok' };
 });
 
 app.register(authUserRoutes, { prefix: '/user/api' });
